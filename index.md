@@ -2,7 +2,7 @@
 
 ---
 
-<i class="fas fa-spinner"></i>
+<p <i class="fa fa-spinner"></i></p>
 
 ### Category Name 1 
 
