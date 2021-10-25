@@ -7,8 +7,9 @@ description:
   <p align="center">
   <a href="pdf/Muhammad's%20Resume.pdf">Resume</a> | 
   <a href="https://www.linkedin.com/in/muhammad-saad-31740060/">class="fab fa-linkedin"></a> |
-  <a href="https://github.com/SaadMuhammad"><i class="fa fa-github"></i></a> | 
-  <a href="https://www.credly.com/users/saad-muhammad/badges">Credly</a>
+  <a <i class="fa fa-github"></i> href="https://github.com/SaadMuhammad"></a> | 
+  <a href="https://www.credly.com/users/saad-muhammad/badges">Credly</a> |
+  <i class="fa fa-github"></i> [github.com/SaadMuhammad](https://github.com/SaadMuhammad)
   </p>
   
 theme: jekyll-theme-minimal
