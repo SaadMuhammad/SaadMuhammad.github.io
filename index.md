@@ -2,8 +2,7 @@
 
 ---
 
-#### <i class="fa fa-gear fa-spin fa-2x" style="color: firebrick"></i> Configuration
-Configuration can be launched from the **Tools -> Settings** menu option.
+![Python]({https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=darkgreen})
 
 ### Category Name 1 
 
