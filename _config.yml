@@ -1,14 +1,14 @@
 title: <p align="center"> Muhammad Saad </p>
-<p class="right">Uddin</p>
+
 <br> </br>
 logo: "/images/saad.PNG?raw=true" # your photo (or logo) here
 <br> </br>
-description: > # your text below (remove <br> elements if you don't need line breaks)
-  First description 
-  <br><br>
-  Second description 
-  <br><br>
-  <a href="https://www.linkedin.com/in/example/">View My LinkedIn Profile</a> 
+description:
+  <p align="center">
+  <a href="pdf/Muhammad's%20Resume.pdf">Resume</a> |
+  <a href="https://www.linkedin.com/in/muhammad-saad-31740060/">LinkedIn</a> |
+  <a href="https://github.com/SaadMuhammad">GitHub</a>
+  </p>
   
 theme: jekyll-theme-minimal
 google_analytics: UA-000000-0 # your Google Analytics tracking ID here
