@@ -23,7 +23,7 @@
 
 ---
 [Analyzing Business Opportunites via Follium](https://github.com/SaadMuhammad/IBM-Data-Science-Coursera_Capstone)
-<img src="images/dummy_thumbnail.jpg?raw=true"/>
+<img src="images/ds2.jpg?raw=true"/>
 
 ---
 
