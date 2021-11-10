@@ -27,13 +27,20 @@
 
 ---
 
-### Category Name 2
+### Certifications
 
-- [Project 1 Title](http://example.com/)
-- [Project 2 Title](http://example.com/)
-- [Project 3 Title](http://example.com/)
-- [Project 4 Title](http://example.com/)
-- [Project 5 Title](http://example.com/)
+- [Azure Data Scientist](https://www.credly.com/badges/e8fef208-163d-4c8f-9f01-e105fd1630a4)
+
+---
+
+- [IBM Advance Data Science](https://www.credly.com/badges/0f7cfffd-e64b-45c1-af40-d5d8f0acdabc)
+
+---
+
+- IBM Applied AI Professional](https://www.credly.com/badges/ff4ffc2a-f418-4efb-8ff6-113bd53a50e2)
+
+---
+- [TensorFlow Professional Developer](http://example.com/)
 
 ---
 
