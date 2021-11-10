@@ -14,7 +14,7 @@
 
 ### Projects 
 
-[Predicting Defaulters Based on Previous Payments](/sample_page)
+[Predicting Defaulters Based on Previous Payments](https://github.com/SaadMuhammad/Azure_Capstone)
 <img src="images/dummy_thumbnail.jpg?raw=true"/>
 
 ---
