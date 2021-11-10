@@ -31,21 +31,24 @@
 
 - [Azure Data Scientist](https://www.credly.com/badges/e8fef208-163d-4c8f-9f01-e105fd1630a4)
 <img src="images/azure.PNG?raw=true"/>
+
 ---
 
 - [IBM Advance Data Science](https://www.credly.com/badges/0f7cfffd-e64b-45c1-af40-d5d8f0acdabc)
 <img src="images/ibmadv.PNG?raw=true"/>
+
 ---
 
 - [IBM Applied AI Professional](https://www.credly.com/badges/ff4ffc2a-f418-4efb-8ff6-113bd53a50e2)
 <img src="images/ibmai.PNG?raw=true"/>
+
 ---
 
 - [TensorFlow Professional Developer](https://www.coursera.org/account/accomplishments/professional-cert/3MXL5ZTEY8CA)
 
 ---
 
-- [Machine Learning Engineer with Azure]
+- [Machine Learning Engineer with Azure](https://example.com/)
 
 ---
 
