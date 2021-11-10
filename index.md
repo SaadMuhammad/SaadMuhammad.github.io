@@ -18,11 +18,11 @@
 <img src="images/Az_1.jpg?raw=true"/>
 
 ---
-[Project 2 Title](/pdf/sample_presentation.pdf)
-<img src="images/dummy_thumbnail.jpg?raw=true"/>
+[Human Activity Recognition(HAR)](https://github.com/SaadMuhammad/IBM-Advance-Data-Science-Capstone)
+<img src="images/ds1.jpg?raw=true"/>
 
 ---
-[Project 3 Title](http://example.com/)
+[Analyzing Business Opportunites via Follium](https://github.com/SaadMuhammad/IBM-Data-Science-Coursera_Capstone)
 <img src="images/dummy_thumbnail.jpg?raw=true"/>
 
 ---
