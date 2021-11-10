@@ -37,7 +37,7 @@
 
 ---
 
-- IBM Applied AI Professional](https://www.credly.com/badges/ff4ffc2a-f418-4efb-8ff6-113bd53a50e2)
+- [IBM Applied AI Professional](https://www.credly.com/badges/ff4ffc2a-f418-4efb-8ff6-113bd53a50e2)
 
 ---
 - [TensorFlow Professional Developer](http://example.com/)
