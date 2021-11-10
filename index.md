@@ -45,10 +45,12 @@
 ---
 
 - [TensorFlow Professional Developer](https://www.coursera.org/account/accomplishments/professional-cert/3MXL5ZTEY8CA)
+<img src="images/tensr.PNG?raw=true"/>
 
 ---
 
 - [Machine Learning Engineer with Azure](https://example.com/)
+<img src="images/msaz.PNG?raw=true"/>
 
 ---
 
