@@ -10,11 +10,24 @@
 <img src="https://img.shields.io/badge/Numpy-777BB4?style=for-the-badge&logo=numpy&logoColor=white" /> <img src="https://img.shields.io/badge/Plotly-239120?style=for-the-badge&logo=plotly&logoColor=white" /> <img src="https://img.shields.io/badge/PowerBI-F2C811?style=for-the-badge&logo=Power%20BI&logoColor=white" />
 <img src="https://img.shields.io/badge/microsoft%20azure-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white" /> <img src="https://img.shields.io/badge/Tableau-E97627?style=for-the-badge&logo=Tableau&logoColor=white" /> <img src="https://img.shields.io/badge/Statistics-yellow?style=for-the-badge" /> <img src="https://img.shields.io/badge/Machine%20Learning-blue?style=for-the-badge" /> <img src="https://img.shields.io/badge/IBM%20Watson-gray?style=for-the-badge" />
 <img src="https://img.shields.io/badge/Deep%20learning-green?style=for-the-badge" /> <img src="https://img.shields.io/badge/Predictive%20Analytics-red?style=for-the-badge" /> <img src="https://img.shields.io/badge/Data%20Visualization-cyan?style=for-the-badge" /> <img src="https://img.shields.io/badge/Auto%20ML-316192?style=for-the-badge" />
+<img src="https://img.shields.io/badge/-SQLAlchemy-blue?style=for-the-badge" /> <img src="https://img.shields.io/badge/-Swarm%20Intelligence-brightgreen?style=for-the-badge" /> <img src="https://img.shields.io/badge/-Unconstrained%20Optimizations-yellowgreen?style=for-the-badge" />
+<img src="https://img.shields.io/badge/-Predator%20Prey%20Modelling-lightgrey?style=for-the-badge" />
 
 
 ---
 
 ### Projects 
+
+
+[MySQL based Movie Recommendation Webapp using Streamlit](https://github.com/SaadMuhammad/movie_db)
+Based on MovieLens dataset of 25 Million Ratings. Contains Analytical Report on dataset too.
+<img src="images/mov1.jpg?raw=true"/>
+
+---
+[Feature Selection via Boruta](https://github.com/SaadMuhammad/Feature_Selection_via_Boruta)
+Implimenting Boruta Paper for useful Feature Selection among very large set of features based on Entropy and Information Gain.
+
+---
 
 [Predicting Defaulters Based on Previous Payments](https://github.com/SaadMuhammad/Azure_Capstone)
 <img src="images/Az_1.jpg?raw=true"/>
