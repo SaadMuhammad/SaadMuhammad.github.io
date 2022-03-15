@@ -16,10 +16,11 @@
 
 ---
 
-### Projects 
+### Projects:
 
 
-[MySQL based Movie Recommendation Webapp using Streamlit](https://github.com/SaadMuhammad/movie_db)
+### [MySQL based Movie Recommendation Webapp using Streamlit](https://github.com/SaadMuhammad/movie_db)
+<br>
 Based on MovieLens dataset of 25 Million Ratings. Contains Analytical Report on dataset too.
 <img src="images/mov1.jpg?raw=true"/>
 
@@ -30,15 +31,15 @@ Implimenting Boruta Paper for useful Feature Selection among very large set of f
 
 ---
 
-[Predicting Defaulters Based on Previous Payments](https://github.com/SaadMuhammad/Azure_Capstone)
+### [Predicting Defaulters Based on Previous Payments](https://github.com/SaadMuhammad/Azure_Capstone)
 <img src="images/Az_1.jpg?raw=true"/>
 
 ---
-[Human Activity Recognition(HAR)](https://github.com/SaadMuhammad/IBM-Advance-Data-Science-Capstone)
+### [Human Activity Recognition(HAR)](https://github.com/SaadMuhammad/IBM-Advance-Data-Science-Capstone)
 <img src="images/ds1.jpg?raw=true"/>
 
 ---
-[Analyzing Business Opportunites via Follium](https://github.com/SaadMuhammad/IBM-Data-Science-Coursera_Capstone)
+### [Analyzing Business Opportunites via Follium](https://github.com/SaadMuhammad/IBM-Data-Science-Coursera_Capstone)
 <img src="images/ds2.jpg?raw=true"/>
 
 ---
