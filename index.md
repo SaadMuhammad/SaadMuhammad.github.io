@@ -24,7 +24,8 @@ Based on MovieLens dataset of 25 Million Ratings. Contains Analytical Report on 
 <img src="images/mov1.jpg?raw=true"/>
 
 ---
-[Feature Selection via Boruta](https://github.com/SaadMuhammad/Feature_Selection_via_Boruta)
+### [Feature Selection via Boruta](https://github.com/SaadMuhammad/Feature_Selection_via_Boruta)
+<br>
 Implimenting Boruta Paper for useful Feature Selection among very large set of features based on Entropy and Information Gain.
 
 ---
