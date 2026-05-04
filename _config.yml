@@ -1,22 +1,21 @@
-title: <p align="center"> Muhammad Saad </p>
+title: Muhammad Saad | Applied AI Scientist
+description: >-
+  Portfolio of Muhammad Saad — Applied AI Scientist specializing in GenAI,
+  LLMs, Multi-Agent Systems, and Enterprise AI at Endress+Hauser.
 
+logo: "/images/saad1.PNG"
 
-logo: "/images/saad1.PNG?raw=true" 
-
-description:
-  <p align="center"> 
-  <a href="pdf/Muhammad's_Resume.pdf">Resume</a> |
-  <a href="https://www.linkedin.com/in/muhammad-saad-31740060/">Linkedin</a> |
-  <a href="https://github.com/SaadMuhammad">Github</a> |
-  <a href="https://medium.com/@itssaad.muhammad">Medium</a> |
-  <a href="https://www.credly.com/users/saad-muhammad/badges">Credly</a>
-  </p>
- 
-  <p align="justify">
-  I am an IBM certified Data Scientist, Microsoft certified Azure Data Scientist and TensorFlow professional developer.
-  <br><br>
-  I am currently pursing MS degree in Artificial Intelligence and Data Science from joint degree program of Technische Hochschule Deggendorf & University of South Bohemia and working in data science and analytics @ Novuter.
-  <br><br>
-  </p>
+# Theme is not used by index.html (layout: null), but kept for compatibility
 theme: jekyll-theme-minimal
+
+# Exclude files from build
+exclude:
+  - saad_res.pdf
+  - README.md
+  - LICENSE
+  - sample_page.md
+  - index.md
+
+###old file
+title: <p align="center"> Muhammad Saad </p>
 google_analytics: UA-000000-0 # your Google Analytics tracking ID here
