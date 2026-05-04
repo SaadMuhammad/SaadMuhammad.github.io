@@ -1,0 +1,1919 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muhammad Saad | Data Scientist</title>
+  <meta name="description" content="Portfolio of Muhammad Saad — Data Scientist specializing in GenAI, LLMs, Agentic AI, Multi-Agent Systems, and Enterprise AI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --cyan-light: #afd3e8;
+      --cyan-dark: #00597a;
+      --magenta: #a8005c;
+      --gray-medium: #8FA2AC;
+      --gray-light: #C3CED5;
+      --bg-primary: #070d1a;
+      --bg-secondary: #0c1829;
+      --bg-card: #101e35;
+      --bg-card-hover: #152847;
+      --text-primary: #f0f4f8;
+      --text-secondary: #8FA2AC;
+      --border-color: rgba(175, 211, 232, 0.1);
+      --glow-cyan: rgba(0, 89, 122, 0.4);
+      --glow-magenta: rgba(168, 0, 92, 0.3);
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: var(--cyan-light); text-decoration: none; transition: color 0.3s; }
+    a:hover { color: var(--magenta); }
+    ::selection { background: var(--magenta); color: #fff; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--cyan-dark); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--magenta); }
+
+    /* ===== NAVIGATION ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 1rem 2rem;
+      background: rgba(7, 13, 26, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      transition: all 0.4s ease;
+    }
+    .navbar.scrolled {
+      padding: 0.6rem 2rem;
+      background: rgba(7, 13, 26, 0.92);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+    }
+    .nav-container {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: 1.3rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--cyan-light), var(--magenta));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;
+      position: relative; padding: 0.3rem 0;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan-dark), var(--magenta));
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 5px; }
+    .nav-toggle span { width: 25px; height: 2px; background: var(--text-primary); transition: all 0.3s; border-radius: 2px; }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      padding: 6rem 2rem 4rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,89,122,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(168,0,92,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 10% 60%, rgba(0,89,122,0.1) 0%, transparent 50%);
+    }
+
+    /* Floating shapes */
+    .hero-shapes { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+    .hero-shape {
+      position: absolute; border-radius: 50%;
+      opacity: 0.06; filter: blur(1px);
+    }
+    .hero-shape:nth-child(1) {
+      width: 400px; height: 400px; top: -100px; right: -50px;
+      background: var(--cyan-dark);
+      animation: float1 20s ease-in-out infinite;
+    }
+    .hero-shape:nth-child(2) {
+      width: 300px; height: 300px; bottom: -80px; left: -60px;
+      background: var(--magenta);
+      animation: float2 25s ease-in-out infinite;
+    }
+    .hero-shape:nth-child(3) {
+      width: 200px; height: 200px; top: 40%; left: 60%;
+      background: var(--cyan-light);
+      animation: float3 18s ease-in-out infinite;
+    }
+    .hero-shape:nth-child(4) {
+      width: 150px; height: 150px; top: 20%; left: 15%;
+      background: var(--magenta);
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      animation: float4 22s ease-in-out infinite;
+    }
+
+    @keyframes float1 { 0%,100%{transform:translate(0,0) rotate(0deg)} 33%{transform:translate(30px,-40px) rotate(10deg)} 66%{transform:translate(-20px,30px) rotate(-5deg)} }
+    @keyframes float2 { 0%,100%{transform:translate(0,0) rotate(0deg)} 33%{transform:translate(-40px,-30px) rotate(-10deg)} 66%{transform:translate(35px,20px) rotate(8deg)} }
+    @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,40px)} }
+    @keyframes float4 { 0%,100%{transform:translate(0,0) rotate(0deg)} 50%{transform:translate(40px,-35px) rotate(180deg)} }
+
+    /* Grid overlay */
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(175,211,232,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(175,211,232,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 70%);
+    }
+
+    .hero-content { position: relative; z-index: 1; text-align: center; max-width: 800px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      background: rgba(0,89,122,0.15);
+      border: 1px solid rgba(0,89,122,0.3);
+      border-radius: 50px; font-size: 0.85rem;
+      color: var(--cyan-light); margin-bottom: 1.5rem;
+      animation: fadeInDown 0.8s ease;
+    }
+    .hero-badge .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800; line-height: 1.1;
+      margin-bottom: 0.5rem;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+    .hero h1 .gradient-text {
+      background: linear-gradient(135deg, var(--cyan-light) 0%, var(--cyan-dark) 50%, var(--magenta) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: var(--text-secondary); font-weight: 300;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+    .hero .tagline {
+      font-size: 1rem; color: var(--gray-medium);
+      max-width: 600px; margin: 0 auto 2.5rem;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+    .hero-buttons {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 0.8s both;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.8rem 1.8rem; border-radius: 8px;
+      font-weight: 600; font-size: 0.95rem;
+      transition: all 0.3s ease; cursor: pointer;
+      border: none; font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan-dark), var(--magenta));
+      color: #fff; position: relative; overflow: hidden;
+    }
+    .btn-primary::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--magenta), var(--cyan-dark));
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-primary:hover::before { opacity: 1; }
+    .btn-primary span, .btn-primary i { position: relative; z-index: 1; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--glow-magenta); color: #fff; }
+
+    .btn-outline {
+      background: transparent; color: var(--cyan-light);
+      border: 1px solid var(--cyan-dark);
+    }
+    .btn-outline:hover {
+      background: rgba(0,89,122,0.15);
+      border-color: var(--cyan-light);
+      transform: translateY(-2px);
+      color: var(--cyan-light);
+    }
+
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 1; animation: bounce 2s ease-in-out infinite;
+    }
+    .hero-scroll i { font-size: 1.5rem; color: var(--gray-medium); }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(10px)} }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      padding: 6rem 2rem; position: relative;
+    }
+    .section-inner {
+      max-width: 1100px; margin: 0 auto;
+    }
+    .section-header {
+      text-align: center; margin-bottom: 4rem;
+    }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem; color: var(--magenta);
+      text-transform: uppercase; letter-spacing: 3px;
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+    }
+    .section-title .accent { color: var(--cyan-light); }
+    .section-divider {
+      width: 60px; height: 3px; margin: 1rem auto 0;
+      background: linear-gradient(90deg, var(--cyan-dark), var(--magenta));
+      border-radius: 2px;
+    }
+    .section:nth-child(even) { background: var(--bg-secondary); }
+
+    /* ===== ABOUT ===== */
+    .about-grid {
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .about-image-wrapper {
+      position: relative;
+    }
+    .about-image {
+      width: 280px; height: 280px; border-radius: 20px;
+      object-fit: cover;
+      border: 2px solid var(--border-color);
+      position: relative; z-index: 1;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+    .about-image:hover {
+      transform: scale(1.03);
+      box-shadow: 0 20px 60px rgba(0,89,122,0.2);
+    }
+    .about-image-wrapper::after {
+      content: ''; position: absolute;
+      top: 15px; left: 15px; right: -15px; bottom: -15px;
+      border: 2px solid var(--cyan-dark);
+      border-radius: 20px; z-index: 0;
+      transition: all 0.5s ease;
+    }
+    .about-image-wrapper:hover::after {
+      top: 10px; left: 10px;
+    }
+    .about-text h3 {
+      font-size: 1.5rem; margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    .about-text p {
+      color: var(--text-secondary); margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    .about-highlights {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-top: 2rem;
+    }
+    .about-stat {
+      padding: 1rem 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .about-stat:hover {
+      border-color: var(--cyan-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,89,122,0.1);
+    }
+    .about-stat .number {
+      font-size: 1.6rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--cyan-light), var(--magenta));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .about-stat .label {
+      font-size: 0.85rem; color: var(--text-secondary);
+    }
+
+    /* ===== EXPERIENCE (Timeline) ===== */
+    .timeline { position: relative; padding: 2rem 0; }
+    .timeline::before {
+      content: ''; position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--cyan-dark), var(--magenta), var(--cyan-dark));
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      display: flex; justify-content: flex-end;
+      padding-right: calc(50% + 40px);
+      margin-bottom: 3rem; position: relative;
+    }
+    .timeline-item:nth-child(even) {
+      justify-content: flex-start;
+      padding-right: 0;
+      padding-left: calc(50% + 40px);
+    }
+    .timeline-dot {
+      position: absolute; left: 50%; top: 1.5rem;
+      width: 16px; height: 16px;
+      background: var(--bg-primary);
+      border: 3px solid var(--cyan-dark);
+      border-radius: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+    .timeline-item:hover .timeline-dot {
+      background: var(--magenta);
+      border-color: var(--magenta);
+      box-shadow: 0 0 20px var(--glow-magenta);
+    }
+    .timeline-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.8rem;
+      max-width: 480px; width: 100%;
+      transition: all 0.4s ease;
+      position: relative;
+    }
+    .timeline-card:hover {
+      border-color: var(--cyan-dark);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,89,122,0.12);
+    }
+    .timeline-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; color: var(--magenta);
+      margin-bottom: 0.5rem;
+    }
+    .timeline-card h3 {
+      font-size: 1.2rem; margin-bottom: 0.3rem;
+    }
+    .timeline-card .company {
+      color: var(--cyan-light); font-weight: 500;
+      margin-bottom: 0.8rem; font-size: 0.95rem;
+    }
+    .timeline-card .company i { margin-right: 0.4rem; font-size: 0.85rem; }
+    .timeline-card ul {
+      list-style: none; padding: 0;
+    }
+    .timeline-card li {
+      position: relative; padding-left: 1.2rem;
+      color: var(--text-secondary); font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+    .timeline-card li::before {
+      content: ''; position: absolute; left: 0; top: 0.55rem;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cyan-dark);
+    }
+
+    /* ===== SKILLS (Marquee) ===== */
+    .skills-marquee-wrapper {
+      overflow: hidden;
+      position: relative;
+    }
+    .skills-marquee-wrapper::before,
+    .skills-marquee-wrapper::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px;
+      z-index: 2; pointer-events: none;
+    }
+    .skills-marquee-wrapper::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--bg-primary) 0%, transparent 100%);
+    }
+    .skills-marquee-wrapper::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--bg-primary) 0%, transparent 100%);
+    }
+    .section:nth-child(even) .skills-marquee-wrapper::before {
+      background: linear-gradient(90deg, var(--bg-secondary) 0%, transparent 100%);
+    }
+    .section:nth-child(even) .skills-marquee-wrapper::after {
+      background: linear-gradient(270deg, var(--bg-secondary) 0%, transparent 100%);
+    }
+
+    .skill-row {
+      display: flex; align-items: center;
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+    .skill-row-label {
+      position: absolute; left: 0; z-index: 3;
+      background: var(--bg-primary);
+      padding: 0.3rem 0.8rem 0.3rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; font-weight: 600;
+      color: var(--magenta);
+      text-transform: uppercase; letter-spacing: 1px;
+      white-space: nowrap;
+      display: none;
+    }
+
+    .skill-marquee {
+      display: flex;
+      width: max-content;
+      animation: marquee-scroll 35s linear infinite;
+    }
+    .skill-row:nth-child(even) .skill-marquee {
+      animation-direction: reverse;
+    }
+    .skill-row:nth-child(1) .skill-marquee { animation-duration: 40s; }
+    .skill-row:nth-child(2) .skill-marquee { animation-duration: 35s; }
+    .skill-row:nth-child(3) .skill-marquee { animation-duration: 32s; }
+    .skill-row:nth-child(4) .skill-marquee { animation-duration: 38s; }
+    .skill-row:nth-child(5) .skill-marquee { animation-duration: 30s; }
+    .skill-row:nth-child(6) .skill-marquee { animation-duration: 36s; }
+
+    .skill-row:hover .skill-marquee {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .skill-marquee-tag {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.5rem 1.1rem;
+      margin: 0 0.4rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.85rem; color: var(--cyan-light);
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all 0.35s ease;
+      cursor: default;
+    }
+    .skill-marquee-tag i {
+      font-size: 0.75rem;
+      color: var(--gray-medium);
+      transition: color 0.35s ease;
+    }
+    .skill-marquee-tag:hover {
+      background: rgba(0,89,122,0.2);
+      border-color: var(--cyan-dark);
+      color: #fff;
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 8px 25px var(--glow-cyan), 0 0 15px rgba(0,89,122,0.15);
+    }
+    .skill-marquee-tag:hover i {
+      color: var(--cyan-light);
+    }
+
+    /* Accent variant for featured skills */
+    .skill-marquee-tag.featured {
+      border-color: rgba(168,0,92,0.3);
+      background: rgba(168,0,92,0.08);
+    }
+    .skill-marquee-tag.featured:hover {
+      background: rgba(168,0,92,0.2);
+      border-color: var(--magenta);
+      box-shadow: 0 8px 25px var(--glow-magenta), 0 0 15px rgba(168,0,92,0.15);
+    }
+
+    /* Category icons row below marquee */
+    .skill-categories-summary {
+      display: flex; justify-content: center; flex-wrap: wrap;
+      gap: 1.5rem; margin-top: 2.5rem;
+    }
+    .skill-cat-chip {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 0.8rem; font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+    }
+    .skill-cat-chip i {
+      color: var(--cyan-light); font-size: 0.9rem;
+    }
+    .skill-cat-chip:hover {
+      border-color: var(--cyan-dark);
+      color: var(--text-primary);
+      transform: translateY(-2px);
+    }
+    .skill-cat-chip.active {
+      background: linear-gradient(135deg, var(--cyan-dark), var(--magenta));
+      border-color: transparent;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--glow-cyan);
+    }
+    .skill-cat-chip.active i { color: #fff; }
+
+    /* Filtering states */
+    .skills-marquee-wrapper.filtering .skill-marquee-tag {
+      opacity: 0.15;
+      filter: grayscale(0.8);
+      transform: scale(0.95);
+    }
+    .skills-marquee-wrapper.filtering .skill-marquee-tag.highlighted {
+      opacity: 1;
+      filter: none;
+      transform: scale(1.06) translateY(-2px);
+      background: rgba(0,89,122,0.2);
+      border-color: var(--cyan-dark);
+      color: #fff;
+      box-shadow: 0 4px 18px var(--glow-cyan);
+    }
+    .skills-marquee-wrapper.filtering .skill-marquee-tag.featured.highlighted {
+      background: rgba(168,0,92,0.2);
+      border-color: var(--magenta);
+      box-shadow: 0 4px 18px var(--glow-magenta);
+    }
+
+    /* ===== SPEAKING ===== */
+    .speaking-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .speaking-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .speaking-card:hover {
+      border-color: var(--cyan-dark);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,89,122,0.12);
+    }
+    .speaking-card-image {
+      height: 180px;
+      background: linear-gradient(135deg, rgba(0,89,122,0.3), rgba(168,0,92,0.2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; color: var(--cyan-light);
+      position: relative; overflow: hidden;
+    }
+    .speaking-card-image img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .speaking-card-image .placeholder-icon {
+      font-size: 2.5rem;
+      opacity: 0.6;
+    }
+    .speaking-card-body {
+      padding: 1.5rem;
+    }
+    .speaking-card .event-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--magenta);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: 0.5rem;
+    }
+    .speaking-card h3 {
+      font-size: 1.1rem; margin-bottom: 0.5rem;
+    }
+    .speaking-card .event-meta {
+      font-size: 0.85rem; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .speaking-card .event-meta i { color: var(--cyan-dark); font-size: 0.8rem; }
+    .speaking-card .event-topic {
+      font-size: 0.85rem; color: var(--text-secondary);
+      margin-bottom: 0.8rem; line-height: 1.5;
+      font-style: italic;
+    }
+
+    /* ===== ACHIEVEMENTS ===== */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .achievement-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative; overflow: hidden;
+    }
+    .achievement-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cyan-dark), var(--magenta));
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    .achievement-card:hover::before { transform: scaleX(1); }
+    .achievement-card:hover {
+      border-color: var(--cyan-dark);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,89,122,0.12);
+    }
+    .achievement-icon {
+      width: 60px; height: 60px; margin: 0 auto 1.2rem;
+      background: linear-gradient(135deg, rgba(0,89,122,0.2), rgba(168,0,92,0.15));
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+    }
+    .achievement-card h3 {
+      font-size: 1.1rem; margin-bottom: 0.5rem;
+    }
+    .achievement-card p {
+      color: var(--text-secondary); font-size: 0.9rem;
+    }
+    .achievement-card .award-year {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; color: var(--magenta);
+      margin-top: 0.8rem;
+    }
+
+    /* ===== CERTIFICATIONS ===== */
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .cert-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+    .cert-card:hover {
+      border-color: var(--cyan-dark);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,89,122,0.12);
+    }
+    .cert-card img {
+      width: 80px; height: 80px; object-fit: contain;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+      transition: transform 0.3s;
+    }
+    .cert-card:hover img { transform: scale(1.1); }
+    .cert-card h4 {
+      font-size: 0.95rem; margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+    .cert-card .cert-issuer {
+      font-size: 0.8rem; color: var(--text-secondary);
+    }
+    .cert-card .cert-link {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      margin-top: 0.8rem;
+      font-size: 0.82rem; color: var(--cyan-light);
+      font-weight: 500;
+    }
+    .cert-card .cert-link:hover { color: var(--magenta); }
+
+    /* ===== PROJECTS ===== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    .project-card:hover {
+      border-color: var(--cyan-dark);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,89,122,0.12);
+    }
+    .project-card-image {
+      height: 200px; overflow: hidden;
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+    }
+    .project-card-image img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .project-card:hover .project-card-image img {
+      transform: scale(1.05);
+    }
+    .project-card-body {
+      padding: 1.5rem;
+    }
+    .project-card h3 {
+      font-size: 1.05rem; margin-bottom: 0.5rem;
+    }
+    .project-card p {
+      color: var(--text-secondary); font-size: 0.88rem;
+      margin-bottom: 1rem;
+    }
+    .project-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;
+    }
+    .project-tag {
+      padding: 0.2rem 0.6rem;
+      background: rgba(0,89,122,0.12);
+      border-radius: 4px;
+      font-size: 0.75rem; color: var(--cyan-light);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .project-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.88rem; font-weight: 600;
+    }
+
+    /* ===== CONTACT / FOOTER ===== */
+    .contact {
+      text-align: center;
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    }
+    .contact-cta {
+      font-size: 1.1rem; color: var(--text-secondary);
+      max-width: 500px; margin: 0 auto 2.5rem;
+    }
+    .social-links {
+      display: flex; justify-content: center; gap: 1rem;
+      margin-bottom: 3rem; flex-wrap: wrap;
+    }
+    .social-link {
+      width: 50px; height: 50px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: var(--text-secondary);
+      transition: all 0.3s ease;
+      background: var(--bg-card);
+    }
+    .social-link:hover {
+      color: #fff;
+      border-color: var(--cyan-dark);
+      background: var(--cyan-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px var(--glow-cyan);
+    }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem; color: var(--gray-medium);
+    }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Stagger children */
+    .stagger-children > * {
+      opacity: 0;
+      transform: translateY(25px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stagger-children.visible > *:nth-child(1) { transition-delay: 0.05s; }
+    .stagger-children.visible > *:nth-child(2) { transition-delay: 0.1s; }
+    .stagger-children.visible > *:nth-child(3) { transition-delay: 0.15s; }
+    .stagger-children.visible > *:nth-child(4) { transition-delay: 0.2s; }
+    .stagger-children.visible > *:nth-child(5) { transition-delay: 0.25s; }
+    .stagger-children.visible > *:nth-child(6) { transition-delay: 0.3s; }
+    .stagger-children.visible > *:nth-child(7) { transition-delay: 0.35s; }
+    .stagger-children.visible > *:nth-child(8) { transition-delay: 0.4s; }
+    .stagger-children.visible > *:nth-child(9) { transition-delay: 0.45s; }
+    .stagger-children.visible > *:nth-child(10) { transition-delay: 0.5s; }
+    .stagger-children.visible > *:nth-child(11) { transition-delay: 0.55s; }
+    .stagger-children.visible > *:nth-child(12) { transition-delay: 0.6s; }
+    .stagger-children.visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== PARTICLES CANVAS ===== */
+    #particles-canvas {
+      position: absolute; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .about-image-wrapper { margin: 0 auto; }
+      .about-highlights { grid-template-columns: 1fr 1fr; }
+
+      .timeline::before { left: 20px; }
+      .timeline-item, .timeline-item:nth-child(even) {
+        padding-left: 55px; padding-right: 0;
+        justify-content: flex-start;
+      }
+      .timeline-dot { left: 20px; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; flex-direction: column;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(7,13,26,0.97);
+        backdrop-filter: blur(20px);
+        padding: 1rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+        gap: 0.5rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+      .nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+      .nav-toggle.open span:nth-child(2) { opacity: 0; }
+      .nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+      .section { padding: 4rem 1.2rem; }
+      .section-header { margin-bottom: 2.5rem; }
+
+      .about-highlights { grid-template-columns: 1fr; }
+      .speaking-grid, .projects-grid { grid-template-columns: 1fr; }
+      .certs-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; justify-content: center; max-width: 260px; }
+      .certs-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">MS.</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#speaking">Speaking</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-shapes">
+      <div class="hero-shape"></div>
+      <div class="hero-shape"></div>
+      <div class="hero-shape"></div>
+      <div class="hero-shape"></div>
+    </div>
+    <div class="hero-grid"></div>
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Data Scientist @ Endress+Hauser
+      </div>
+      <h1><span class="gradient-text">Muhammad Saad</span></h1>
+      <p class="subtitle">Building Intelligent Systems at Enterprise Scale</p>
+      <p class="tagline">
+        Agentic AI &bull; LLMs &bull; RAG &bull; Context Engineering &bull; Enterprise AI &bull; AI Safety
+      </p>
+      <div class="hero-buttons">
+        <a href="pdf/Muhammad's_Resume.pdf" class="btn btn-primary" target="_blank">
+          <span><i class="fas fa-file-alt"></i> Download Resume</span>
+        </a>
+        <a href="#contact" class="btn btn-outline">
+          <i class="fas fa-paper-plane"></i> Get in Touch
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="section" id="about">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Who I Am</div>
+        <h2 class="section-title">About <span class="accent">Me</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-image-wrapper reveal-left">
+          <img src="images/saad.PNG" alt="Muhammad Saad" class="about-image">
+        </div>
+        <div class="about-text reveal-right">
+          <h3>Data Scientist &amp; AI Solutions Architect</h3>
+          <p>
+            I'm a Data Scientist at <strong>Endress+Hauser</strong>, where I architect and deploy enterprise-grade AI solutions — from agentic AI systems that automate purchase order workflows with 90% efficiency gains, to pioneering one of the earliest production RAG deployments in industry.
+          </p>
+          <p>
+            With a Master's in AI &amp; Data Science and experience spanning PwC, Noviter, and PTCL, I bring deep expertise in LLMs, context engineering, agentic workflows, and AI safety. I'm also a Coursera instructor, active conference speaker, and hackathon champion.
+          </p>
+
+          <div class="about-highlights stagger-children">
+            <div class="about-stat">
+              <div class="number">8+</div>
+              <div class="label">Speaking Sessions</div>
+            </div>
+            <div class="about-stat">
+              <div class="number">1x</div>
+              <div class="label">Hackathon Winner</div>
+            </div>
+            <div class="about-stat">
+              <div class="number">8+</div>
+              <div class="label">Years in Tech</div>
+            </div>
+            <div class="about-stat">
+              <div class="number">1</div>
+              <div class="label">Coursera Instructor</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <section class="section" id="experience">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Career Journey</div>
+        <h2 class="section-title">Work <span class="accent">Experience</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="timeline">
+        <!-- E+H -->
+        <div class="timeline-item reveal-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">Mar 2023 &mdash; Present</div>
+            <h3>Data Scientist</h3>
+            <div class="company"><i class="fas fa-building"></i> Endress+Hauser, Germany</div>
+            <ul>
+              <li>Architected and deployed an end-to-end agentic AI system for purchase order automation — document extraction, verification, XML creation, SAP push — improving efficiency by 90% and cutting delivery cost to &lt;25%</li>
+              <li>Pioneered one of the earliest enterprise RAG deployments in industry (late 2023), presented at Machine Learning Week Europe 2024</li>
+              <li>Designed autoencoder-based fraud detection for SAP transactions, enabling anomaly detection for suspicious patterns</li>
+              <li>Built AI-driven sustainability reporting using RAG, LangChain, SQL agents, and browser agents</li>
+              <li>Served as trusted internal expert for Snowflake AI &amp; Azure AI, advising teams on enterprise AI use cases</li>
+              <li>Championed AI upskilling via internal trainings on context engineering, prompt engineering, coding agents, and AI-native development</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- PwC -->
+        <div class="timeline-item reveal-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">Sep 2022 &mdash; Feb 2023</div>
+            <h3>Data Scientist &mdash; Intern</h3>
+            <div class="company"><i class="fas fa-building"></i> PwC Deutschland, Germany</div>
+            <ul>
+              <li>Designed predictive analytics and statistical forecasting solutions to improve product demand and business planning accuracy</li>
+              <li>Developed Explainable AI (XAI) tools and frameworks in R and Python, improving model transparency</li>
+              <li>Optimized ML pipelines using PySpark and parallelization techniques to increase processing performance</li>
+              <li>Delivered forecasting solutions on Palantir Foundry for enterprise analytics</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Noviter -->
+        <div class="timeline-item reveal-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">Sep 2021 &mdash; Aug 2022</div>
+            <h3>Data Scientist &mdash; WorkStudent</h3>
+            <div class="company"><i class="fas fa-building"></i> Noviter GmbH, Germany</div>
+            <ul>
+              <li>Built a competitive intelligence dashboard by mining, cleaning, and integrating data from multiple sources</li>
+              <li>Applied probabilistic and Bayesian modeling to forecast product trends and support strategic decisions</li>
+              <li>Delivered predictive analytics translating complex data into clear, business-relevant recommendations</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- PTCL -->
+        <div class="timeline-item reveal-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">Jan 2017 &mdash; Apr 2021</div>
+            <h3>Manager Special Projects</h3>
+            <div class="company"><i class="fas fa-building"></i> PTCL, Pakistan</div>
+            <ul>
+              <li>Identified patterns and trends in business and operational data for optimization and growth</li>
+              <li>Developed ML-based market analyses to evaluate opportunities and target high-potential clients</li>
+              <li>Leveraged data science for marketing analytics, turning raw data into actionable insights</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Education 1 -->
+        <div class="timeline-item reveal-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">2021 &mdash; 2023</div>
+            <h3>M.Sc. Artificial Intelligence &amp; Data Science</h3>
+            <div class="company"><i class="fas fa-graduation-cap"></i> Technische Hochschule Deggendorf, Germany &amp; USB, Czech Republic</div>
+            <ul>
+              <li>Specialization: LLMs &amp; GPT, Parallel Programming, Computational Intelligence, Information Theory, Distributed Algorithms, Advanced ML</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Education 2 -->
+        <div class="timeline-item reveal-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-date">2012 &mdash; 2016</div>
+            <h3>B.E. Engineering</h3>
+            <div class="company"><i class="fas fa-graduation-cap"></i> NEDUET, Karachi, Pakistan</div>
+            <ul>
+              <li>Specialization: Programming, Algorithms &amp; Data Structures, Numerical Methods, OOP, Digital Signal Processing, Data Communication &amp; Networks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section class="section" id="skills">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Tech Stack</div>
+        <h2 class="section-title">Skills &amp; <span class="accent">Expertise</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="skills-marquee-wrapper reveal">
+        <!-- Row 1: GenAI & LLMs (scrolls left) -->
+        <div class="skill-row" data-cat="genai">
+          <div class="skill-marquee">
+            <span class="skill-marquee-tag featured"><i class="fas fa-brain"></i> LLMs</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-layer-group"></i> RAG</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-project-diagram"></i> Agentic AI Workflow Design</span>
+            <span class="skill-marquee-tag"><i class="fas fa-compass"></i> Context Engineering</span>
+            <span class="skill-marquee-tag"><i class="fas fa-pen-fancy"></i> Prompt Engineering</span>
+            <span class="skill-marquee-tag"><i class="fas fa-check-double"></i> LLM Evals &amp; Benchmarking</span>
+            <span class="skill-marquee-tag"><i class="fas fa-rocket"></i> LLM Application Development</span>
+            <span class="skill-marquee-tag"><i class="fas fa-coins"></i> LLM Tokenomics</span>
+            <span class="skill-marquee-tag"><i class="fas fa-sliders-h"></i> Finetuning</span>
+            <span class="skill-marquee-tag"><i class="fas fa-microchip"></i> SLMs</span>
+            <span class="skill-marquee-tag"><i class="fas fa-server"></i> LMOps</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-images"></i> Multimodal AI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-plug"></i> MCP</span>
+            <span class="skill-marquee-tag"><i class="fas fa-link"></i> LangChain</span>
+            <span class="skill-marquee-tag"><i class="fas fa-chart-area"></i> LangFuse</span>
+            <span class="skill-marquee-tag"><i class="fas fa-comments"></i> Enterprise Chatbot Design</span>
+            <span class="skill-marquee-tag"><i class="fas fa-file-invoice"></i> Document Intelligence (OCR)</span>
+            <!-- duplicate for seamless loop -->
+            <span class="skill-marquee-tag featured"><i class="fas fa-brain"></i> LLMs</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-layer-group"></i> RAG</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-project-diagram"></i> Agentic AI Workflow Design</span>
+            <span class="skill-marquee-tag"><i class="fas fa-compass"></i> Context Engineering</span>
+            <span class="skill-marquee-tag"><i class="fas fa-pen-fancy"></i> Prompt Engineering</span>
+            <span class="skill-marquee-tag"><i class="fas fa-check-double"></i> LLM Evals &amp; Benchmarking</span>
+            <span class="skill-marquee-tag"><i class="fas fa-rocket"></i> LLM Application Development</span>
+            <span class="skill-marquee-tag"><i class="fas fa-coins"></i> LLM Tokenomics</span>
+            <span class="skill-marquee-tag"><i class="fas fa-sliders-h"></i> Finetuning</span>
+            <span class="skill-marquee-tag"><i class="fas fa-microchip"></i> SLMs</span>
+            <span class="skill-marquee-tag"><i class="fas fa-server"></i> LMOps</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-images"></i> Multimodal AI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-plug"></i> MCP</span>
+            <span class="skill-marquee-tag"><i class="fas fa-link"></i> LangChain</span>
+            <span class="skill-marquee-tag"><i class="fas fa-chart-area"></i> LangFuse</span>
+            <span class="skill-marquee-tag"><i class="fas fa-comments"></i> Enterprise Chatbot Design</span>
+            <span class="skill-marquee-tag"><i class="fas fa-file-invoice"></i> Document Intelligence (OCR)</span>
+          </div>
+        </div>
+
+        <!-- Row 2: ML & AI (scrolls right) -->
+        <div class="skill-row" data-cat="ml">
+          <div class="skill-marquee">
+            <span class="skill-marquee-tag featured"><i class="fas fa-robot"></i> Applied ML</span>
+            <span class="skill-marquee-tag"><i class="fas fa-chart-line"></i> Statistical Modeling</span>
+            <span class="skill-marquee-tag"><i class="fas fa-search"></i> XAI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-network-wired"></i> Deep Learning</span>
+            <span class="skill-marquee-tag"><i class="fas fa-chart-bar"></i> Forecasting</span>
+            <span class="skill-marquee-tag"><i class="fas fa-vials"></i> A/B Testing</span>
+            <span class="skill-marquee-tag"><i class="fas fa-flask"></i> Experiment Design</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-shield-alt"></i> AI Safety</span>
+            <span class="skill-marquee-tag"><i class="fas fa-eye"></i> Model Behavior Understanding</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-user-cog"></i> Human in the Loop Systems</span>
+            <span class="skill-marquee-tag"><i class="fas fa-book-reader"></i> AI Research Synthesis</span>
+            <span class="skill-marquee-tag"><i class="fas fa-industry"></i> Production AI Deployment</span>
+            <!-- duplicate -->
+            <span class="skill-marquee-tag featured"><i class="fas fa-robot"></i> Applied ML</span>
+            <span class="skill-marquee-tag"><i class="fas fa-chart-line"></i> Statistical Modeling</span>
+            <span class="skill-marquee-tag"><i class="fas fa-search"></i> XAI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-network-wired"></i> Deep Learning</span>
+            <span class="skill-marquee-tag"><i class="fas fa-chart-bar"></i> Forecasting</span>
+            <span class="skill-marquee-tag"><i class="fas fa-vials"></i> A/B Testing</span>
+            <span class="skill-marquee-tag"><i class="fas fa-flask"></i> Experiment Design</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-shield-alt"></i> AI Safety</span>
+            <span class="skill-marquee-tag"><i class="fas fa-eye"></i> Model Behavior Understanding</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-user-cog"></i> Human in the Loop Systems</span>
+            <span class="skill-marquee-tag"><i class="fas fa-book-reader"></i> AI Research Synthesis</span>
+            <span class="skill-marquee-tag"><i class="fas fa-industry"></i> Production AI Deployment</span>
+          </div>
+        </div>
+
+        <!-- Row 3: Languages & Frameworks (scrolls left) -->
+        <div class="skill-row" data-cat="lang">
+          <div class="skill-marquee">
+            <span class="skill-marquee-tag featured"><i class="fab fa-python"></i> Python</span>
+            <span class="skill-marquee-tag"><i class="fas fa-fire"></i> PyTorch</span>
+            <span class="skill-marquee-tag"><i class="fas fa-cogs"></i> TensorFlow</span>
+            <span class="skill-marquee-tag"><i class="fas fa-database"></i> SQL</span>
+            <span class="skill-marquee-tag"><i class="fas fa-bolt"></i> PySpark</span>
+            <span class="skill-marquee-tag"><i class="fas fa-bolt"></i> Spark SQL</span>
+            <span class="skill-marquee-tag"><i class="fas fa-code"></i> FastAPI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-desktop"></i> Streamlit</span>
+            <span class="skill-marquee-tag"><i class="fas fa-table"></i> Pandas</span>
+            <span class="skill-marquee-tag"><i class="fas fa-calculator"></i> NumPy</span>
+            <!-- duplicate -->
+            <span class="skill-marquee-tag featured"><i class="fab fa-python"></i> Python</span>
+            <span class="skill-marquee-tag"><i class="fas fa-fire"></i> PyTorch</span>
+            <span class="skill-marquee-tag"><i class="fas fa-cogs"></i> TensorFlow</span>
+            <span class="skill-marquee-tag"><i class="fas fa-database"></i> SQL</span>
+            <span class="skill-marquee-tag"><i class="fas fa-bolt"></i> PySpark</span>
+            <span class="skill-marquee-tag"><i class="fas fa-bolt"></i> Spark SQL</span>
+            <span class="skill-marquee-tag"><i class="fas fa-code"></i> FastAPI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-desktop"></i> Streamlit</span>
+            <span class="skill-marquee-tag"><i class="fas fa-table"></i> Pandas</span>
+            <span class="skill-marquee-tag"><i class="fas fa-calculator"></i> NumPy</span>
+          </div>
+        </div>
+
+        <!-- Row 4: Cloud & Enterprise (scrolls right) -->
+        <div class="skill-row" data-cat="cloud">
+          <div class="skill-marquee">
+            <span class="skill-marquee-tag featured"><i class="fab fa-microsoft"></i> Microsoft Azure</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-cloud"></i> Azure OpenAI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-water"></i> Azure Synapse</span>
+            <span class="skill-marquee-tag"><i class="fas fa-gem"></i> Palantir</span>
+            <span class="skill-marquee-tag"><i class="fas fa-exchange-alt"></i> SAP Integration</span>
+            <span class="skill-marquee-tag"><i class="fas fa-sitemap"></i> Distributed Data Processing</span>
+            <span class="skill-marquee-tag"><i class="fas fa-plug"></i> API Integration</span>
+            <span class="skill-marquee-tag"><i class="fas fa-cubes"></i> Systems Integration</span>
+            <span class="skill-marquee-tag"><i class="fas fa-drafting-compass"></i> Solution Architecture</span>
+            <!-- duplicate -->
+            <span class="skill-marquee-tag featured"><i class="fab fa-microsoft"></i> Microsoft Azure</span>
+            <span class="skill-marquee-tag featured"><i class="fas fa-cloud"></i> Azure OpenAI</span>
+            <span class="skill-marquee-tag"><i class="fas fa-water"></i> Azure Synapse</span>
+            <span class="skill-marquee-tag"><i class="fas fa-gem"></i> Palantir</span>
+            <span class="skill-marquee-tag"><i class="fas fa-exchange-alt"></i> SAP Integration</span>
+            <span class="skill-marquee-tag"><i class="fas fa-sitemap"></i> Distributed Data Processing</span>
+            <span class="skill-marquee-tag"><i class="fas fa-plug"></i> API Integration</span>
+            <span class="skill-marquee-tag"><i class="fas fa-cubes"></i> Systems Integration</span>
+            <span class="skill-marquee-tag"><i class="fas fa-drafting-compass"></i> Solution Architecture</span>
+          </div>
+        </div>
+
+        <!-- Row 5: AI-Augmented Dev (scrolls left) -->
+        <div class="skill-row" data-cat="aidev">
+          <div class="skill-marquee">
+            <span class="skill-marquee-tag featured"><i class="fas fa-terminal"></i> Claude Code &amp; Cowork</span>
+            <span class="skill-marquee-tag"><i class="fab fa-github"></i> GitHub Copilot</span>
+            <span class="skill-marquee-tag"><i class="fas fa-laptop-code"></i> Codex</span>
+            <span class="skill-marquee-tag"><i class="fas fa-user-friends"></i> AI Pair Programming</span>
+            <span class="skill-marquee-tag"><i class="fas fa-magic"></i> Rapid Prototyping</span>
+            <span class="skill-marquee-tag"><i class="fas fa-project-diagram"></i> System Design</span>
+            <!-- duplicate -->
+            <span class="skill-marquee-tag featured"><i class="fas fa-terminal"></i> Claude Code &amp; Cowork</span>
+            <span class="skill-marquee-tag"><i class="fab fa-github"></i> GitHub Copilot</span>
+            <span class="skill-marquee-tag"><i class="fas fa-laptop-code"></i> Codex</span>
+            <span class="skill-marquee-tag"><i class="fas fa-user-friends"></i> AI Pair Programming</span>
+            <span class="skill-marquee-tag"><i class="fas fa-magic"></i> Rapid Prototyping</span>
+            <span class="skill-marquee-tag"><i class="fas fa-project-diagram"></i> System Design</span>
+          </div>
+        </div>
+
+        <!-- Row 6: Strategy & Leadership (scrolls right) -->
+        <div class="skill-row" data-cat="strategy">
+          <div class="skill-marquee">
+            <span class="skill-marquee-tag featured"><i class="fas fa-chess-king"></i> AI Product Strategy</span>
+            <span class="skill-marquee-tag"><i class="fas fa-bullhorn"></i> Technical Storytelling</span>
+            <span class="skill-marquee-tag"><i class="fas fa-search-location"></i> Technical Discovery / Scoping</span>
+            <span class="skill-marquee-tag"><i class="fas fa-language"></i> Requirements Translation</span>
+            <span class="skill-marquee-tag"><i class="fas fa-truck-loading"></i> Enterprise AI Delivery</span>
+            <span class="skill-marquee-tag"><i class="fas fa-users"></i> Cross Functional Leadership</span>
+            <span class="skill-marquee-tag"><i class="fab fa-microsoft"></i> MS Copilot &amp; Agent Builder</span>
+            <!-- duplicate -->
+            <span class="skill-marquee-tag featured"><i class="fas fa-chess-king"></i> AI Product Strategy</span>
+            <span class="skill-marquee-tag"><i class="fas fa-bullhorn"></i> Technical Storytelling</span>
+            <span class="skill-marquee-tag"><i class="fas fa-search-location"></i> Technical Discovery / Scoping</span>
+            <span class="skill-marquee-tag"><i class="fas fa-language"></i> Requirements Translation</span>
+            <span class="skill-marquee-tag"><i class="fas fa-truck-loading"></i> Enterprise AI Delivery</span>
+            <span class="skill-marquee-tag"><i class="fas fa-users"></i> Cross Functional Leadership</span>
+            <span class="skill-marquee-tag"><i class="fab fa-microsoft"></i> MS Copilot &amp; Agent Builder</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category summary chips -->
+      <div class="skill-categories-summary reveal">
+        <div class="skill-cat-chip" data-cat="genai"><i class="fas fa-brain"></i> GenAI &amp; LLMs</div>
+        <div class="skill-cat-chip" data-cat="ml"><i class="fas fa-robot"></i> Machine Learning</div>
+        <div class="skill-cat-chip" data-cat="lang"><i class="fas fa-code"></i> Languages</div>
+        <div class="skill-cat-chip" data-cat="cloud"><i class="fas fa-cloud"></i> Cloud &amp; Enterprise</div>
+        <div class="skill-cat-chip" data-cat="aidev"><i class="fas fa-laptop-code"></i> AI-Augmented Dev</div>
+        <div class="skill-cat-chip" data-cat="strategy"><i class="fas fa-chess-king"></i> Strategy</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SPEAKING ===== -->
+  <section class="section" id="speaking">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">On Stage</div>
+        <h2 class="section-title">Conference <span class="accent">Speaking</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="speaking-grid stagger-children">
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-chatbot-summit-2026.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Summit &bull; 2026</div>
+            <h3>European Chatbot &amp; Conversational AI Summit</h3>
+            <p class="event-topic">&ldquo;HITL 2.0: Designing Cooperative Workflows with Agentic AI&rdquo; &mdash; practical use cases and design patterns for agentic workflows with human-in-the-loop control.</p>
+            <div class="event-meta">
+              <i class="fas fa-map-marker-alt"></i> Europe
+            </div>
+          </div>
+        </div>
+
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-chatbot-summit-2025.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Summit &bull; 2025</div>
+            <h3>European Chatbot &amp; Conversational AI Summit</h3>
+            <p class="event-topic">&ldquo;Beyond the Buzz: Practical Applications of LLM Agents&rdquo; &mdash; showcasing tangible use cases, prompt engineering, domain adaptation, and real-world challenges.</p>
+            <div class="event-meta">
+              <i class="fas fa-map-marker-alt"></i> Europe
+            </div>
+          </div>
+        </div>
+
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-mlweek-2024.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Conference &bull; 2024</div>
+            <h3>Machine Learning Week Europe</h3>
+            <p class="event-topic">&ldquo;Optimizing LLMs for E+H&rdquo; &mdash; insights on deploying LLMs at enterprise scale and building a successful production RAG on internal knowledge bases.</p>
+            <div class="event-meta">
+              <i class="fas fa-map-marker-alt"></i> Europe
+            </div>
+          </div>
+        </div>
+
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-basel-2024.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Conference &bull; 2024</div>
+            <h3>Basel DataScience Conference</h3>
+            <p class="event-topic">&ldquo;LLMs for Dashboarding&rdquo; &mdash; demonstrated how conversational AI translates user queries into SQL, revolutionizing data exploration and dashboard automation.</p>
+            <div class="event-meta">
+              <i class="fas fa-map-marker-alt"></i> Basel, Switzerland
+            </div>
+          </div>
+        </div>
+
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-medium-day-2024.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Conference &bull; 2024</div>
+            <h3>Medium Day '24</h3>
+            <p class="event-topic">&ldquo;The Future of AI: Democratizing AI Across Disciplines&rdquo; &mdash; emerging trends, tools, and resources for making AI accessible and fostering interdisciplinary collaboration.</p>
+            <div class="event-meta">
+              <i class="fas fa-map-marker-alt"></i> International
+            </div>
+          </div>
+        </div>
+
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-eh-aiday-2024.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Internal &bull; 2024</div>
+            <h3>Endress+Hauser AI Day '24</h3>
+            <p class="event-topic">&ldquo;LLMs: From Inception to Future Directions&rdquo; &mdash; the evolution of LLMs, highlighting significant breakthroughs and predictions for future advancements.</p>
+            <div class="event-meta">
+              <i class="fas fa-building"></i> Endress+Hauser
+            </div>
+          </div>
+        </div>
+
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-thd-futureskill.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Conference</div>
+            <h3>THD Future Skill Conference</h3>
+            <p class="event-topic">Spoke about harnessing Generative AI for transformative innovation across industries.</p>
+            <div class="event-meta">
+              <i class="fas fa-graduation-cap"></i> TH Deggendorf
+            </div>
+          </div>
+        </div>
+
+        <div class="speaking-card">
+          <div class="speaking-card-image">
+            <!-- Replace with: images/speaking-eh-aiday-2023.jpg -->
+            <span class="placeholder-icon"><i class="fas fa-microphone-alt"></i></span>
+          </div>
+          <div class="speaking-card-body">
+            <div class="event-type">Internal &bull; 2023</div>
+            <h3>Endress+Hauser AI Day '23</h3>
+            <p class="event-topic">Anomaly detection via autoencoders and time series demand forecasting for industrial applications.</p>
+            <div class="event-meta">
+              <i class="fas fa-building"></i> Endress+Hauser
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACHIEVEMENTS ===== -->
+  <section class="section" id="achievements">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Milestones</div>
+        <h2 class="section-title">Awards &amp; <span class="accent">Achievements</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="achievements-grid stagger-children">
+        <div class="achievement-card">
+          <div class="achievement-icon" style="color: #e74c3c;">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <h3>BaselHack 2024 Winner</h3>
+          <p>Winner of BaselHack 2024, building a scalable RAG with web browser and memory agents for MDPI.</p>
+          <div class="award-year">2024</div>
+        </div>
+
+        <div class="achievement-card">
+          <div class="achievement-icon" style="color: #3498db;">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <h3>Coursera Instructor</h3>
+          <p>Instructor for Data Science and Machine Learning Guided Projects Lab on Coursera.</p>
+          <div class="award-year"><a href="https://www.coursera.org/instructor/saad-muhammad" target="_blank" style="color:var(--cyan-light);">View Profile <i class="fas fa-external-link-alt" style="font-size:0.7rem;"></i></a></div>
+        </div>
+
+        <div class="achievement-card">
+          <div class="achievement-icon" style="color: var(--cyan-light);">
+            <i class="fas fa-microphone-alt"></i>
+          </div>
+          <h3>Invited Speaker</h3>
+          <p>Invited speaker at prestigious international conferences including ML Week Europe, Basel DataScience, European Chatbot Summit, and more.</p>
+          <div class="award-year">8+ Talks</div>
+        </div>
+
+        <div class="achievement-card">
+          <div class="achievement-icon" style="color: var(--magenta);">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h3>IEEE Publication</h3>
+          <p>Published research in IEEE on AI and machine learning applications.</p>
+          <div class="award-year">Research</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CERTIFICATIONS ===== -->
+  <section class="section" id="certifications">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Credentials</div>
+        <h2 class="section-title">Professional <span class="accent">Certifications</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="certs-grid stagger-children">
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="cert-card">
+          <div class="cert-icon-placeholder" style="width:80px;height:80px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(66,133,244,0.2),rgba(52,168,83,0.2));border-radius:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-brain" style="font-size:2rem;color:#4285F4;"></i></div>
+          <h4>Google Certified Generative AI Leader</h4>
+          <div class="cert-issuer">Google</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/badges/e8fef208-163d-4c8f-9f01-e105fd1630a4" target="_blank" class="cert-card">
+          <img src="images/azure.PNG" alt="Azure Data Scientist">
+          <h4>Azure Data Scientist</h4>
+          <div class="cert-issuer">Microsoft</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="cert-card">
+          <div class="cert-icon-placeholder" style="width:80px;height:80px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(0,120,212,0.2),rgba(0,89,122,0.2));border-radius:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-robot" style="font-size:2rem;color:#0078D4;"></i></div>
+          <h4>Azure AI Engineer</h4>
+          <div class="cert-issuer">Microsoft</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/badges/0f7cfffd-e64b-45c1-af40-d5d8f0acdabc" target="_blank" class="cert-card">
+          <img src="images/ibmadv.PNG" alt="IBM Advanced Data Science">
+          <h4>IBM Advanced Data Science</h4>
+          <div class="cert-issuer">IBM</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="cert-card">
+          <div class="cert-icon-placeholder" style="width:80px;height:80px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(0,98,204,0.2),rgba(0,89,122,0.15));border-radius:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chart-line" style="font-size:2rem;color:#0062CC;"></i></div>
+          <h4>IBM Data Science Professional</h4>
+          <div class="cert-issuer">IBM</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/badges/ff4ffc2a-f418-4efb-8ff6-113bd53a50e2" target="_blank" class="cert-card">
+          <img src="images/ibmai.PNG" alt="IBM Applied AI Professional">
+          <h4>IBM Applied AI</h4>
+          <div class="cert-issuer">IBM</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.coursera.org/account/accomplishments/professional-cert/3MXL5ZTEY8CA" target="_blank" class="cert-card">
+          <img src="images/tensr.PNG" alt="TensorFlow Developer">
+          <h4>TensorFlow Developer</h4>
+          <div class="cert-issuer">Google / DeepLearning.AI</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="cert-card">
+          <div class="cert-icon-placeholder" style="width:80px;height:80px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(168,0,92,0.15),rgba(0,89,122,0.15));border-radius:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-cogs" style="font-size:2rem;color:var(--cyan-light);"></i></div>
+          <h4>MLOps Specialization</h4>
+          <div class="cert-issuer">DeepLearning.AI</div>
+          <div class="cert-link" style="color:var(--gray-medium);">In Progress</div>
+        </a>
+
+        <a href="#" class="cert-card">
+          <img src="images/msaz.PNG" alt="ML Engineer with Azure">
+          <h4>ML Engineer with Azure</h4>
+          <div class="cert-issuer">Microsoft / Udacity</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="cert-card">
+          <div class="cert-icon-placeholder" style="width:80px;height:80px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(229,57,53,0.15),rgba(0,89,122,0.1));border-radius:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-square-root-alt" style="font-size:2rem;color:#E53935;"></i></div>
+          <h4>Maths for Machine Learning</h4>
+          <div class="cert-issuer">Imperial College London</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="cert-card">
+          <div class="cert-icon-placeholder" style="width:80px;height:80px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(0,89,122,0.15),rgba(168,0,92,0.1));border-radius:16px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-tasks" style="font-size:2rem;color:var(--cyan-dark);"></i></div>
+          <h4>Scrum Fundamentals</h4>
+          <div class="cert-issuer">SCRUMstudy</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="cert-card">
+          <div class="cert-icon-placeholder" style="width:80px;height:80px;margin:0 auto 1rem;background:linear-gradient(135deg,rgba(52,168,83,0.15),rgba(0,89,122,0.1));border-radius:16px;display:flex;align-items:center;justify-content:center;"><i class="fab fa-python" style="font-size:2rem;color:#34A853;"></i></div>
+          <h4>Python Programming Track</h4>
+          <div class="cert-issuer">DataCamp</div>
+          <div class="cert-link">Verify <i class="fas fa-external-link-alt"></i></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section class="section" id="projects">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Portfolio</div>
+        <h2 class="section-title">Selected <span class="accent">Projects</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="projects-grid stagger-children">
+        <div class="project-card">
+          <div class="project-card-image">
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;background:linear-gradient(135deg,rgba(0,89,122,0.2),rgba(168,0,92,0.15));"><i class="fas fa-user-check" style="font-size:3rem;color:var(--cyan-light);opacity:0.5;"></i></div>
+          </div>
+          <div class="project-card-body">
+            <h3>HITL Agentic AI Article Generator</h3>
+            <p>Human-in-the-loop, multi-agent AI framework processing 300&ndash;1,000+ page user manuals to generate high-quality how-to guides and knowledge articles, with human oversight of final content.</p>
+            <div class="project-tags">
+              <span class="project-tag">Multi-Agent</span>
+              <span class="project-tag">HITL</span>
+              <span class="project-tag">LLMs</span>
+              <span class="project-tag">RAG</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-card-image">
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;background:linear-gradient(135deg,rgba(168,0,92,0.2),rgba(0,89,122,0.15));"><i class="fas fa-chart-bar" style="font-size:3rem;color:var(--magenta);opacity:0.5;"></i></div>
+          </div>
+          <div class="project-card-body">
+            <h3>AI Feedback Analyzer for Surveys</h3>
+            <p>Multi-agent feedback analysis workflow for survey responses — automated reading, summarization, sentiment analysis, theme identification, and structured insight-rich reports.</p>
+            <div class="project-tags">
+              <span class="project-tag">Multi-Agent</span>
+              <span class="project-tag">NLP</span>
+              <span class="project-tag">Sentiment</span>
+              <span class="project-tag">Analytics</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-card-image">
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;background:linear-gradient(135deg,rgba(0,89,122,0.2),rgba(168,0,92,0.1));"><i class="fas fa-share-alt" style="font-size:3rem;color:var(--cyan-light);opacity:0.5;"></i></div>
+          </div>
+          <div class="project-card-body">
+            <h3>Multi-Agent Social Media Generator</h3>
+            <p>Multi-agent content generation system — agents gather trends from news/social platforms, build plans, and generate tailored posts and visuals for different channels with human approval.</p>
+            <div class="project-tags">
+              <span class="project-tag">Multi-Agent</span>
+              <span class="project-tag">Content Gen</span>
+              <span class="project-tag">HITL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-card-image">
+            <img src="images/Az_1.jpg" alt="XAI and Palantir Foundry">
+          </div>
+          <div class="project-card-body">
+            <h3>Explainable AI &amp; Palantir Foundry</h3>
+            <p>Developed XAI module for PwC to explain how drivers impact ML decisions, improving customer trust. Deployed AI/ML solutions via Palantir Foundry for time series and forecasting.</p>
+            <div class="project-tags">
+              <span class="project-tag">XAI</span>
+              <span class="project-tag">Palantir</span>
+              <span class="project-tag">Forecasting</span>
+              <span class="project-tag">PwC</span>
+            </div>
+          </div>
+        </div>
+
+        <a href="https://github.com/SaadMuhammad/movie_db" target="_blank" class="project-card">
+          <div class="project-card-image">
+            <img src="images/mov1.jpg" alt="Movie Recommendation Webapp">
+          </div>
+          <div class="project-card-body">
+            <h3>Movie Recommendation Webapp</h3>
+            <p>MySQL-based recommendation engine built with Streamlit on the MovieLens 25M dataset, including analytical reporting.</p>
+            <div class="project-tags">
+              <span class="project-tag">Python</span>
+              <span class="project-tag">MySQL</span>
+              <span class="project-tag">Streamlit</span>
+            </div>
+            <span class="project-link"><i class="fab fa-github"></i> View on GitHub</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/SaadMuhammad/Feature_Selection_via_Boruta" target="_blank" class="project-card">
+          <div class="project-card-image">
+            <img src="images/dummy_thumbnail.jpg" alt="Feature Selection via Boruta">
+          </div>
+          <div class="project-card-body">
+            <h3>Feature Selection via Boruta</h3>
+            <p>Implementation of the Boruta algorithm for robust feature selection using entropy and information gain on high-dimensional datasets.</p>
+            <div class="project-tags">
+              <span class="project-tag">Python</span>
+              <span class="project-tag">Scikit-learn</span>
+              <span class="project-tag">Statistics</span>
+            </div>
+            <span class="project-link"><i class="fab fa-github"></i> View on GitHub</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LANGUAGES ===== -->
+  <section class="section" id="languages">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Communication</div>
+        <h2 class="section-title">Language <span class="accent">Skills</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="about-highlights stagger-children" style="max-width:500px;margin:0 auto;">
+        <div class="about-stat" style="text-align:center;">
+          <div class="number">C1</div>
+          <div class="label">English &mdash; Advanced</div>
+        </div>
+        <div class="about-stat" style="text-align:center;">
+          <div class="number">B2</div>
+          <div class="label">Deutsch &mdash; Upper Intermediate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="section contact" id="contact">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <div class="section-label">Connect</div>
+        <h2 class="section-title">Let's <span class="accent">Talk</span></h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <p class="contact-cta reveal">
+        Interested in collaboration, speaking engagements, or just want to chat about AI? Feel free to reach out.
+      </p>
+
+      <div class="social-links reveal">
+        <a href="https://www.linkedin.com/in/muhammad-saad-31740060/" target="_blank" class="social-link" title="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="https://github.com/SaadMuhammad" target="_blank" class="social-link" title="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://medium.com/@itssaad.muhammad" target="_blank" class="social-link" title="Medium">
+          <i class="fab fa-medium-m"></i>
+        </a>
+        <a href="https://www.credly.com/users/saad-muhammad/badges" target="_blank" class="social-link" title="Credly">
+          <i class="fas fa-certificate"></i>
+        </a>
+        <a href="mailto:saad.muhammad@outlook.com" class="social-link" title="Email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </div>
+
+      <div class="footer-bottom reveal">
+        <p>&copy; 2025 Muhammad Saad. Built with purpose.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // ===== Navbar scroll effect =====
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ===== Mobile nav toggle =====
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navToggle.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.classList.remove('open');
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // ===== Active nav link on scroll =====
+    const sections = document.querySelectorAll('.section, .hero');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 120;
+        if (window.scrollY >= top) {
+          current = section.getAttribute('id');
+        }
+      });
+      navAnchors.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) {
+          a.classList.add('active');
+        }
+      });
+    });
+
+    // ===== Scroll reveal (IntersectionObserver) =====
+    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .stagger-children');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // ===== Particles on hero canvas =====
+    (function() {
+      const canvas = document.getElementById('particles-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      let w, h;
+
+      function resize() {
+        const hero = document.querySelector('.hero');
+        w = canvas.width = hero.offsetWidth;
+        h = canvas.height = hero.offsetHeight;
+      }
+
+      function createParticles() {
+        particles = [];
+        const count = Math.min(Math.floor((w * h) / 12000), 80);
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            r: Math.random() * 1.5 + 0.5,
+            opacity: Math.random() * 0.4 + 0.1,
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach((p, i) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = w;
+          if (p.x > w) p.x = 0;
+          if (p.y < 0) p.y = h;
+          if (p.y > h) p.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(175, 211, 232, ${p.opacity})`;
+          ctx.fill();
+
+          // Draw connections
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(0, 89, 122, ${0.08 * (1 - dist / 120)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        });
+        requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', () => { resize(); createParticles(); });
+      resize();
+      createParticles();
+      draw();
+    })();
+
+    // ===== Skills category filter =====
+    (function() {
+      const wrapper = document.querySelector('.skills-marquee-wrapper');
+      const chips = document.querySelectorAll('.skill-cat-chip[data-cat]');
+      const rows = document.querySelectorAll('.skill-row[data-cat]');
+      let activeCategory = null;
+
+      chips.forEach(chip => {
+        chip.style.cursor = 'pointer';
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+
+          if (activeCategory === cat) {
+            // Deselect
+            activeCategory = null;
+            chip.classList.remove('active');
+            wrapper.classList.remove('filtering');
+            rows.forEach(row => {
+              row.querySelectorAll('.skill-marquee-tag').forEach(tag => {
+                tag.classList.remove('highlighted');
+              });
+            });
+          } else {
+            // Select new category
+            activeCategory = cat;
+            chips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            wrapper.classList.add('filtering');
+
+            rows.forEach(row => {
+              const isMatch = row.dataset.cat === cat;
+              row.querySelectorAll('.skill-marquee-tag').forEach(tag => {
+                if (isMatch) {
+                  tag.classList.add('highlighted');
+                } else {
+                  tag.classList.remove('highlighted');
+                }
+              });
+            });
+          }
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
