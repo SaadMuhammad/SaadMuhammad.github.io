@@ -1,0 +1,631 @@
+{
+  "about": [],
+  "experience": [
+    {
+      "date": "Mar 2023 - Present",
+      "title": "Data Scientist",
+      "company": "Endress+Hauser, Germany",
+      "items": [
+        "Architected, built, and deployed an end to end multi agentic AI workflow for purchase order automation, owning the workflow from discovery and technical scoping through production rollout. Integrated document extraction, validation workflows, XML creation, SAP push, observability, and human in the loop verification, improving purchase order processing efficiency by 90% and reducing delivery cost to less than 25% of the previous manual and legacy system workflow",
+        "Defined architecture and implementation patterns for production-grade RAG and enterprise AI search, delivering one of the earliest fully functioning industrial RAG solutions in late 2023 and establishing reusable approaches for retrieval design, context engineering, evaluation, and LLM-based knowledge access",
+        "Designed and delivered enterprise-scale applied AI solutions across document intelligence, RAG, agentic automation, SAP-integrated workflows, sustainability reporting, and enterprise search, combining hands-on engineering with solution architecture, stakeholder advisory, and production delivery",
+        "Created an AI driven sustainability reporting architecture using RAG, LangChain, SQL agents, and browser agents to automate information retrieval, synthesis, and reporting across distributed knowledge sources.",
+        "Served as a trusted internal AI expert for Snowflake AI and Azure AI, advising teams on technical feasibility, architecture choices, experimentation strategy, implementation patterns, and production adoption of enterprise AI use cases",
+        "Designed and implemented an autoencoder based fraud detection system for SAP transactions, enabling anomaly detection for suspicious transaction patterns and strengthening financial risk monitoring",
+        "Championed AI native development across the organization through internal trainings and talks on context engineering, prompt engineering, coding agents, AI pair programming, and practical adoption of tools such as Codex, Claude Code, GitHub Copilot, MS Copilot, and Agent Builder",
+        "Represented enterprise AI delivery work externally by presenting the production-grade RAG solution at Machine Learning Week Europe 2024, receiving strong recognition for practical implementation, business value, and thought leadership in enterprise AI search"
+      ]
+    },
+    {
+      "date": "Sep 2022 - Feb 2023",
+      "title": "Data Scientist - Intern",
+      "company": "PwC Deutschland, Germany",
+      "items": [
+        "Designed predictive analytics and statistical forecasting solutions to support demand planning, business planning, and operational decision making",
+        "Developed Explainable AI frameworks in R and Python to improve model transparency, stakeholder trust, and business adoption of machine learning solutions",
+        "Evaluated, optimized, and improved machine learning models through structured experimentation, performance analysis, and forecasting metric improvement",
+        "Scaled machine learning and analytics pipelines using PySpark and parallelization techniques, improving processing efficiency for enterprise data workloads",
+        "Delivered forecasting and advanced analytics solutions on Palantir Foundry, supporting operationalization of data science capabilities in enterprise environments"
+      ]
+    },
+    {
+      "date": "Sep 2021 - Aug 2022",
+      "title": "Data Scientist - WorkStudent",
+      "company": "Noviter GmbH, Germany",
+      "items": [
+        "Developed Python applications and database workflows to support analytics, reporting, and business intelligence use cases",
+        "Built a competitive intelligence dashboard by mining, cleaning, transforming, and integrating data from multiple structured and unstructured sources",
+        "Applied probabilistic and Bayesian modeling to forecast product trends and support strategic decision making",
+        "Performed data mining and advanced SQL scripting to analyze complex datasets and extract actionable business insights",
+        "Delivered predictive analytics and forecasting outputs that translated technicalanalysis into clear, business relevant recommendations"
+      ]
+    },
+    {
+      "date": "Jan 2017 - Apr 2021",
+      "title": "Manager Special Projects",
+      "company": "PTCL, Pakistan",
+      "items": [
+        "Identified patterns and trends in business and operational data to uncover opportunities for optimization and growth",
+        "Developed machine learning based market analyses to evaluate opportunities and target high potential clients",
+        "Leveraged data science for marketing analytics, turning raw marketing data into actionable insights for business decision making"
+      ]
+    },
+    {
+      "date": "2021 - 2023",
+      "title": "M.Sc. Artificial Intelligence & Data Science",
+      "company": "Technische Hochschule Deggendorf, Germany & USB, Czech Republic",
+      "items": [
+        "Specialization: LLMs & GPT, Parallel Programming, Computational Intelligence, Information Theory, Distributed Algorithms, Advance Data Storage & Analysis, Advanced Machine Learning, AI & Software Development"
+      ]
+    },
+    {
+      "date": "2012 - 2016",
+      "title": "B.E. Engineering",
+      "company": "NEDUET, Karachi, Pakistan",
+      "items": [
+        "Specialization: Programming, Algorithms & Data Structures, Numerical Methods, OOP, Digital Signal Processing, Digital Logic Design, Data Communication & Networks"
+      ]
+    }
+  ],
+  "speaking": [
+    {
+      "title": "European Chatbot & Conversational AI Summit",
+      "type": "Summit • 2026",
+      "topic": "“HITL 2.0: Designing Cooperative Workflows with Agentic AI” - practical use cases and design patterns for agentic workflows with human-in-the-loop control.",
+      "location": "Edinburgh, Scotland",
+      "links": [
+          {
+            "label": "Watch on YouTube",
+            "url": "https://www.youtube.com/watch?v=l7OSRx5aqJc"
+          },
+          {
+            "label": "Read the post",
+            "url": "https://lnkd.in/p/g-fN2c3F"
+          },
+          {
+            "label": "Talk details",
+            "url": "https://theeuropeanchatbot.com/2026-preliminary-agenda/"
+          },
+          {
+            "label": "Speaker Spotlight",
+            "url": "https://lnkd.in/p/gE_Hy27v"
+          },
+          {
+            "label": "Live on LinkedIn",
+            "url": "https://www.linkedin.com/posts/european-chatbot-summit_chatboteurope2026-conversationsthatmatter-activity-7440013401906409474-hUBS?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAzfscMBCLXd3EV-ReFFun_FEBw0HMSlv0Y"
+          }
+        ],
+      "images": [
+          {
+            "path": "images/speaking/eu-chatbot-01.jpeg",
+            "caption": "Presenting at the European Chatbot Summit"
+          },
+          {
+            "path": "images/speaking/eu-chatbot-02.jpeg",
+            "caption": "Discussion during the session"
+          },
+          {
+            "path": "images/speaking/eu-chatbot-03.png",
+            "caption": "One of the highlights of the Session"
+          }
+        ]
+    },
+    {
+      "title": "European Chatbot & Conversational AI Summit",
+      "type": "Summit • 2025",
+      "topic": "“Beyond the Buzz: Practical Applications of LLM Agents” - showcasing tangible use cases, prompt engineering, domain adaptation, and real-world challenges.",
+      "location": "Edinburgh, Scotland",
+      "links": [
+          {
+            "label": "Read the post",
+            "url": "https://lnkd.in/p/dB784MXz"
+          },
+          {
+            "label": "Talk details",
+            "url": "https://agorify.com/embed/a/qWYiZDobPcagVLcu5R7W?defaultDate=2025-03-19"
+          },
+          {
+            "label": "Speaker Spotlight",
+            "url": "https://lnkd.in/p/dbN5NxTN"
+          }
+        ],
+      "images": [
+          {
+            "path": "images/speaking/eu25-chatbot-01.jpeg",
+            "caption": "Presenting at the European Chatbot Summit"
+          },
+          {
+            "path": "images/speaking/eu25-chatbot-02.jpg",
+            "caption": "Discussion during the session"
+          },
+          {
+            "path": "images/speaking/eu25-chatbot-03.jpg",
+            "caption": "One of the highlights of the Session"
+          }
+        ]
+    },
+    {
+      "title": "Machine Learning Week Europe",
+      "type": "Conference • 2024",
+      "topic": "“Optimizing LLMs for E+H” - insights on deploying LLMs at enterprise scale and building a successful production RAG on internal knowledge bases.",
+      "location": "Munich, Germany",
+      "links": [
+          {
+            "label": "Read the post",
+            "url": "https://lnkd.in/p/dTnqzsxU"
+          },
+          {
+            "label": "Talk details",
+            "url": "https://machinelearningweek.eu/session/optimizing-llm-for-endresshauser-an-innovative-approach-to-chatbot-design-with-azure-semantic-vector-search-2/"
+          },
+          {
+            "label": "Speaker Spotlight",
+            "url": "https://lnkd.in/p/dTnqzsxU"
+          }
+        ],
+      "images": [
+          {
+            "path": "images/achievements/invited-speaker/01.png",
+            "caption": "Presenting at Machine Learning Week Europe"
+          },
+          {
+            "path": "images/speaking/mlw-02.png",
+            "caption": "Discussion during the session"
+          }
+        ]
+    },
+    {
+      "title": "Basel DataScience Conference",
+      "type": "Conference • 2026",
+      "topic": "“When LLMs meet SAP” -  I shared how we built an agentic AI pipeline at Endress+Hauser combining multimodel extraction, judge agents, customer matching and deterministic SAP validation.",
+      "location": "Basel, Switzerland",
+      "links": [
+          {
+            "label": "Read the post",
+            "url": "https://lnkd.in/p/eSR6nhVA"
+          },
+          {
+            "label": "Talk details",
+            "url": "https://lnkd.in/p/ehAKAg6C"
+          },
+          {
+            "label": "Speaker Spotlight",
+            "url": "https://www.meetup.com/de-de/basel-data-scientists/events/316194225/?eventOrigin=group_past_events"
+          }
+        ],
+      "images": [
+          {
+            "path": "images/speaking/basel26-01.png",
+            "caption": "Speaker Spotlight"
+          },
+          {
+            "path": "images/speaking/basel26-02.png",
+            "caption": "Discussion during the session"
+          }
+        ]
+    },
+    {
+      "title": "Basel DataScience Conference",
+      "type": "Conference • 2024",
+      "topic": "“LLMs for Dashboarding” - demonstrated how conversational AI translates user queries into SQL, revolutionizing data exploration and dashboard automation.",
+      "location": "Basel, Switzerland",
+      "links": [
+          {
+            "label": "Read the post",
+            "url": "https://lnkd.in/p/dQWWK4F9"
+          },
+          {
+            "label": "Talk details",
+            "url": "https://lnkd.in/p/dP2r5336"
+          },
+          {
+            "label": "Speaker Spotlight",
+            "url": "https://www.meetup.com/basel-data-scientists/events/301297354/?eventOrigin=group_events_list"
+          }
+        ],
+      "images": [
+          {
+            "path": "images/speaking/basel24-01.png",
+            "caption": "Speaker Spotlight"
+          },
+          {
+            "path": "images/speaking/basel24-02.png",
+            "caption": "Discussion during the session"
+          }
+        ]
+    },
+    {
+      "title": "Medium Day '24",
+      "type": "Conference • 2024",
+      "topic": "“The Future of AI: Democratizing AI Across Disciplines” - emerging trends, tools, and resources for making AI accessible and fostering interdisciplinary collaboration.",
+      "location": "International",
+      "links": [
+          {
+            "label": "Watch on YouTube",
+            "url": "https://youtu.be/DmqvrU8O__k?si=kitiR8rcsYtKNBMY"
+          },
+          {
+            "label": "Read the post",
+            "url": "https://aiadvances.org/the-future-of-ai-democratizing-ai-across-disciplines-f2b2a5082152"
+          },
+          {
+            "label": "Talk details",
+            "url": "https://lnkd.in/p/dTDAaHru"
+          },
+          {
+            "label": "Speaker Spotlight",
+            "url": "https://lnkd.in/p/dp6rkCSs"
+          }
+        ]
+    },
+    {
+      "title": "Endress+Hauser AI Day '24",
+      "type": "Internal • 2024",
+      "topic": "“LLMs: From Inception to Future Directions” - the evolution of LLMs, highlighting significant breakthroughs and predictions for future advancements.",
+      "location": "Endress+Hauser, Switzerland",
+      "links": [
+          {
+            "label": "Speaker Spotlight",
+            "url": "https://lnkd.in/p/dze8-7hX"
+          }
+        ],
+      "images": [
+          {
+            "path": "images/speaking/eh24-01.png",
+            "caption": "Speaker Spotlight"
+          },
+          {
+            "path": "images/speaking/eh24-02.png",
+            "caption": "Discussion during the session"
+          },
+          {
+            "path": "images/achievements/invited-speaker/03.jpeg",
+            "caption": "Detailed Session"
+          }
+        ]
+    },
+    {
+      "title": "THD Future Skill Conference",
+      "type": "Conference",
+      "topic": "Harnessing Generative AI for Transformative Innovation, Explore how models like LLMs are revolutionizing industries with a Glimpse in Promising Applications, Strategic Integration and Responsible AI",
+      "location": "TH Deggendorf, Germany",
+      "links": [
+          {
+            "label": "Watch the Talk",
+            "url": "https://video.th-deg.de/paella/ui/watch.html?id=4148339a-94fe-4a59-ad6b-697076c18b16"
+          },
+          {
+            "label": "Read the post",
+            "url": "https://lnkd.in/p/ev2pBh43"
+          },
+          {
+            "label": "Talk details",
+            "url": "https://th-deg.de/en-alt/dit-alt/alumni/alumni-conference"
+          }
+        ]
+    },
+    {
+      "title": "Endress+Hauser AI Day '23",
+      "type": "Internal • 2023",
+      "topic": "Anomaly detection via autoencoders and time series demand forecasting for industrial applications.",
+      "location": "Endress+Hauser, Germany"
+    }
+  ],
+  "achievements": [
+    {
+      "title": "BaselHack 2024 Winner",
+      "description": "Winner of BaselHack 2024, building a scalable RAG with web browser and memory agents for MDPI.",
+      "links": []
+    },
+    {
+      "title": "Coursera Instructor",
+      "description": "Instructor for Data Science and Machine Learning Guided Projects Lab on Coursera.",
+      "links": [
+        {
+          "label": "View Profile",
+          "url": "https://www.coursera.org/instructor/saad-muhammad"
+        }
+      ]
+    },
+    {
+      "title": "Invited Speaker",
+      "description": "Invited speaker at prestigious international conferences including ML Week Europe, Basel DataScience, European Chatbot Summit, and more.",
+      "links": []
+    },
+    {
+      "title": "IEEE Publication",
+      "description": "Published research in IEEE on AI and machine learning applications.",
+      "links": []
+    }
+  ],
+  "certifications": [
+    {
+      "title": "Google Certified Generative AI Leader",
+      "issuer": "Google",
+      "status": "Verify",
+      "url": "https://www.credly.com/users/saad-muhammad/badges",
+      "image": "images/google_genai.png",
+      "image_label": "Google Certified Generative AI Leader certificate",
+      "full_image": "images/google_genai.png"
+    },
+    {
+      "title": "Azure Data Scientist",
+      "issuer": "Microsoft",
+      "status": "Verify",
+      "url": "https://www.credly.com/badges/e8fef208-163d-4c8f-9f01-e105fd1630a4",
+      "image": "images/azure.PNG",
+      "image_label": "Microsoft Azure Data Scientist certificate",
+      "full_image": "images/creds/azure_ds.png"
+    },
+    {
+      "title": "Azure AI Engineer",
+      "issuer": "Microsoft",
+      "status": "Verify",
+      "url": "https://www.credly.com/users/saad-muhammad/badges",
+      "image": "images/creds/azureai.png",
+      "image_label": "Microsoft Azure AI Engineer certificate",
+      "full_image": "images/creds/azureai.png"
+    },
+    {
+      "title": "IBM Advanced Data Science",
+      "issuer": "IBM",
+      "status": "Verify",
+      "url": "https://www.credly.com/badges/0f7cfffd-e64b-45c1-af40-d5d8f0acdabc",
+      "image": "images/ibmadv.PNG",
+      "image_label": "IBM Advanced Data Science certificate",
+      "full_image": "images/ibmadv.PNG"
+    },
+    {
+      "title": "IBM Data Science Professional",
+      "issuer": "IBM",
+      "status": "Verify",
+      "url": "https://www.credly.com/users/saad-muhammad/badges",
+      "image": "images/creds/ibmds.PNG",
+      "image_label": "IBM Data Science Professional certificate",
+      "full_image": "images/creds/ibmds.PNG"
+    },
+    {
+      "title": "IBM Applied AI",
+      "issuer": "IBM",
+      "status": "Verify",
+      "url": "https://www.credly.com/badges/ff4ffc2a-f418-4efb-8ff6-113bd53a50e2",
+      "image": "images/ibmai.PNG"
+    },
+    {
+      "title": "TensorFlow Developer",
+      "issuer": "Google / DeepLearning.AI",
+      "status": "Verify",
+      "url": "https://www.coursera.org/account/accomplishments/professional-cert/3MXL5ZTEY8CA",
+      "image": "images/tensr.PNG"
+    },
+    {
+      "title": "Project Management",
+      "issuer": "Harvard ManageMentor",
+      "status": "Verify",
+      "url": "https://www.credly.com/users/saad-muhammad/badges",
+      "image": "images/creds/HMM.PNG",
+      "image_label": "Harvard Project Management certificate",
+      "full_image": "images/creds/HMM.PNG"
+    },
+    {
+      "title": "ML Engineer with Azure",
+      "issuer": "Microsoft / Udacity",
+      "status": "Verify",
+      "url": "",
+      "image": "images/msaz.PNG",
+      "image_label": "ML Engineer with Azure certificate",
+      "full_image": "images/msaz.PNG"
+    },
+    {
+      "title": "Maths for Machine Learning",
+      "issuer": "Imperial College London",
+      "status": "Verify",
+      "url": "https://www.credly.com/users/saad-muhammad/badges",
+      "image": "images/creds/ML_ICE.PNG",
+      "image_label": "Maths for Machine Learning certificate",
+      "full_image": "images/creds/ML_ICE.PNG"
+    },
+    {
+      "title": "Agentic AI Developer",
+      "issuer": "Microsoft",
+      "status": "Verify",
+      "url": "https://www.credly.com/users/saad-muhammad/badges",
+      "image": "images/creds/agentic_ai.png",
+      "image_label": "Agentic AI Developer certificate",
+      "full_image": "images/creds/agentic_ai.png"
+    },
+    {
+      "title": "Snowflake Data Science Track",
+      "issuer": "Snowflake",
+      "status": "Verify",
+      "url": "https://www.credly.com/users/saad-muhammad/badges",
+      "image": "images/creds/snwflk_ds.png",
+      "image_label": "Snowflake Data Science Track certificate",
+      "full_image": "images/creds/snwflk_ds.png"
+    }
+  ],
+  "projects": [
+    {
+      "title": "HITL Agentic AI Article Generator",
+      "description": "Human-in-the-loop, multi-agent AI framework processing 300-1,000+ page user manuals to generate high-quality how-to guides and knowledge articles, with human oversight of final content.",
+      "tags": [
+        "Multi-Agent",
+        "HITL",
+        "LLMs",
+        "RAG"
+      ],
+      "url": "",
+      "image": ""
+    },
+    {
+      "title": "AI Feedback Analyzer for Surveys",
+      "description": "Multi-agent feedback analysis workflow for survey responses - automated reading, summarization, sentiment analysis, theme identification, and structured insight-rich reports.",
+      "tags": [
+        "Multi-Agent",
+        "NLP",
+        "Sentiment",
+        "Analytics"
+      ],
+      "url": "",
+      "image": ""
+    },
+    {
+      "title": "Multi-Agent Social Media Generator",
+      "description": "Multi-agent content generation system - agents gather trends from news/social platforms, build plans, and generate tailored posts and visuals for different channels with human approval.",
+      "tags": [
+        "Multi-Agent",
+        "Content Gen",
+        "HITL"
+      ],
+      "url": "",
+      "image": ""
+    },
+    {
+      "title": "Explainable AI & Palantir Foundry",
+      "description": "Developed XAI module for PwC to explain how drivers impact ML decisions, improving customer trust. Deployed AI/ML solutions via Palantir Foundry for time series and forecasting.",
+      "tags": [
+        "XAI",
+        "Palantir",
+        "Forecasting",
+        "PwC"
+      ],
+      "url": "",
+      "image": "images/Az_1.jpg"
+    },
+    {
+      "title": "Movie Recommendation Webapp",
+      "description": "MySQL-based recommendation engine built with Streamlit on the MovieLens 25M dataset, including analytical reporting.",
+      "tags": [
+        "Python",
+        "MySQL",
+        "Streamlit"
+      ],
+      "url": "https://github.com/SaadMuhammad/movie_db",
+      "image": "images/mov1.jpg"
+    },
+    {
+      "title": "Feature Selection via Boruta",
+      "description": "Implementation of the Boruta algorithm for robust feature selection using entropy and information gain on high-dimensional datasets.",
+      "tags": [
+        "Python",
+        "Scikit-learn",
+        "Statistics"
+      ],
+      "url": "https://github.com/SaadMuhammad/Feature_Selection_via_Boruta",
+      "image": "images/dummy_thumbnail.jpg"
+    }
+  ],
+  "skills": [
+    {
+      "category": "architecture",
+      "items": [
+        "Enterprise AI Architecture",
+        "Generative AI Solution Design",
+        "Reference Architecture Development",
+        "AI Product Strategy",
+        "Technical Discovery",
+        "Solution Scoping",
+        "Architecture Trade-Off Analysis",
+        "AI Governance",
+        "Responsible AI",
+        "Human in the Loop Architecture",
+        "LLM Application Development",
+        "Agentic Workflow Design",
+        "RAG",
+        "Context & Prompt Engineering",
+        "Function Calling",
+        "Tool Use",
+        "MCP",
+        "Enterprise Chatbots",
+        "Human in the Loop Systems",
+        "LLM Evals",
+        "Model Behavior Analysis",
+        "AI Safety",
+        "Guardrails",
+        "AI Observability",
+        "Multi Agent Design Framework",
+        "Prompt Caching",
+        "GraphRAG",
+        "Agent Memory Design",
+        "Persona Simulation",
+        "LLM-based Market Intelligence"
+      ]
+    },
+    {
+      "category": "engineering",
+      "items": [
+        "Python",
+        "SQL",
+        "API Integration",
+        "REST APIs",
+        "Systems Integration",
+        "Distributed Data Processing",
+        "PySpark",
+        "Spark SQL",
+        "XML/cXML Generation",
+        "SAP Integration",
+        "Document Intelligence",
+        "OCR",
+        "Structured Data Extraction",
+        "Production AI Deployment",
+        "LMOps",
+        "Knowledge Graphs",
+        "Memory Architectures",
+        "Agentic Content Systems"
+      ]
+    },
+    {
+      "category": "platforms",
+      "items": [
+        "Microsoft Azure",
+        "Azure OpenAI",
+        "Azure Synapse",
+        "LangChain",
+        "LangFuse",
+        "Palantir Foundry",
+        "Snowflake AI",
+        "MS Copilot",
+        "Agent Builder",
+        "GitHub Copilot",
+        "Codex",
+        "Claude Code",
+        "AI Search Analytics",
+        "Secure API Integration",
+        "API Management Concepts"
+      ]
+    },
+    {
+      "category": "ml",
+      "items": [
+        "Applied Machine Learning",
+        "Multimodal AI",
+        "Statistical Modeling",
+        "Forecasting",
+        "A/B Testing",
+        "Experiment Design",
+        "XAI",
+        "Autoencoders",
+        "Anomaly Detection",
+        "PyTorch",
+        "TensorFlow",
+        "Generative Engine Optimization"
+      ]
+    },
+    {
+      "category": "leadership",
+      "items": [
+        "Technical Advisory",
+        "Executive Communication",
+        "Technical Writing",
+        "Presentation Skills",
+        "AI Product Strategy",
+        "Solution Framing",
+        "AI Upskilling",
+        "LLM Tokenomics",
+        "Cross Functional Leadership",
+        "Project & Product Management",
+        "Design Thinking"
+      ]
+    }
+  ]
+}
