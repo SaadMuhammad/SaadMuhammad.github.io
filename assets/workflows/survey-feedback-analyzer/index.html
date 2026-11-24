@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#294753">
+  <title>AI Survey & Feedback Analyzer</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+
+    :root {
+      --teal: #294753;
+      --gold: #D09242;
+      --mist: #F3F6F5;
+      --surface: #E4ECEA;
+      --white: #FFFFFF;
+      --ink: #182B35;
+      --muted: #52646C;
+      --soft: #A9C5C8;
+      --pale: #FAECD9;
+      --border: rgba(41,71,83,.14);
+      --positive: #294753;
+      --negative: #D09242;
+      --neutral: #A9C5C8;
+      --mixed: #758992;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--surface);
+      font: 12px "DM Sans", sans-serif;
+    }
+    button, textarea, input, select { font: inherit; }
+    button, select, summary { cursor: pointer; }
+    button { color: inherit; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { font-family: "Manrope", sans-serif; }
+    :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    ::selection { background: var(--pale); color: var(--ink); }
+    .icon {
+      width: 20px; height: 20px; flex-shrink: 0; fill: none;
+      stroke: currentColor; stroke-width: 1.7;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .app {
+      height: 100%; max-width: 1700px; margin: auto;
+      display: grid; grid-template-rows: 54px auto minmax(0,1fr) 30px;
+      padding: 0 25px;
+    }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 15px; color: var(--teal);
+    }
+    .brand { display: flex; align-items: center; gap: 9px; font-weight: 800; letter-spacing: -.035em; }
+    .brand-mark { display: grid; place-items: center; width: 30px; height: 30px; background: var(--teal); color: white; border-radius: 9px; }
+    .header-right { display: flex; align-items: center; gap: 16px; font-size: 10px; color: var(--muted); }
+    .badge { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 20px; padding: 5px 9px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+    .dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+
+    .hero {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 25px; background: var(--teal); color: white;
+      border-radius: 15px 15px 0 0; padding: 23px 28px;
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: ""; position: absolute; width: 280px; height: 280px;
+      border: 1px solid #a9c5c822; border-radius: 50%;
+      right: 15px; top: -125px; pointer-events: none;
+    }
+    .eyebrow { font-size: 9px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    .hero .eyebrow { color: var(--soft); }
+    .hero .eyebrow b { color: var(--gold); margin-right: 9px; }
+    h1 { font-size: clamp(25px,2.7vw,38px); line-height: 1.15; letter-spacing: -.045em; margin: 8px 0 10px; }
+    h1 span { color: var(--gold); }
+    .hero p { color: #d6e3e3; font-size: 12px; max-width: 735px; line-height: 1.65; }
+    .hero-aside { flex-shrink: 0; position: relative; z-index: 1; padding-left: 24px; border-left: 1px solid #a9c5c833; }
+    .hero-aside strong { display: block; font: 800 16px "Manrope", sans-serif; letter-spacing: -.035em; }
+    .hero-aside small { display: block; color: var(--soft); font-size: 10px; margin-top: 5px; }
+    .voice-icons { display: flex; margin-bottom: 12px; }
+    .voice-icons span { width: 29px; height: 29px; border-radius: 50%; border: 2px solid var(--teal); margin-right: -5px; display: grid; place-items: center; background: var(--soft); color: var(--teal); font-size: 9px; font-weight: 800; }
+    .voice-icons span:nth-child(2) { background: var(--pale); }
+    .voice-icons span:nth-child(3) { background: var(--gold); }
+
+    .workspace {
+      min-height: 0; display: grid; grid-template-rows: auto minmax(0,1fr) auto;
+      background: var(--white); border: 1px solid var(--border); border-top: 0;
+      border-radius: 0 0 15px 15px; overflow: hidden;
+    }
+    .toolbar { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-bottom: 1px solid var(--border); }
+    .toolbar-title { display: flex; align-items: center; gap: 9px; font-weight: 700; color: var(--teal); font-size: 12px; }
+    .toolbar-title .icon { width: 18px; height: 18px; }
+    .controls { display: flex; align-items: center; gap: 8px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 7px; border: 0; border-radius: 7px; background: var(--gold);
+      color: var(--ink); padding: 9px 12px; font-size: 10px; font-weight: 800;
+    }
+    .button .icon { width: 15px; height: 15px; }
+    .button:hover:not(:disabled) { filter: brightness(1.04); }
+    .button.secondary { background: white; border: 1px solid var(--border); color: var(--teal); }
+    .button.dark { background: var(--teal); color: white; }
+    .label { color: var(--teal); font-size: 10px; font-weight: 700; display: block; margin-bottom: 7px; }
+    select, textarea, input[type="search"] {
+      width: 100%; border: 1px solid var(--border); background: white;
+      color: var(--ink); border-radius: 7px; padding: 9px; min-width: 0;
+    }
+    select { font-size: 10px; }
+    textarea { resize: vertical; font-size: 10px; line-height: 1.7; }
+    .status { font-size: 9px; color: var(--muted); background: var(--mist); padding: 5px 8px; border-radius: 5px; white-space: nowrap; }
+
+    .panes { min-height: 0; display: grid; grid-template-columns: .8fr 1.35fr 1.05fr; overflow: hidden; }
+    .pane { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 17px; }
+    .pane + .pane { border-left: 1px solid var(--border); }
+    .source-pane { background: var(--mist); }
+    .evidence-pane { background: #f3f6f555; }
+    .pane-heading { display: flex; justify-content: space-between; align-items: center; gap: 9px; margin-bottom: 14px; flex-shrink: 0; }
+    .pane-heading h2 { font-size: 12px; color: var(--teal); display: flex; align-items: center; gap: 7px; }
+    .pane-heading .icon { width: 16px; height: 16px; }
+    .scroll { min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 2px 3px 5px 0; scrollbar-width: thin; scrollbar-color: var(--soft) transparent; }
+    .dataset-note { font-size: 9px; line-height: 1.6; color: var(--muted); margin: 8px 0 14px; }
+    .source-box { background: white; border: 1px solid var(--border); border-radius: 9px; padding: 12px; }
+    .source-summary { display: flex; align-items: center; gap: 10px; }
+    .source-icon { width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; color: var(--teal); background: var(--surface); }
+    .source-summary strong { font-size: 12px; color: var(--teal); display: block; }
+    .source-summary small { font-size: 9px; color: var(--muted); display: block; margin-top: 3px; }
+    .source-box details { font-size: 10px; color: var(--teal); margin-top: 13px; line-height: 1.6; }
+    .source-box summary { font-weight: 700; }
+    .source-box details p { margin: 8px 0; color: var(--muted); font-size: 9px; }
+    .source-box textarea { margin-bottom: 8px; }
+    .source-box .button { width: 100%; }
+    .sample-preview { margin-top: 12px; border-left: 2px solid var(--gold); padding-left: 10px; font-size: 10px; color: var(--muted); line-height: 1.7; }
+    .section-label { font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 800; margin: 19px 0 11px; }
+    .agent { display: flex; align-items: center; gap: 8px; padding: 9px 0; }
+    .agent-icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; color: var(--teal); background: var(--surface); flex-shrink: 0; }
+    .agent-icon .icon { width: 15px; height: 15px; }
+    .agent strong { display: block; font-size: 10px; }
+    .agent small { display: block; font-size: 8px; color: var(--muted); margin-top: 3px; }
+    .agent-state { margin-left: auto; color: var(--muted); font-size: 8px; }
+    .agent.active .agent-icon { background: var(--gold); animation: pulse 1s infinite; }
+    .agent.done .agent-icon { background: var(--teal); color: white; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 4px #d0924220; } }
+    .method { border-radius: 8px; padding: 10px; background: var(--surface); color: var(--muted); font-size: 9px; line-height: 1.7; margin-top: 13px; }
+
+    .segmented { display: flex; background: var(--mist); border: 1px solid var(--border); border-radius: 7px; padding: 2px; }
+    .segmented button { border: 0; background: transparent; padding: 5px 8px; border-radius: 4px; color: var(--muted); font-size: 9px; }
+    .segmented button[aria-pressed="true"] { color: var(--teal); background: white; font-weight: 700; box-shadow: 0 1px 3px #182b3510; }
+    .empty { color: var(--muted); text-align: center; padding: 34px 8px; font-size: 11px; line-height: 1.8; }
+    .empty-icon { width: 56px; height: 56px; border-radius: 17px; display: grid; place-items: center; background: var(--pale); color: var(--teal); margin: 0 auto 16px; }
+    .empty-icon .icon { width: 28px; height: 28px; }
+    .empty strong { display: block; color: var(--teal); margin-bottom: 7px; font-size: 13px; }
+    .empty p { max-width: 285px; margin: auto; }
+    .skeleton { height: 8px; border-radius: 5px; background: linear-gradient(90deg,var(--mist),var(--surface),var(--mist)); background-size: 200% 100%; margin: 14px auto; max-width: 260px; animation: shimmer 1.4s infinite; }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; margin-bottom: 15px; }
+    .stat { padding: 13px 11px; border-radius: 9px; background: var(--mist); }
+    .stat.amber { background: var(--pale); }
+    .stat.teal { background: var(--teal); color: white; }
+    .stat span { font-size: 9px; color: var(--muted); display: block; }
+    .stat strong { display: block; font: 800 27px "Manrope",sans-serif; color: var(--teal); letter-spacing: -.055em; margin: 4px 0; }
+    .stat small { font-size: 8px; color: var(--muted); }
+    .stat.teal span, .stat.teal small { color: var(--soft); }
+    .stat.teal strong { color: white; }
+    .chart-card { border: 1px solid var(--border); border-radius: 10px; padding: 13px; margin-bottom: 14px; }
+    .card-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+    .card-heading strong { color: var(--teal); font-size: 11px; }
+    .card-heading span { font-size: 8px; color: var(--muted); }
+    .sentiment-strip { display: flex; gap: 3px; height: 24px; border-radius: 6px; overflow: hidden; }
+    .sentiment-segment { border: 0; min-width: 4px; padding: 0; transition: flex .3s; }
+    .sentiment-segment:hover { filter: brightness(1.12); }
+    .sentiment-legend { display: grid; grid-template-columns: repeat(2,1fr); gap: 7px; margin-top: 11px; }
+    .legend-button { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid transparent; border-radius: 5px; text-align: left; padding: 5px; font-size: 9px; color: var(--muted); }
+    .legend-button[aria-pressed="true"] { border-color: var(--gold); background: var(--pale); color: var(--ink); }
+    .legend-button i { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .legend-button b { margin-left: auto; font-weight: 700; color: var(--teal); }
+    .theme-row { display: block; width: 100%; padding: 9px 7px; margin-bottom: 2px; border: 1px solid transparent; border-radius: 6px; background: transparent; text-align: left; }
+    .theme-row:hover { background: var(--mist); }
+    .theme-row[aria-pressed="true"] { background: var(--pale); border-color: #d0924244; }
+    .theme-top { display: flex; justify-content: space-between; font-size: 10px; color: var(--teal); margin-bottom: 7px; }
+    .theme-top small { color: var(--muted); font-size: 9px; }
+    .bar-track { height: 6px; border-radius: 4px; background: var(--mist); overflow: hidden; }
+    .bar { height: 100%; background: var(--soft); border-radius: 4px; transform-origin: left; animation: grow .5s ease; }
+    .theme-row[aria-pressed="true"] .bar { background: var(--gold); }
+    @keyframes grow { from { transform: scaleX(0); } }
+    .hint { color: var(--muted); font-size: 9px; line-height: 1.7; }
+    .report-title { color: var(--teal); font-size: 23px; letter-spacing: -.04em; margin: 8px 0; }
+    .report-meta { color: var(--muted); font-size: 9px; padding-bottom: 13px; border-bottom: 1px solid var(--border); }
+    .report-section { margin-top: 17px; }
+    .report-section h3 { font-size: 11px; color: var(--teal); margin-bottom: 8px; }
+    .report-section p { font-size: 11px; line-height: 1.8; color: var(--muted); }
+    .quote { border-left: 2px solid var(--gold); padding: 8px 12px; background: var(--mist); border-radius: 0 7px 7px 0; margin-top: 10px; }
+    .quote p { font-size: 10px; line-height: 1.75; color: var(--muted); }
+    .quote button { color: var(--teal); background: transparent; border: 0; font-size: 9px; padding: 7px 0 0; text-decoration: underline; text-underline-offset: 3px; }
+    .report-notice { padding: 11px; background: var(--pale); border-radius: 8px; margin: 15px 0; color: var(--ink); font-size: 9px; line-height: 1.7; }
+
+    .evidence-tools { margin-bottom: 11px; flex-shrink: 0; }
+    .search { display: flex; align-items: center; gap: 7px; border: 1px solid var(--border); border-radius: 7px; padding-left: 10px; background: white; }
+    .search .icon { width: 14px; height: 14px; color: var(--muted); }
+    .search input { border: 0; background: transparent; padding: 9px 7px; font-size: 10px; }
+    .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-top: 8px; }
+    .filter-chip { display: inline-flex; gap: 6px; border: 1px solid #d0924244; border-radius: 5px; padding: 4px 6px; background: var(--pale); color: var(--ink); font-size: 8px; }
+    .clear-filters { border: 0; padding: 4px 0; background: transparent; color: var(--muted); text-decoration: underline; font-size: 9px; }
+    .response { background: white; border: 1px solid var(--border); border-radius: 9px; padding: 12px; margin-bottom: 10px; }
+    .response.focused { border-color: var(--gold); box-shadow: 0 0 0 3px #d0924215; }
+    .response-top { display: flex; justify-content: space-between; align-items: center; gap: 7px; margin-bottom: 9px; }
+    .response-id { font-size: 9px; color: var(--muted); font-weight: 700; }
+    .sentiment-label { display: inline-flex; align-items: center; gap: 5px; font-size: 8px; color: var(--teal); }
+    .sentiment-label i { width: 5px; height: 5px; border-radius: 50%; }
+    .response p { font-size: 11px; color: var(--ink); line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .response-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px; }
+    .response-tags button { border: 0; border-radius: 4px; padding: 4px 6px; font-size: 8px; color: var(--teal); background: var(--surface); }
+    .response details { font-size: 9px; line-height: 1.7; color: var(--muted); margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; }
+    .response summary { color: var(--teal); }
+    .response details p { font-size: 9px; color: var(--muted); margin: 7px 0; }
+    .response details label { font-size: 9px; display: block; color: var(--teal); margin-bottom: 5px; }
+    .response details select { padding: 7px; font-size: 9px; }
+    .workspace-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--border); padding: 9px 16px; font-size: 9px; color: var(--muted); }
+    #live-status { text-align: right; color: var(--teal); }
+    footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 9px; color: var(--muted); }
+    .tech { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tech span + span::before { content: "·"; margin-right: 7px; color: var(--gold); }
+    .mobile-tabs { display: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+    @media (max-width: 1150px) {
+      .app { padding-inline: 16px; }
+      .hero-aside { display: none; }
+      .hero { padding: 20px; }
+      .panes { grid-template-columns: .8fr 1.25fr 1.05fr; }
+      .pane { padding: 13px; }
+      .stat { padding: 11px 8px; }
+      .stat strong { font-size: 23px; }
+      .toolbar-title { font-size: 11px; }
+    }
+    @media (max-width: 800px) {
+      .app { padding-inline: 10px; grid-template-rows: 45px auto minmax(0,1fr) 26px; }
+      .header-right > span:first-child { display: none; }
+      .hero { padding: 16px; border-radius: 12px 12px 0 0; }
+      h1 { font-size: 25px; margin: 6px 0; }
+      .hero p { font-size: 10px; line-height: 1.5; }
+      .workspace { grid-template-rows: auto auto minmax(0,1fr) auto; }
+      .toolbar { padding: 9px 10px; }
+      .toolbar-title .icon { display: none; }
+      .toolbar-title { font-size: 10px; }
+      .controls .status { display: none; }
+      .button { padding: 9px 10px; }
+      .mobile-tabs { display: flex; padding-inline: 10px; border-bottom: 1px solid var(--border); }
+      .mobile-tabs button { flex: 1; border: 0; background: transparent; border-bottom: 2px solid transparent; padding: 10px 3px; font-size: 10px; color: var(--muted); }
+      .mobile-tabs button[aria-pressed="true"] { border-color: var(--gold); color: var(--teal); font-weight: 800; }
+      .panes { display: flex; }
+      .pane { display: none; width: 100%; border: 0 !important; padding: 14px; }
+      .pane.visible { display: flex; }
+      .workspace-footer { padding: 8px 10px; font-size: 8px; }
+      .footer-end { display: none; }
+      .tech { gap: 4px; font-size: 8px; }
+      .tech span + span::before { margin-right: 4px; }
+    }
+    @media (max-height: 640px) {
+      .app { grid-template-rows: 39px auto minmax(0,1fr) 23px; }
+      .hero { padding-block: 12px; }
+      h1 { font-size: 24px; margin: 5px 0; }
+      .hero p { display: none; }
+      .toolbar { padding-block: 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11a9 9 0 0 1-9 9H3l1.8-4.4A9 9 0 1 1 21 11ZM8 9h8M8 13h5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4M18 4h4"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 3v18h17M8 16v-5M13 16V7M18 16V4"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8ZM2 12l10 5 10-5M2 16l10 5 10-5"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+  </svg>
+
+  <div class="app">
+    <header>
+      <div class="brand">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg></span>
+        Applied intelligence<span style="color:var(--gold)">.</span>
+      </div>
+      <div class="header-right">
+        <span>Enterprise AI & Agents</span>
+        <span class="badge"><span class="dot"></span> FEATURED PROJECT</span>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="title">
+      <div>
+        <div class="eyebrow"><b>PROJECT 07</b> Every response has a story</div>
+        <h1>AI Survey & <span>Feedback Analyzer.</span></h1>
+        <p>A multi-agent workflow for reading survey responses, summarizing feedback, identifying sentiment and themes, and producing structured reports.</p>
+      </div>
+      <div class="hero-aside">
+        <div class="voice-icons" aria-hidden="true"><span>A</span><span>B</span><span>C</span><span>+</span></div>
+        <strong>Feedback → Understanding</strong>
+        <small>Find patterns. Keep the voices behind them.</small>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <div class="toolbar">
+        <div class="toolbar-title"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg> Voice of the customer / exploration lab</div>
+        <div class="controls">
+          <span class="status" id="analysis-state">Ready to listen</span>
+          <button class="button" id="analyze"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg><span>Analyze feedback</span></button>
+          <button class="button secondary" id="reset" aria-label="Reset analysis and corrections" title="Reset analysis"><svg class="icon" aria-hidden="true"><use href="#i-reset"/></svg></button>
+        </div>
+      </div>
+
+      <nav class="mobile-tabs" aria-label="Workspace panels">
+        <button data-panel="source" aria-pressed="true">01 · Input</button>
+        <button data-panel="insights" aria-pressed="false">02 · Insights</button>
+        <button data-panel="evidence" aria-pressed="false">03 · Responses</button>
+      </nav>
+
+      <div class="panes">
+        <section class="pane source-pane visible" id="panel-source" aria-labelledby="source-title">
+          <div class="pane-heading">
+            <h2 id="source-title"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg> Start with the voices</h2>
+          </div>
+          <div class="scroll">
+            <label class="label" for="dataset">Feedback collection</label>
+            <select id="dataset">
+              <option value="product">Product experience survey</option>
+              <option value="service">Customer service survey</option>
+              <option value="custom">My own feedback</option>
+            </select>
+            <p class="dataset-note" id="dataset-description"></p>
+
+            <div class="source-box">
+              <div class="source-summary">
+                <div class="source-icon"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></div>
+                <div><strong id="input-count">12 responses</strong><small>One response per line · English demo</small></div>
+              </div>
+              <div class="sample-preview" id="sample-preview"></div>
+              <details id="input-details">
+                <summary>Edit or paste responses</summary>
+                <p>One response per line. Up to 100 responses, 1,000 characters each. Avoid personal or confidential data. Text stays in this page's memory.</p>
+                <label class="sr-only" for="raw-input">Survey responses, one per line</label>
+                <textarea id="raw-input" rows="8" maxlength="101000"></textarea>
+                <button class="button secondary" id="apply-input">Use these responses</button>
+                <p id="input-message" role="status"></p>
+              </details>
+            </div>
+
+            <div class="section-label">Behind the analysis</div>
+            <div class="agent" data-agent="0">
+              <div class="agent-icon"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></div>
+              <div><strong>Reading agent</strong><small>Prepare the response collection</small></div>
+              <span class="agent-state">Queued</span>
+            </div>
+            <div class="agent" data-agent="1">
+              <div class="agent-icon"><svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg></div>
+              <div><strong>Sentiment agent</strong><small>Identify language cues</small></div>
+              <span class="agent-state">Queued</span>
+            </div>
+            <div class="agent" data-agent="2">
+              <div class="agent-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></div>
+              <div><strong>Theme agent</strong><small>Group recurring topics</small></div>
+              <span class="agent-state">Queued</span>
+            </div>
+            <div class="agent" data-agent="3">
+              <div class="agent-icon"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></div>
+              <div><strong>Reporting agent</strong><small>Build an evidence-linked brief</small></div>
+              <span class="agent-state">Queued</span>
+            </div>
+
+            <div class="method"><strong>Transparent demo mechanics.</strong><br>Local keyword rules and template summaries simulate the workflow. No LLM calls. Sentiment can miss context, sarcasm, and nuance; inspect or correct labels in Responses.</div>
+          </div>
+        </section>
+
+        <section class="pane" id="panel-insights" aria-labelledby="insights-title">
+          <div class="pane-heading">
+            <h2 id="insights-title"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg> Understand the patterns</h2>
+            <div class="segmented" aria-label="Insights view">
+              <button id="overview-tab" aria-pressed="true">Overview</button>
+              <button id="report-tab" aria-pressed="false">Report</button>
+            </div>
+          </div>
+          <div class="scroll" id="insight-scroll">
+            <div id="insights"></div>
+          </div>
+        </section>
+
+        <section class="pane evidence-pane" id="panel-evidence" aria-labelledby="evidence-title">
+          <div class="pane-heading">
+            <h2 id="evidence-title"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg> Go back to the words</h2>
+            <span class="status" id="result-count">0 responses</span>
+          </div>
+          <div class="evidence-tools">
+            <div class="search">
+              <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+              <label class="sr-only" for="search">Search analyzed responses</label>
+              <input type="search" id="search" placeholder="Search words or response IDs…" disabled>
+            </div>
+            <div class="filters" id="filters"></div>
+          </div>
+          <div class="scroll" id="evidence-scroll">
+            <div id="responses"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="workspace-footer">
+        <span>Local simulation · Heuristic labels, not validated findings · No data upload</span>
+        <span id="live-status" role="status" aria-live="polite">Choose a collection to begin</span>
+      </div>
+    </main>
+
+    <footer>
+      <div class="tech"><span>Multi-Agent Workflows</span><span>NLP</span><span>Sentiment Analysis</span><span>Summarization</span><span>Thematic Analysis</span></div>
+      <span class="footer-end">Listen broadly. Interpret carefully.</span>
+    </footer>
+  </div>
+
+  <script>
+    const $ = selector => document.querySelector(selector);
+    const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const escapeHTML = value => String(value).replace(/[&<>"']/g, char =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = ms => new Promise(resolve => setTimeout(resolve, reducedMotion ? 60 : ms));
+    const announce = message => $("#live-status").textContent = message;
+
+    const collections = {
+      product: {
+        name: "Product experience survey",
+        description: "12 fictional responses about a software product. Explore usability, reliability, support, and value.",
+        responses: [
+          "The dashboard is easy to use, and the new navigation is excellent.",
+          "The app is slow and crashes when I upload a large file.",
+          "Support was helpful and resolved my issue quickly.",
+          "The subscription is expensive for a small team.",
+          "I love the clean interface, but the export feature is missing.",
+          "Setup was confusing, and the documentation was unclear.",
+          "The new search feature is great and saves time.",
+          "I waited for support for three days. The response was frustrating.",
+          "The app is reliable and fast, but the pricing is expensive.",
+          "Please add an integration with our calendar and improve export options.",
+          "Onboarding was easy. The tutorial was helpful.",
+          "I use the dashboard every Monday to review our team reports."
+        ]
+      },
+      service: {
+        name: "Customer service survey",
+        description: "12 fictional service responses covering support, billing, onboarding, and product experience.",
+        responses: [
+          "The support agent was friendly and helpful.",
+          "The support wait was long and frustrating.",
+          "The billing explanation was clear, but the price is expensive.",
+          "My issue was resolved quickly. Excellent support.",
+          "The app crashes, and support has not resolved the issue.",
+          "The onboarding tutorial was confusing and the setup was difficult.",
+          "I appreciate the helpful documentation and easy setup.",
+          "Please add a way to track support tickets in the dashboard.",
+          "The interface is clean and easy to use.",
+          "The subscription price is fair and offers good value.",
+          "The agent was friendly, but the issue is still broken.",
+          "I contacted the support team by email on Tuesday."
+        ]
+      }
+    };
+
+    const themeRules = [
+      { name: "Usability & navigation", words: ["interface", "dashboard", "navigation", "easy to use", "usability"] },
+      { name: "Performance & reliability", words: ["slow", "fast", "crash", "crashes", "reliable", "reliability", "bug", "broken", "upload"] },
+      { name: "Support experience", words: ["support", "agent", "ticket", "tickets", "response", "resolved"] },
+      { name: "Pricing & value", words: ["price", "pricing", "expensive", "subscription", "billing", "value", "cost"] },
+      { name: "Features & integrations", words: ["feature", "features", "export", "integration", "calendar", "search", "add"] },
+      { name: "Onboarding & guidance", words: ["setup", "onboarding", "documentation", "tutorial", "guide"] }
+    ];
+
+    const positiveWords = [
+      "easy", "excellent", "helpful", "quickly", "love", "clean", "great",
+      "reliable", "fast", "friendly", "clear", "appreciate", "fair", "good",
+      "resolved", "saves time"
+    ];
+    const negativeWords = [
+      "slow", "crashes", "crash", "expensive", "missing", "confusing",
+      "unclear", "frustrating", "difficult", "broken", "long", "disappointed"
+    ];
+
+    const sentimentNames = ["Positive", "Negative", "Mixed", "Neutral"];
+    const colors = {
+      Positive: "#294753",
+      Negative: "#D09242",
+      Mixed: "#758992",
+      Neutral: "#A9C5C8"
+    };
+
+    let inputRows = [...collections.product.responses];
+    let collectionName = collections.product.name;
+    let analyzed = [];
+    let busy = false;
+    let view = "overview";
+    let sentimentFilter = "";
+    let themeFilter = "";
+    let focusedId = "";
+    let currentDataset = "product";
+
+    function showPanel(name) {
+      document.querySelectorAll(".pane").forEach(pane =>
+        pane.classList.toggle("visible", pane.id === `panel-${name}`));
+      document.querySelectorAll("[data-panel]").forEach(button =>
+        button.setAttribute("aria-pressed", String(button.dataset.panel === name)));
+    }
+
+    function updateSource() {
+      $("#input-count").textContent = `${inputRows.length} responses`;
+      $("#sample-preview").textContent = inputRows.length ? `“${inputRows[0]}”` : "Paste responses below to get started.";
+      $("#raw-input").value = inputRows.join("\n");
+      $("#dataset-description").textContent = currentDataset === "custom"
+        ? "Your local collection. English keyword rules are used for this demonstration."
+        : collections[currentDataset].description;
+    }
+
+    function resetAnalysis() {
+      analyzed = [];
+      sentimentFilter = "";
+      themeFilter = "";
+      focusedId = "";
+      $("#search").value = "";
+      $("#search").disabled = true;
+      $("#analysis-state").textContent = "Ready to listen";
+      $("#analyze span").textContent = "Analyze feedback";
+      document.querySelectorAll(".agent").forEach(agent => {
+        agent.classList.remove("active", "done");
+        agent.querySelector(".agent-state").textContent = "Queued";
+      });
+      renderInsights();
+      renderResponses();
+    }
+
+    // Phrase matching uses word boundaries, not substring matching.
+    function contains(text, phrase) {
+      const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return new RegExp(`\\b${escaped}\\b`, "i").test(text);
+    }
+
+    function classify(text) {
+      const normalized = text.toLowerCase().replace(/[’]/g, "'");
+      const positive = [];
+      const negative = [];
+
+      positiveWords.forEach(word => {
+        const pattern = new RegExp(`\\b${word}\\b`, "g");
+        let match;
+        while ((match = pattern.exec(normalized))) {
+          const before = normalized.slice(Math.max(0, match.index - 35), match.index);
+          const preceding = before.match(/[a-z']+/g) || [];
+          const negated = preceding.slice(-3).some(token =>
+            ["not", "never", "no", "isn't", "wasn't", "didn't", "hasn't"].includes(token));
+          (negated ? negative : positive).push(negated ? `negated “${word}”` : word);
+        }
+      });
+
+      negativeWords.forEach(word => {
+        if (contains(normalized, word)) negative.push(word);
+      });
+
+      const auto = positive.length && negative.length ? "Mixed"
+        : negative.length ? "Negative"
+        : positive.length ? "Positive" : "Neutral";
+
+      const themes = themeRules.filter(rule =>
+        rule.words.some(word => contains(normalized, word))).map(rule => rule.name);
+
+      return {
+        auto,
+        sentiment: auto,
+        override: false,
+        positive: [...new Set(positive)],
+        negative: [...new Set(negative)],
+        themes: themes.length ? themes : ["Other / unclassified"]
+      };
+    }
+
+    function statistics() {
+      const counts = Object.fromEntries(sentimentNames.map(name => [name, 0]));
+      const themes = {};
+      analyzed.forEach(row => {
+        counts[row.sentiment]++;
+        row.themes.forEach(theme => themes[theme] = (themes[theme] || 0) + 1);
+      });
+      return {
+        counts,
+        themes: Object.entries(themes).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])),
+        corrections: analyzed.filter(row => row.override).length
+      };
+    }
+
+    function setSentimentFilter(name) {
+      sentimentFilter = sentimentFilter === name ? "" : name;
+      focusedId = "";
+      renderInsights();
+      renderResponses();
+      showPanel("evidence");
+      announce(`Responses filtered: ${sentimentFilter || "all sentiments"}.`);
+    }
+
+    function setThemeFilter(name) {
+      themeFilter = themeFilter === name ? "" : name;
+      focusedId = "";
+      renderInsights();
+      renderResponses();
+      showPanel("evidence");
+      announce(`Responses filtered: ${themeFilter || "all themes"}.`);
+    }
+
+    function summaryData() {
+      const stats = statistics();
+      const count = analyzed.length;
+      const classifiedThemes = stats.themes.filter(([theme]) => theme !== "Other / unclassified");
+      const first = classifiedThemes[0];
+      const summary = `Across ${count} responses, the current labels are ${stats.counts.Positive} positive, ${stats.counts.Negative} negative, ${stats.counts.Mixed} mixed, and ${stats.counts.Neutral} neutral.`;
+      const themeSummary = first
+        ? `The most frequently matched theme is ${first[0]}, mentioned in ${first[1]} of ${count} responses. Theme groups overlap because a response can discuss more than one topic.`
+        : "No predefined theme keywords matched. These responses need manual thematic review.";
+      const quotes = [];
+      for (const [theme, mentions] of classifiedThemes.slice(0, 3)) {
+        const match = analyzed.find(row => row.themes.includes(theme) && !quotes.some(item => item.row.id === row.id));
+        if (match) quotes.push({ theme, mentions, row: match });
+      }
+      return { stats, summary, themeSummary, quotes };
+    }
+
+    function renderInsights() {
+      if (!analyzed.length) {
+        $("#insights").innerHTML = `<div class="empty">
+          <div class="empty-icon">${icon("chart")}</div>
+          <strong>Less reading. More understanding.</strong>
+          <p>Analyze a collection to explore sentiment, discover recurring themes, and trace patterns back to individual responses.</p>
+        </div>`;
+        return;
+      }
+
+      const { counts, themes, corrections } = statistics();
+
+      if (view === "report") {
+        const report = summaryData();
+        $("#insights").innerHTML = `
+          <div class="eyebrow" style="color:var(--gold)">Structured feedback brief</div>
+          <h3 class="report-title">${escapeHTML(collectionName)}</h3>
+          <p class="report-meta">Full collection · ${analyzed.length} responses · ${corrections} manual label overrides · Filters do not change this report</p>
+
+          <section class="report-section">
+            <h3>01 / Sentiment snapshot</h3>
+            <p>${escapeHTML(report.summary)}</p>
+          </section>
+          <section class="report-section">
+            <h3>02 / Recurring themes</h3>
+            <p>${escapeHTML(report.themeSummary)}</p>
+          </section>
+          <section class="report-section">
+            <h3>03 / Source-linked examples</h3>
+            <p>First matching examples from the input order not representative samples or evidence of prevalence on their own.</p>
+            ${report.quotes.map(item => `
+              <div class="quote">
+                <p><strong>${escapeHTML(item.theme)}</strong></p>
+                <p>“${escapeHTML(item.row.text)}”</p>
+                <button data-quote="${item.row.id}">Inspect ${item.row.id} ↗</button>
+              </div>`).join("") || `<p>No classified theme examples are available.</p>`}
+          </section>
+          <section class="report-section">
+            <h3>04 / Suggested human follow-up</h3>
+            <p>Review negative and mixed responses in context. Validate theme labels, compare against the survey's sampling method, and confirm priorities before drawing business conclusions.</p>
+          </section>
+          <div class="report-notice"><strong>Interpretation limits.</strong> This is a template-generated summary of local keyword classifications. No confidence scores, statistical significance, or population-wide conclusions are inferred. Neutral means no detected polarity cues, not necessarily neutral intent.</div>
+          <button class="button dark" id="export-report">${icon("download")} Download report</button>`;
+
+        document.querySelectorAll("[data-quote]").forEach(button =>
+          button.addEventListener("click", () => focusResponse(button.dataset.quote)));
+        $("#export-report").addEventListener("click", downloadReport);
+        return;
+      }
+
+      $("#insights").innerHTML = `
+        <div class="stats">
+          <div class="stat teal"><span>Responses analyzed</span><strong>${analyzed.length}</strong><small>full collection</small></div>
+          <div class="stat amber"><span>Negative labels</span><strong>${Math.round(counts.Negative / analyzed.length * 100)}%</strong><small>${counts.Negative} responses</small></div>
+          <div class="stat"><span>Theme groups</span><strong>${themes.length}</strong><small>overlapping categories</small></div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-heading"><strong>How does the feedback feel?</strong><span>Click a segment to explore</span></div>
+          <div class="sentiment-strip" aria-label="Sentiment distribution">
+            ${sentimentNames.filter(name => counts[name]).map(name => `
+              <button class="sentiment-segment" data-sentiment="${name}"
+                style="flex:${counts[name]};background:${colors[name]}"
+                aria-label="Filter ${counts[name]} ${name.toLowerCase()} responses"></button>`).join("")}
+          </div>
+          <div class="sentiment-legend">
+            ${sentimentNames.map(name => `
+              <button class="legend-button" data-sentiment="${name}" aria-pressed="${sentimentFilter === name}">
+                <i style="background:${colors[name]}"></i>${name}<b>${counts[name]}</b>
+              </button>`).join("")}
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="card-heading"><strong>What keeps coming up?</strong><span>Click a theme to drill down</span></div>
+          ${themes.map(([name, count]) => `
+            <button class="theme-row" data-theme="${escapeHTML(name)}" aria-pressed="${themeFilter === name}">
+              <span class="theme-top"><span>${escapeHTML(name)}</span><small>${count} / ${analyzed.length}</small></span>
+              <div class="bar-track"><div class="bar" style="width:${count / analyzed.length * 100}%"></div></div>
+            </button>`).join("")}
+        </div>
+        <p class="hint">Charts show the full collection; filters narrow the response list only. A response may match multiple themes. ${corrections} sentiment label${corrections === 1 ? "" : "s"} manually overridden.</p>`;
+
+      document.querySelectorAll("[data-sentiment]").forEach(button =>
+        button.addEventListener("click", () => setSentimentFilter(button.dataset.sentiment)));
+      document.querySelectorAll("[data-theme]").forEach(button =>
+        button.addEventListener("click", () => setThemeFilter(button.dataset.theme)));
+    }
+
+    function renderFilters() {
+      $("#filters").innerHTML = `
+        ${sentimentFilter ? `<button class="filter-chip" id="clear-sentiment">${escapeHTML(sentimentFilter)} ×</button>` : ""}
+        ${themeFilter ? `<button class="filter-chip" id="clear-theme">${escapeHTML(themeFilter)} ×</button>` : ""}
+        ${sentimentFilter || themeFilter || $("#search").value ? `<button class="clear-filters" id="clear-all">Clear filters</button>` : ""}`;
+      if ($("#clear-sentiment")) $("#clear-sentiment").onclick = () => {
+        sentimentFilter = ""; renderInsights(); renderResponses();
+      };
+      if ($("#clear-theme")) $("#clear-theme").onclick = () => {
+        themeFilter = ""; renderInsights(); renderResponses();
+      };
+      if ($("#clear-all")) $("#clear-all").onclick = () => {
+        sentimentFilter = ""; themeFilter = ""; focusedId = ""; $("#search").value = "";
+        renderInsights(); renderResponses();
+      };
+    }
+
+    function renderResponses() {
+      const search = $("#search").value.toLowerCase().trim();
+      const filtered = analyzed.filter(row =>
+        (!sentimentFilter || row.sentiment === sentimentFilter) &&
+        (!themeFilter || row.themes.includes(themeFilter)) &&
+        (!search || `${row.id} ${row.text}`.toLowerCase().includes(search)));
+
+      $("#result-count").textContent = analyzed.length ? `${filtered.length} / ${analyzed.length}` : "0 responses";
+      renderFilters();
+
+      if (!filtered.length) {
+        $("#responses").innerHTML = `<div class="empty"><div class="empty-icon">${icon("chat")}</div>
+          <strong>${analyzed.length ? "No matching responses." : "The evidence stays visible."}</strong>
+          <p>${analyzed.length ? "Clear a filter or try a different search." : "After analysis, inspect quotes, explore matched cues, and correct sentiment labels here."}</p></div>`;
+        return;
+      }
+
+      $("#responses").innerHTML = filtered.map(row => `
+        <article class="response ${focusedId === row.id ? "focused" : ""}" id="response-${row.id}" tabindex="-1">
+          <div class="response-top">
+            <span class="response-id">${row.id}</span>
+            <span class="sentiment-label"><i style="background:${colors[row.sentiment]}"></i>${row.sentiment}${row.override ? " · reviewed" : ""}</span>
+          </div>
+          <p>${escapeHTML(row.text)}</p>
+          <div class="response-tags">
+            ${row.themes.map(theme => `<button data-response-theme="${escapeHTML(theme)}">${escapeHTML(theme)}</button>`).join("")}
+          </div>
+          <details>
+            <summary>Inspect cues & correct label</summary>
+            <p>Positive cues: ${escapeHTML(row.positive.join(", ") || "none")}<br>
+              Negative cues: ${escapeHTML(row.negative.join(", ") || "none")}<br>
+              Automatic label: ${row.auto}. Mixed means both cue types were detected.</p>
+            <label for="override-${row.id}">Your sentiment assessment</label>
+            <select id="override-${row.id}" data-override="${row.id}">
+              <option value="auto" ${!row.override ? "selected" : ""}>Use automatic label (${row.auto})</option>
+              ${sentimentNames.map(name => `<option value="${name}" ${row.override && row.sentiment === name ? "selected" : ""}>${name} - manual</option>`).join("")}
+            </select>
+          </details>
+        </article>`).join("");
+
+      document.querySelectorAll("[data-response-theme]").forEach(button =>
+        button.addEventListener("click", () => setThemeFilter(button.dataset.responseTheme)));
+
+      document.querySelectorAll("[data-override]").forEach(select => {
+        select.addEventListener("change", () => {
+          const row = analyzed.find(item => item.id === select.dataset.override);
+          row.override = select.value !== "auto";
+          row.sentiment = row.override ? select.value : row.auto;
+          renderInsights();
+          renderResponses();
+          announce(`${row.id} updated to ${row.sentiment.toLowerCase()}. Charts and report recalculated.`);
+        });
+      });
+    }
+
+    function focusResponse(id) {
+      sentimentFilter = "";
+      themeFilter = "";
+      $("#search").value = "";
+      focusedId = id;
+      renderResponses();
+      showPanel("evidence");
+      const target = $(`#response-${id}`);
+      const scroller = $("#evidence-scroll");
+      if (target) {
+        target.focus({ preventScroll: true });
+        scroller.scrollTo({
+          top: scroller.scrollTop + target.getBoundingClientRect().top -
+            scroller.getBoundingClientRect().top - 8,
+          behavior: reducedMotion ? "auto" : "smooth"
+        });
+      }
+      announce(`${id} selected. Original response shown.`);
+    }
+
+    function setBusy(value) {
+      busy = value;
+      ["#analyze", "#reset", "#dataset", "#apply-input", "#raw-input", "#overview-tab", "#report-tab"].forEach(id => $(id).disabled = value);
+    }
+
+    async function analyze() {
+      if (busy) return;
+      if (!inputRows.length) {
+        $("#input-details").open = true;
+        showPanel("source");
+        announce("Add at least one response before analysis.");
+        return;
+      }
+      if (analyzed.some(row => row.override) &&
+          !confirm("Run analysis again? This replaces your manual sentiment corrections.")) return;
+
+      resetAnalysis();
+      setBusy(true);
+      showPanel("insights");
+      $("#analysis-state").textContent = "Processing";
+      $("#analyze span").textContent = "Analyzing…";
+      $("#insights").innerHTML = `<div class="empty"><div class="empty-icon">${icon("spark")}</div>
+        <strong>Listening for the patterns…</strong><p id="processing-message">Preparing the response collection.</p>
+        <div class="skeleton"></div><div class="skeleton" style="width:80%"></div><div class="skeleton" style="width:60%"></div></div>`;
+
+      try {
+        const messages = [
+          `Reading ${inputRows.length} responses without deduplicating respondent entries…`,
+          "Identifying positive, negative, and mixed language cues…",
+          "Matching responses to the predefined theme vocabulary…",
+          "Assembling counts, source-linked examples, and a structured brief…"
+        ];
+
+        for (let i = 0; i < 4; i++) {
+          const agent = $(`[data-agent="${i}"]`);
+          agent.classList.add("active");
+          agent.querySelector(".agent-state").textContent = "Running";
+          $("#processing-message").textContent = messages[i];
+          announce(messages[i]);
+          await wait(700);
+          agent.classList.remove("active");
+          agent.classList.add("done");
+          agent.querySelector(".agent-state").textContent = "Done";
+        }
+
+        analyzed = inputRows.map((text, index) => ({
+          id: `R-${String(index + 1).padStart(3, "0")}`,
+          text,
+          ...classify(text)
+        }));
+
+        $("#search").disabled = false;
+        $("#analysis-state").textContent = "Analysis ready";
+        $("#analyze span").textContent = "Analyze again";
+        renderInsights();
+        renderResponses();
+        announce("Analysis ready. Click a theme or sentiment to explore the responses.");
+      } catch (error) {
+        $("#insights").textContent = "The demonstration could not finish. Please try again.";
+        $("#analysis-state").textContent = "Please retry";
+        $("#analyze span").textContent = "Try again";
+        announce("Analysis interrupted. Please retry.");
+        console.error(error);
+      } finally {
+        setBusy(false);
+        document.querySelectorAll(".agent").forEach(agent => agent.classList.remove("active"));
+      }
+    }
+
+    function downloadReport() {
+      if (!analyzed.length) return;
+      const report = summaryData();
+      const text = [
+        `# ${collectionName}`,
+        "",
+        "LOCAL DEMONSTRATION REPORT",
+        `Scope: all ${analyzed.length} analyzed responses. UI filters are not applied.`,
+        `Manual sentiment overrides: ${report.stats.corrections}.`,
+        "",
+        "## Sentiment snapshot",
+        report.summary,
+        "",
+        "## Themes",
+        report.themeSummary,
+        ...report.stats.themes.map(([theme, count]) => `- ${theme}: ${count}/${analyzed.length}`),
+        "",
+        "## Source-linked examples",
+        "Examples are the first matches in input order, not representative samples.",
+        ...report.quotes.map(item => `- ${item.theme} / ${item.row.id}: "${item.row.text}"`),
+        "",
+        "## Response appendix",
+        ...analyzed.map(row =>
+          `${row.id} | ${row.sentiment}${row.override ? " (manual override)" : " (automatic)"} | ${row.themes.join("; ")}\n${row.text}\n`),
+        "",
+        "## Interpretation limits",
+        "Local English keyword heuristics and template reporting; no live LLM or agent services.",
+        "Theme categories are predefined and can overlap. Neutral means no detected polarity cues.",
+        "Labels can miss context, sarcasm, negation, and nuance. No confidence estimates or statistical significance are calculated.",
+        "Validate findings with human review and the survey's sampling context before acting."
+      ].join("\n");
+
+      const url = URL.createObjectURL(new Blob([text], { type: "text/markdown;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "survey-feedback-report.md";
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      announce("Report downloaded with current labels and original responses.");
+    }
+
+    document.querySelectorAll("[data-panel]").forEach(button =>
+      button.addEventListener("click", () => showPanel(button.dataset.panel)));
+
+    $("#dataset").addEventListener("change", event => {
+      if (analyzed.length && !confirm("Switch collections? Current analysis and manual corrections will be cleared.")) {
+        event.target.value = currentDataset;
+        return;
+      }
+      currentDataset = event.target.value;
+      inputRows = currentDataset === "custom" ? [] : [...collections[currentDataset].responses];
+      collectionName = currentDataset === "custom" ? "Custom feedback collection" : collections[currentDataset].name;
+      $("#input-message").textContent = "";
+      $("#input-details").open = currentDataset === "custom";
+      updateSource();
+      resetAnalysis();
+      announce("Collection changed. Analyze when ready.");
+    });
+
+    $("#apply-input").addEventListener("click", () => {
+      const rows = $("#raw-input").value.split(/\r?\n/).map(row => row.trim()).filter(Boolean);
+      if (!rows.length || rows.length > 100 || rows.some(row => row.length > 1000)) {
+        $("#input-message").textContent = "Use 1–100 non-empty lines, with no more than 1,000 characters per response.";
+        return;
+      }
+      if (analyzed.length && !confirm("Replace the input collection? Current analysis and corrections will be cleared.")) return;
+      inputRows = rows;
+      currentDataset = "custom";
+      collectionName = "Custom feedback collection";
+      $("#dataset").value = "custom";
+      updateSource();
+      resetAnalysis();
+      $("#input-message").textContent = `${rows.length} responses loaded. Select Analyze feedback to process them.`;
+      announce(`${rows.length} responses loaded locally.`);
+    });
+
+    $("#search").addEventListener("input", () => {
+      focusedId = "";
+      renderResponses();
+    });
+
+    $("#overview-tab").addEventListener("click", () => {
+      if (busy) return;
+      view = "overview";
+      $("#overview-tab").setAttribute("aria-pressed", "true");
+      $("#report-tab").setAttribute("aria-pressed", "false");
+      renderInsights();
+    });
+
+    $("#report-tab").addEventListener("click", () => {
+      if (busy) return;
+      view = "report";
+      $("#overview-tab").setAttribute("aria-pressed", "false");
+      $("#report-tab").setAttribute("aria-pressed", "true");
+      renderInsights();
+    });
+
+    $("#reset").addEventListener("click", () => {
+      if (busy) return;
+      if (analyzed.length && !confirm("Clear the analysis and manual corrections? Your input responses will be kept.")) return;
+      resetAnalysis();
+      announce("Analysis reset. Input responses preserved.");
+    });
+
+    $("#analyze").addEventListener("click", analyze);
+    updateSource();
+    resetAnalysis();
+  </script>
+</body>
+</html>

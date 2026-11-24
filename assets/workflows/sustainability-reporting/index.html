@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#294753">
+  <title>Agentic Sustainability Reporting</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+
+    :root {
+      --teal: #294753;
+      --gold: #D09242;
+      --mist: #F3F6F5;
+      --surface: #E4ECEA;
+      --white: #FFFFFF;
+      --ink: #182B35;
+      --muted: #52646C;
+      --soft: #A9C5C8;
+      --pale: #FAECD9;
+      --border: rgba(41, 71, 83, .13);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--mist);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      font-size: 13px;
+    }
+    button, select { font: inherit; }
+    button, select, summary { cursor: pointer; }
+    button { color: inherit; }
+    button:disabled { cursor: wait; opacity: .65; }
+    :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    ::selection { background: var(--pale); }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { font-family: "Manrope", sans-serif; }
+    svg.icon {
+      width: 20px; height: 20px; flex-shrink: 0;
+      fill: none; stroke: currentColor; stroke-width: 1.7;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .app {
+      height: 100%;
+      max-width: 1600px;
+      margin: auto;
+      display: grid;
+      grid-template-rows: 64px auto minmax(0, 1fr) 43px;
+      padding: 0 32px;
+    }
+    header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.03em; }
+    .brand-logo { display: grid; place-items: center; width: 33px; height: 33px; background: var(--teal); color: white; border-radius: 9px; }
+    .header-right { display: flex; align-items: center; gap: 16px; color: var(--muted); font-size: 11px; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 20px; padding: 5px 9px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+    .intro { padding: 23px 0 22px; display: flex; justify-content: space-between; align-items: center; gap: 25px; }
+    .eyebrow { color: var(--muted); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; font-weight: 800; }
+    .eyebrow b { color: var(--gold); margin-right: 8px; }
+    h1 { font-size: clamp(23px, 2.7vw, 38px); letter-spacing: -.05em; color: var(--teal); margin: 6px 0 9px; line-height: 1.15; }
+    h1 span { color: var(--gold); }
+    .description { color: var(--muted); max-width: 735px; line-height: 1.6; font-size: 12px; }
+    .hero-signal { flex-shrink: 0; display: flex; align-items: center; gap: 13px; border-left: 1px solid var(--border); padding-left: 25px; }
+    .signal-icon { width: 43px; height: 43px; display: grid; place-items: center; background: var(--pale); border-radius: 12px; color: var(--teal); }
+    .hero-signal strong { display: block; font-family: "Manrope", sans-serif; color: var(--teal); font-size: 16px; letter-spacing: -.04em; }
+    .hero-signal small { color: var(--muted); font-size: 10px; }
+
+    .workspace {
+      min-height: 0; overflow: hidden;
+      display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; box-shadow: 0 12px 40px #182b3506;
+    }
+    .toolbar { padding: 13px 19px; display: flex; justify-content: space-between; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); }
+    .toolbar-title { display: flex; align-items: center; gap: 10px; }
+    .toolbar-title > .icon { color: var(--teal); }
+    .toolbar-title strong { font-size: 12px; display: block; }
+    .toolbar-title small { font-size: 10px; color: var(--muted); }
+    .controls { display: flex; gap: 8px; align-items: center; }
+    select { border: 1px solid var(--border); border-radius: 7px; background: var(--mist); color: var(--teal); padding: 9px; font-size: 11px; max-width: 190px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 7px; padding: 10px 14px; background: var(--gold); font-size: 11px; font-weight: 800; }
+    .button .icon { width: 15px; height: 15px; }
+    .button:hover:not(:disabled) { filter: brightness(1.04); }
+    .reset { background: white; border: 1px solid var(--border); padding: 9px; color: var(--muted); }
+
+    .panes { min-height: 0; display: grid; grid-template-columns: .85fr 1fr 1.25fr; overflow: hidden; }
+    .pane { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: 20px; }
+    .pane + .pane { border-left: 1px solid var(--border); }
+    .pane.sources { background: #f3f6f566; }
+    .pane-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-shrink: 0; margin-bottom: 17px; }
+    .pane-heading h2 { font-size: 12px; color: var(--teal); display: flex; align-items: center; gap: 7px; }
+    .pane-heading h2 .icon { width: 16px; height: 16px; }
+    .mini-label { color: var(--muted); font-size: 9px; padding: 3px 6px; border-radius: 4px; background: var(--surface); white-space: nowrap; }
+    .scroll { overflow-y: auto; overflow-x: hidden; min-height: 0; scrollbar-width: thin; scrollbar-color: var(--soft) transparent; padding: 2px 3px 4px 0; }
+    .source-card { border: 1px solid var(--border); background: white; border-radius: 10px; padding: 13px; margin-bottom: 10px; transition: border-color .3s, box-shadow .3s; }
+    .source-card.active { border-color: var(--gold); box-shadow: 0 0 0 3px #d0924210; }
+    .source-top { display: flex; gap: 9px; align-items: center; }
+    .tile { width: 33px; height: 33px; display: grid; place-items: center; background: var(--mist); color: var(--teal); border-radius: 8px; flex-shrink: 0; }
+    .tile.amber { background: var(--pale); }
+    .tile .icon { width: 17px; height: 17px; }
+    .source-top strong { font-size: 11px; display: block; }
+    .source-top small { display: block; font-size: 9px; color: var(--muted); margin-top: 2px; }
+    .source-card p { font-size: 10px; line-height: 1.6; color: var(--muted); margin: 11px 0; }
+    .source-bottom { display: flex; justify-content: space-between; gap: 8px; font-size: 9px; color: var(--muted); }
+    .source-state { color: var(--teal); font-weight: 700; }
+    .source-note { border-radius: 8px; padding: 11px; background: var(--surface); color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .source-note strong { color: var(--teal); }
+
+    .orchestrator { background: var(--teal); color: white; border-radius: 11px; padding: 14px; position: relative; overflow: hidden; }
+    .orchestrator::after { content: ""; width: 90px; height: 90px; border: 1px solid #a9c5c82b; border-radius: 50%; position: absolute; right: -20px; top: -20px; }
+    .orchestrator-top { display: flex; align-items: center; gap: 9px; }
+    .orchestrator-top .icon { color: var(--soft); }
+    .orchestrator strong { font-size: 12px; }
+    .orchestrator p { color: var(--soft); font-size: 10px; margin-top: 7px; line-height: 1.5; }
+    .connector { width: 1px; height: 17px; background: var(--soft); margin: auto; position: relative; }
+    .connector::after { content: ""; position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); left: -2px; top: 0; opacity: 0; }
+    .running .connector::after { animation: travel 1.1s infinite; opacity: 1; }
+    @keyframes travel { to { transform: translateY(14px); } }
+    .agent { display: flex; gap: 10px; align-items: center; border: 1px solid var(--border); border-radius: 9px; padding: 11px; background: var(--white); transition: background .25s, border-color .25s; }
+    .agent strong { display: block; font-size: 11px; }
+    .agent small { display: block; color: var(--muted); font-size: 9px; margin-top: 3px; }
+    .agent .state { margin-left: auto; color: var(--muted); font-size: 9px; }
+    .agent.active { border-color: var(--gold); background: #faecd945; }
+    .agent.active .tile { background: var(--gold); }
+    .agent.active .state { color: var(--teal); }
+    .agent.done .tile { background: var(--teal); color: white; }
+    .agent.done .state { color: var(--teal); }
+    .activity { margin-top: 15px; border-top: 1px solid var(--border); padding-top: 12px; }
+    .activity-label { font-size: 9px; color: var(--muted); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    #activity-text { font-family: ui-monospace, monospace; font-size: 9px; color: var(--teal); line-height: 1.7; margin-top: 7px; overflow-wrap: anywhere; }
+
+    .report-pane { background: #f3f6f533; }
+    .report-sheet { border: 1px solid var(--border); border-radius: 10px; background: white; min-height: 100%; }
+    .report-head { padding: 17px 17px 13px; border-bottom: 1px solid var(--border); }
+    .report-head .eyebrow { font-size: 8px; color: var(--gold); }
+    .report-head h3 { font-size: 20px; color: var(--teal); letter-spacing: -.045em; margin: 6px 0; line-height: 1.2; }
+    .report-meta { color: var(--muted); font-size: 9px; }
+    .report-body { padding: 16px 17px; }
+    .empty { text-align: center; padding: 24px 5px; }
+    .empty-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 15px; background: var(--mist); color: var(--soft); border-radius: 14px; }
+    .empty-icon .icon { width: 27px; height: 27px; }
+    .empty strong { display: block; color: var(--teal); font-size: 12px; margin-bottom: 7px; }
+    .empty p { font-size: 11px; color: var(--muted); line-height: 1.7; max-width: 240px; margin: auto; }
+    .preview-lines { margin: 23px auto 0; max-width: 235px; }
+    .preview-lines div { background: var(--mist); height: 7px; border-radius: 5px; margin: 9px 0; }
+    .preview-lines div:nth-child(2) { width: 86%; }
+    .preview-lines div:nth-child(3) { width: 60%; }
+    .shimmer .preview-lines div { background: linear-gradient(90deg, var(--mist), var(--surface), var(--mist)); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 15px; }
+    .metric { background: var(--mist); padding: 12px; border-radius: 7px; }
+    .metric.highlight { background: var(--pale); }
+    .metric span { display: block; color: var(--muted); font-size: 9px; }
+    .metric strong { display: block; color: var(--teal); font: 800 25px "Manrope", sans-serif; letter-spacing: -.05em; margin: 4px 0; }
+    .metric small { font-size: 9px; color: var(--muted); }
+    .report-section { margin-top: 14px; }
+    .report-section h4 { color: var(--teal); font-size: 11px; margin: 0 0 6px; }
+    .report-section p { font-size: 10px; line-height: 1.75; color: var(--muted); }
+    .cite { background: var(--surface); border: 0; border-radius: 3px; padding: 1px 4px; color: var(--teal); font-size: 9px; }
+    .bars { margin: 12px 0; }
+    .bar-row { display: grid; grid-template-columns: 34px 1fr 62px; gap: 8px; align-items: center; font-size: 9px; color: var(--muted); margin-top: 9px; }
+    .bar-track { height: 7px; background: var(--mist); border-radius: 4px; overflow: hidden; }
+    .bar { height: 100%; background: var(--soft); border-radius: 4px; transform-origin: left; animation: expand .7s ease both; }
+    .bar.gold { background: var(--gold); }
+    @keyframes expand { from { transform: scaleX(0); } }
+    .review-note { padding: 10px; background: var(--pale); border-radius: 7px; font-size: 9px; color: var(--ink); line-height: 1.6; margin-top: 15px; }
+    .evidence { margin-top: 13px; color: var(--muted); font-size: 9px; line-height: 1.7; }
+    .evidence summary { color: var(--teal); font-weight: 700; }
+    .evidence p { margin-top: 7px; }
+    .evidence code { display: block; background: var(--mist); padding: 8px; border-radius: 5px; white-space: pre-wrap; overflow-wrap: anywhere; margin: 7px 0; font-size: 9px; }
+    .report-appear { animation: appear .4s ease both; }
+    @keyframes appear { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .workspace-footer { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 10px 18px; border-top: 1px solid var(--border); font-size: 9px; color: var(--muted); }
+    .progress-group { display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+    .progress-track { width: 65px; height: 4px; background: var(--surface); border-radius: 5px; overflow: hidden; }
+    #progress { width: 0; height: 100%; background: var(--gold); transition: width .4s; }
+    footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; color: var(--muted); font-size: 9px; }
+    .tech { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tech span + span::before { content: "·"; margin-right: 7px; color: var(--gold); }
+    .mobile-tabs { display: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+    @media (min-width: 1100px) and (min-height: 850px) {
+      .intro { padding-block: 32px; }
+      .pane { padding: 24px; }
+      .source-card { padding: 17px; margin-bottom: 14px; }
+      .agent { padding: 15px 12px; }
+      .connector { height: 22px; }
+      .report-body { padding: 20px; }
+      .report-section p { font-size: 12px; }
+    }
+    @media (max-width: 1100px) {
+      .app { padding-inline: 20px; }
+      .hero-signal { display: none; }
+      .pane { padding: 15px; }
+      .panes { grid-template-columns: .85fr 1fr 1.15fr; }
+      .agent { gap: 7px; padding: 9px; }
+      .agent .state { font-size: 8px; }
+      .toolbar-title small { display: none; }
+    }
+    @media (max-width: 780px) {
+      .app { padding: 0 12px; grid-template-rows: 52px auto minmax(0, 1fr) 30px; }
+      .header-right > span:first-child { display: none; }
+      .brand { font-size: 12px; }
+      .intro { padding: 15px 0; }
+      .description { font-size: 10px; line-height: 1.5; }
+      h1 { font-size: 25px; margin-bottom: 6px; }
+      .workspace { grid-template-rows: auto auto minmax(0, 1fr) auto; border-radius: 12px; }
+      .toolbar { padding: 10px; }
+      .toolbar-title { display: none; }
+      .controls { width: 100%; }
+      select { flex: 1; max-width: none; min-width: 0; width: 0; }
+      .button { padding: 10px; }
+      .mobile-tabs { display: flex; padding: 0 10px; border-bottom: 1px solid var(--border); }
+      .mobile-tabs button { flex: 1; border: 0; border-bottom: 2px solid transparent; padding: 10px 3px; background: transparent; color: var(--muted); font-size: 10px; }
+      .mobile-tabs button[aria-pressed="true"] { border-color: var(--gold); color: var(--teal); font-weight: 800; }
+      .panes { display: flex; }
+      .pane { display: none; width: 100%; border: 0 !important; }
+      .pane.visible { display: flex; }
+      .pane-heading { margin-bottom: 10px; }
+      .workspace-footer { font-size: 8px; padding: 8px 10px; gap: 8px; }
+      .progress-track { width: 35px; }
+      .footer-end { display: none; }
+      .tech { gap: 4px; font-size: 8px; }
+      .tech span + span::before { margin-right: 4px; }
+      .report-section p { font-size: 12px; }
+    }
+    @media (max-height: 640px) {
+      .app { grid-template-rows: 45px auto minmax(0, 1fr) 25px; }
+      .intro { padding-block: 10px; }
+      h1 { font-size: 24px; margin: 4px 0; }
+      .description { display: none; }
+      .toolbar { padding-block: 8px; }
+      .pane { padding-top: 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 3C9 2 3 7 5 14s14 8 15-11Z M4 21 15 10M8 17v-5M12 13h5"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="8" rx="2"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5M5 5l3 3M16 16l3 3M19 5l-3 3"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4M18 4h4"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8ZM2 12l10 5 10-5M2 16l10 5 10-5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  </svg>
+
+  <div class="app">
+    <header>
+      <div class="brand">
+        <span class="brand-logo"><svg class="icon" aria-hidden="true"><use href="#i-leaf"/></svg></span>
+        Applied intelligence<span style="color:var(--gold)">.</span>
+      </div>
+      <div class="header-right">
+        <span>Enterprise AI & Agents</span>
+        <span class="badge"><span class="dot"></span> INTERACTIVE DEMO</span>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="title">
+      <div>
+        <div class="eyebrow"><b>PROJECT 04</b> Reporting automation</div>
+        <h1>Agentic Sustainability <span>Reporting.</span></h1>
+        <p class="description">An AI-driven workflow combining RAG, SQL agents, and browser agents to retrieve, analyze, and synthesize information across fragmented internal and external sources.</p>
+      </div>
+      <div class="hero-signal">
+        <div class="signal-icon"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></div>
+        <div><strong>Sources → Reports</strong><small>Connected evidence. Clearer reporting.</small></div>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <div class="toolbar">
+        <div class="toolbar-title">
+          <svg class="icon" aria-hidden="true"><use href="#i-network"/></svg>
+          <div><strong>Reporting workspace</strong><small>One brief. Multiple specialized agents.</small></div>
+        </div>
+        <div class="controls">
+          <label class="sr-only" for="topic">Report topic</label>
+          <select id="topic">
+            <option value="energy">Energy performance · 2024</option>
+            <option value="water">Water performance · 2024</option>
+          </select>
+          <button class="button" id="run">
+            <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg>
+            <span>Build report</span>
+          </button>
+          <button class="button reset" id="reset" aria-label="Reset demonstration" title="Reset demonstration">
+            <svg class="icon" aria-hidden="true"><use href="#i-reset"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <nav class="mobile-tabs" aria-label="Workspace panels">
+        <button data-panel="sources" aria-pressed="false">01 · Sources</button>
+        <button data-panel="workflow" aria-pressed="true">02 · Agents</button>
+        <button data-panel="report" aria-pressed="false">03 · Report</button>
+      </nav>
+
+      <div class="panes">
+        <section class="pane sources" id="panel-sources" aria-labelledby="sources-title">
+          <div class="pane-heading">
+            <h2 id="sources-title"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg> Connected sources</h2>
+            <span class="mini-label">3 sample sources</span>
+          </div>
+          <div class="scroll">
+            <article class="source-card" id="source-rag">
+              <div class="source-top">
+                <div class="tile"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></div>
+                <div><strong>Internal knowledge</strong><small>RAG · Document retrieval</small></div>
+              </div>
+              <p id="document-description"></p>
+              <div class="source-bottom"><span>Policy & methodology</span><span class="source-state">Ready</span></div>
+            </article>
+
+            <article class="source-card" id="source-sql">
+              <div class="source-top">
+                <div class="tile"><svg class="icon" aria-hidden="true"><use href="#i-database"/></svg></div>
+                <div><strong>Operational data</strong><small>SQL agent · Structured analysis</small></div>
+              </div>
+              <p id="sql-description"></p>
+              <div class="source-bottom"><span>2 sites · 2 years</span><span class="source-state">Ready</span></div>
+            </article>
+
+            <article class="source-card" id="source-browser">
+              <div class="source-top">
+                <div class="tile amber"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg></div>
+                <div><strong>External reference</strong><small>Browser agent · Reference discovery</small></div>
+              </div>
+              <p>Illustrative reporting guidance on units, reporting boundaries, and transparent comparisons.</p>
+              <div class="source-bottom"><span>Local reference fixture</span><span class="source-state">Ready</span></div>
+            </article>
+
+            <div class="source-note"><strong>A fragmented-source workflow.</strong><br>Documents establish context, data quantifies performance, and reference material informs the reporting structure.</div>
+          </div>
+        </section>
+
+        <section class="pane visible" id="panel-workflow" aria-labelledby="workflow-title">
+          <div class="pane-heading">
+            <h2 id="workflow-title"><svg class="icon" aria-hidden="true"><use href="#i-network"/></svg> Agent orchestration</h2>
+            <span class="mini-label" id="workflow-state">Standby</span>
+          </div>
+          <div class="scroll" id="workflow">
+            <div class="orchestrator">
+              <div class="orchestrator-top">
+                <svg class="icon" aria-hidden="true"><use href="#i-network"/></svg>
+                <strong>Reporting orchestrator</strong>
+              </div>
+              <p id="brief">Compare annual performance, retrieve context, and prepare an evidence-linked draft.</p>
+            </div>
+
+            <div class="connector"></div>
+            <div class="agent" id="agent-rag">
+              <div class="tile"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></div>
+              <div><strong>RAG agent</strong><small>Retrieve policy & scope</small></div>
+              <span class="state">Queued</span>
+            </div>
+            <div class="connector"></div>
+            <div class="agent" id="agent-sql">
+              <div class="tile"><svg class="icon" aria-hidden="true"><use href="#i-database"/></svg></div>
+              <div><strong>SQL agent</strong><small>Aggregate & compare metrics</small></div>
+              <span class="state">Queued</span>
+            </div>
+            <div class="connector"></div>
+            <div class="agent" id="agent-browser">
+              <div class="tile"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg></div>
+              <div><strong>Browser agent</strong><small>Gather reference guidance</small></div>
+              <span class="state">Queued</span>
+            </div>
+            <div class="connector"></div>
+            <div class="agent" id="agent-synthesis">
+              <div class="tile amber"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg></div>
+              <div><strong>Synthesis agent</strong><small>Compose a source-linked draft</small></div>
+              <span class="state">Queued</span>
+            </div>
+
+            <div class="activity">
+              <div class="activity-label"><span class="dot"></span> EXECUTION TRACE</div>
+              <p id="activity-text">Awaiting reporting brief…</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="pane report-pane" id="panel-report" aria-labelledby="report-title">
+          <div class="pane-heading">
+            <h2 id="report-title"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg> Report preview</h2>
+            <span class="mini-label" id="report-state">Not generated</span>
+          </div>
+          <div class="scroll" id="report-scroll">
+            <article class="report-sheet">
+              <div class="report-head">
+                <div class="eyebrow">SUSTAINABILITY BRIEF / SAMPLE ORGANIZATION</div>
+                <h3 id="report-heading">Energy performance</h3>
+                <div class="report-meta">FY 2024 · Two-site sample boundary · Demonstration</div>
+              </div>
+              <div class="report-body" id="report-body"></div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <div class="workspace-footer">
+        <span>Local simulation · Fictional data · No live SQL, browsing, or LLM calls</span>
+        <div class="progress-group">
+          <span id="progress-label">Ready</span>
+          <div class="progress-track" aria-hidden="true"><div id="progress"></div></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="tech">
+        <span>RAG</span><span>LangChain</span><span>SQL Agents</span><span>Browser Agents</span><span>Information Synthesis</span>
+      </div>
+      <span class="footer-end">Purpose-built for connected reporting.</span>
+    </footer>
+    <div class="sr-only" id="announcement" role="status" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const $ = selector => document.querySelector(selector);
+    const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = ms => new Promise(resolve => setTimeout(resolve, reducedMotion ? 80 : ms));
+    const format = number => number.toLocaleString("en-US");
+    let running = false;
+
+    // Fictional local fixtures. These are not production results.
+    const datasets = {
+      energy: {
+        title: "Energy performance",
+        unit: "MWh",
+        table: "energy_usage",
+        column: "energy_mwh",
+        description: "Energy methodology: report purchased electricity for North and South sites in MWh.",
+        policy: "Include purchased electricity for North and South sites only. Exclude fuels, other facilities, and supplier energy. Use the same boundary for both years.",
+        reference: "Sample guidance: report energy totals with explicit units and organizational boundaries. Explain changes without assuming a reduction in energy use proves an emissions reduction.",
+        caveat: "This draft covers purchased electricity only. It is not a total-energy inventory, emissions calculation, or compliance assessment.",
+        rows: [
+          { site: "North", year: 2023, value: 680 },
+          { site: "South", year: 2023, value: 520 },
+          { site: "North", year: 2024, value: 590 },
+          { site: "South", year: 2024, value: 430 }
+        ]
+      },
+      water: {
+        title: "Water performance",
+        unit: "m³",
+        table: "water_usage",
+        column: "water_m3",
+        description: "Water methodology: report municipal water withdrawals for North and South sites in m³.",
+        policy: "Include municipal water withdrawals for North and South sites only. Exclude other facilities, other water sources, and supplier withdrawals. Use the same boundary for both years.",
+        reference: "Sample guidance: distinguish water withdrawal from consumption and discharge. State units and site boundaries; do not infer water-stress impacts from withdrawal totals alone.",
+        caveat: "This draft measures municipal withdrawals, not water consumption or water-stress impact. No compliance assessment has been performed.",
+        rows: [
+          { site: "North", year: 2023, value: 7600 },
+          { site: "South", year: 2023, value: 4900 },
+          { site: "North", year: 2024, value: 6900 },
+          { site: "South", year: 2024, value: 4350 }
+        ]
+      }
+    };
+
+    function showPanel(name) {
+      document.querySelectorAll(".pane").forEach(pane => {
+        pane.classList.toggle("visible", pane.id === `panel-${name}`);
+      });
+      document.querySelectorAll("[data-panel]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.panel === name));
+      });
+    }
+
+    document.querySelectorAll("[data-panel]").forEach(button => {
+      button.addEventListener("click", () => showPanel(button.dataset.panel));
+    });
+
+    function placeholder(loading = false) {
+      return `
+        <div class="empty ${loading ? "shimmer" : ""}">
+          <div class="empty-icon">${icon(loading ? "network" : "file")}</div>
+          <strong>${loading ? "Connecting the evidence…" : "Your next report starts here."}</strong>
+          <p>${loading
+            ? "The agents are gathering context, calculating metrics, and assembling a draft."
+            : "Choose a topic and build a report to see fragmented sources become a structured narrative."}</p>
+          <div class="preview-lines" aria-hidden="true"><div></div><div></div><div></div></div>
+        </div>`;
+    }
+
+    function reset() {
+      if (running) return;
+      const data = datasets[$("#topic").value];
+
+      $("#document-description").textContent = data.description;
+      $("#sql-description").textContent =
+        `${data.table}: four sample records for North and South sites, covering 2023 and 2024.`;
+      $("#report-heading").textContent = data.title;
+      $("#report-body").innerHTML = placeholder();
+      $("#report-state").textContent = "Not generated";
+      $("#workflow-state").textContent = "Standby";
+      $("#activity-text").textContent = "Awaiting reporting brief…";
+      $("#progress-label").textContent = "Ready";
+      $("#progress").style.width = "0%";
+      $("#run span").textContent = "Build report";
+      $("#report-scroll").scrollTop = 0;
+
+      document.querySelectorAll(".agent").forEach(agent => {
+        agent.classList.remove("active", "done");
+        agent.querySelector(".state").textContent = "Queued";
+      });
+      document.querySelectorAll(".source-card").forEach(source => {
+        source.classList.remove("active");
+        source.querySelector(".source-state").textContent = "Ready";
+      });
+    }
+
+    function setProgress(step) {
+      $("#progress").style.width = `${step * 25}%`;
+      $("#progress-label").textContent = `${step}/4 complete`;
+    }
+
+    async function executeAgent(name, message, index) {
+      const agent = $(`#agent-${name}`);
+      const source = $(`#source-${name}`);
+
+      agent.classList.add("active");
+      agent.querySelector(".state").textContent = "Running";
+      if (source) {
+        source.classList.add("active");
+        source.querySelector(".source-state").textContent = "Reading";
+      }
+
+      $("#activity-text").textContent = message;
+      $("#announcement").textContent = `${name} agent running.`;
+      await wait(name === "synthesis" ? 850 : 1050);
+
+      agent.classList.remove("active");
+      agent.classList.add("done");
+      agent.querySelector(".state").textContent = "Done";
+      if (source) {
+        source.classList.remove("active");
+        source.querySelector(".source-state").textContent = "Retrieved";
+      }
+      setProgress(index);
+    }
+
+    function renderReport(data, previous, current) {
+      const decrease = previous - current;
+      const percentage = (decrease / previous * 100).toFixed(1);
+      const query = `SELECT year, SUM(${data.column}) AS total
+FROM ${data.table}
+WHERE site IN ('North', 'South')
+  AND year IN (2023, 2024)
+GROUP BY year;`;
+
+      // Values inserted here are exclusively from the static local fixtures.
+      $("#report-body").innerHTML = `
+        <div class="report-appear">
+          <div class="metrics">
+            <div class="metric">
+              <span>2024 reported total</span>
+              <strong>${format(current)}</strong>
+              <small>${data.unit} · North + South</small>
+            </div>
+            <div class="metric highlight">
+              <span>Year-over-year change</span>
+              <strong>−${percentage}%</strong>
+              <small>${format(decrease)} ${data.unit} lower</small>
+            </div>
+          </div>
+
+          <section class="report-section">
+            <h4>01 / Performance summary</h4>
+            <p>Across the two sample sites, the reported total decreased from
+              ${format(previous)} ${data.unit} in 2023 to ${format(current)} ${data.unit}
+              in 2024. This represents a ${percentage}% reduction within the
+              defined reporting boundary. <button class="cite" data-evidence="2" aria-label="Inspect operational data source">[2]</button>
+            </p>
+            <div class="bars" aria-label="Annual totals comparison">
+              <div class="bar-row"><span>2023</span><div class="bar-track"><div class="bar" style="width:100%"></div></div><span>${format(previous)} ${data.unit}</span></div>
+              <div class="bar-row"><span>2024</span><div class="bar-track"><div class="bar gold" style="width:${current / previous * 100}%"></div></div><span>${format(current)} ${data.unit}</span></div>
+            </div>
+          </section>
+
+          <section class="report-section">
+            <h4>02 / Scope & interpretation</h4>
+            <p>${data.policy} <button class="cite" data-evidence="1" aria-label="Inspect methodology source">[1]</button>
+              The figures alone do not establish why usage changed. Additional operational context is needed before attributing the reduction to efficiency initiatives.
+            </p>
+          </section>
+
+          <section class="report-section">
+            <h4>03 / Reporting considerations</h4>
+            <p>${data.reference.replace("Sample guidance: ", "")}
+              <button class="cite" data-evidence="3" aria-label="Inspect reference guidance source">[3]</button>
+            </p>
+          </section>
+
+          <div class="review-note"><strong>Draft · Human review required.</strong><br>${data.caveat} All figures and references are fictional demo inputs.</div>
+
+          <details class="evidence" id="evidence-1">
+            <summary>[1] Internal methodology · Sample document</summary>
+            <p>${data.policy}</p>
+          </details>
+          <details class="evidence" id="evidence-2">
+            <summary>[2] Operational data · Calculation trace</summary>
+            <p>${data.rows.map(row => `${row.site} / ${row.year}: ${format(row.value)} ${data.unit}`).join("<br>")}</p>
+            <code>${query}</code>
+            <p>Illustrative SQL only; aggregation runs in JavaScript.<br>
+            Reduction = (${format(previous)} − ${format(current)}) ÷ ${format(previous)} × 100 = ${percentage}%.</p>
+          </details>
+          <details class="evidence" id="evidence-3">
+            <summary>[3] External guidance · Local sample fixture</summary>
+            <p>${data.reference}</p>
+            <p>This is authored demo text, not a fetched webpage or an authoritative reporting standard.</p>
+          </details>
+        </div>`;
+
+      document.querySelectorAll("[data-evidence]").forEach(button => {
+        button.addEventListener("click", () => {
+          const details = $(`#evidence-${button.dataset.evidence}`);
+          details.open = true;
+          details.querySelector("summary").focus({ preventScroll: true });
+          const scroller = $("#report-scroll");
+          const offset = details.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+          scroller.scrollTo({
+            top: scroller.scrollTop + offset - 10,
+            behavior: reducedMotion ? "auto" : "smooth"
+          });
+        });
+      });
+    }
+
+    async function buildReport() {
+      if (running) return;
+      reset();
+      running = true;
+
+      const data = datasets[$("#topic").value];
+      const controls = [$("#run"), $("#topic"), $("#reset")];
+      controls.forEach(control => control.disabled = true);
+      $("#run span").textContent = "Building…";
+      $("#workflow").classList.add("running");
+      $("#workflow-state").textContent = "Processing";
+      $("#report-state").textContent = "Gathering evidence";
+      $("#report-body").innerHTML = placeholder(true);
+      showPanel("workflow");
+
+      try {
+        await executeAgent("rag", "RETRIEVE → methodology / scope / comparison boundary", 1);
+
+        const previous = data.rows.filter(row => row.year === 2023)
+          .reduce((total, row) => total + row.value, 0);
+        const current = data.rows.filter(row => row.year === 2024)
+          .reduce((total, row) => total + row.value, 0);
+
+        await executeAgent(
+          "sql",
+          `AGGREGATE → ${data.table}\n2023: ${format(previous)} ${data.unit} | 2024: ${format(current)} ${data.unit}`,
+          2
+        );
+        await executeAgent("browser", "REFERENCE → load local guidance fixture / units / reporting limitations", 3);
+        $("#report-state").textContent = "Composing draft";
+        await executeAgent("synthesis", "SYNTHESIZE → metrics + scope + reference guidance + source links", 4);
+
+        renderReport(data, previous, current);
+        $("#workflow-state").textContent = "Complete";
+        $("#report-state").textContent = "Draft · Review required";
+        $("#activity-text").textContent = "COMPLETE → 3 sources linked / 4 records aggregated / draft ready";
+        $("#run span").textContent = "Rebuild report";
+        $("#announcement").textContent = `${data.title} draft ready. Three sample sources linked. Human review required.`;
+        showPanel("report");
+      } catch (error) {
+        $("#report-body").textContent = "The demonstration could not finish. Please reset and try again.";
+        $("#report-state").textContent = "Please retry";
+        $("#workflow-state").textContent = "Interrupted";
+        $("#run span").textContent = "Try again";
+        $("#announcement").textContent = "The demonstration could not finish.";
+        console.error(error);
+      } finally {
+        running = false;
+        controls.forEach(control => control.disabled = false);
+        $("#workflow").classList.remove("running");
+      }
+    }
+
+    $("#run").addEventListener("click", buildReport);
+    $("#reset").addEventListener("click", () => {
+      reset();
+      $("#announcement").textContent = "Demonstration reset.";
+    });
+    $("#topic").addEventListener("change", reset);
+    reset();
+  </script>
+</body>
+</html>

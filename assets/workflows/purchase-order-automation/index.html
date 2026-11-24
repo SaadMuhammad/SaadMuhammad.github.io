@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document to SAP Workflow</title>
+
+<style>
+:root {
+  --teal:#294753;
+  --gold:#D09242;
+  --mist:#F3F6F5;
+  --surface:#E4ECEA;
+  --white:#FFFFFF;
+  --ink:#182B35;
+  --secondary:#52646C;
+  --soft:#A9C5C8;
+  --pale:#FAECD9;
+  --border:#D7E2E0;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:var(--mist);
+  color:var(--ink);
+  font:13px/1.4 Inter,system-ui,-apple-system,sans-serif;
+}
+
+button,select,input { font:inherit; }
+button,select {
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:7px 11px;
+  background:var(--white);
+  color:var(--teal);
+}
+
+button { cursor:pointer; font-weight:650; }
+button:hover:not(:disabled) { border-color:var(--gold); }
+button:disabled { opacity:.45; cursor:not-allowed; }
+button.primary { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
+
+.app {
+  height:100dvh;
+  max-width:1600px;
+  margin:auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:14px 22px;
+}
+
+header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  flex-shrink:0;
+}
+
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-icon {
+  display:grid;
+  place-items:center;
+  width:37px;
+  height:37px;
+  background:var(--teal);
+  color:var(--white);
+  border-radius:10px;
+  font-size:23px;
+}
+
+h1 { margin:0; font-size:23px; color:var(--teal); letter-spacing:-.7px; }
+h2 { margin:0; font-size:13px; color:var(--teal); }
+.muted { color:var(--secondary); }
+.small { font-size:11px; }
+
+.header-status {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  color:var(--secondary);
+}
+.status-dot { width:8px; height:8px; background:var(--soft); border-radius:50%; }
+.status-dot.active { background:var(--gold); }
+.status-dot.complete { background:var(--teal); }
+.status-dot.failed { background:var(--ink); }
+
+.panel {
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+
+.controls { padding:11px 14px; flex-shrink:0; }
+.toolbar,.actions,.settings,.progress-label,.metrics,.legend {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.toolbar { justify-content:space-between; flex-wrap:wrap; }
+.actions,.settings { flex-wrap:wrap; }
+.settings { gap:14px; color:var(--secondary); font-size:11px; }
+.settings label { display:flex; align-items:center; gap:6px; }
+.settings select { padding:6px 8px; max-width:185px; }
+input[type=checkbox] { accent-color:var(--teal); }
+
+.progress-label {
+  justify-content:space-between;
+  margin-top:10px;
+  margin-bottom:5px;
+  font-size:11px;
+  color:var(--secondary);
+}
+.progress-label strong { color:var(--teal); }
+.track { height:5px; border-radius:5px; background:var(--surface); overflow:hidden; }
+.track div { height:100%; width:0; background:var(--gold); transition:width .1s linear; }
+
+.metrics {
+  gap:22px;
+  padding:0 3px;
+  flex-shrink:0;
+  font-size:11px;
+  color:var(--secondary);
+}
+.metrics strong { color:var(--teal); font-size:13px; margin-left:5px; }
+.metrics .run-id { margin-left:auto; }
+
+.workflow {
+  padding:12px 15px;
+  flex-shrink:0;
+}
+
+.section-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px 25px;
+}
+
+/* Reading order: each row moves left → right. */
+.step-wrap { position:relative; min-width:0; }
+
+.step-wrap:not(:nth-child(4n)):not(:last-child)::after {
+  content:"→";
+  position:absolute;
+  right:-20px;
+  top:28px;
+  color:var(--soft);
+  font-size:20px;
+  font-weight:700;
+}
+
+/* Explicit row continuation labels avoid a misleading snake route. */
+.step-wrap:nth-child(5)::before,
+.step-wrap:nth-child(9)::before {
+  content:"↓ CONTINUE";
+  position:absolute;
+  left:1px;
+  top:-14px;
+  color:var(--secondary);
+  font-size:8px;
+  letter-spacing:.5px;
+}
+
+.step {
+  display:block;
+  width:100%;
+  height:82px;
+  text-align:left;
+  padding:10px 11px 8px;
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:9px;
+  position:relative;
+  overflow:hidden;
+  font-weight:normal;
+}
+
+.step.selected { box-shadow:0 0 0 2px var(--soft); }
+.step.running { border-color:var(--gold); background:var(--pale); }
+.step.done { background:var(--mist); }
+.step.skipped { border-style:dashed; }
+.step.failed { background:var(--pale); border:2px solid var(--ink); }
+.step.blocked { opacity:.45; }
+
+.step-top { display:flex; align-items:center; gap:9px; }
+.step-icon {
+  width:29px;
+  height:29px;
+  display:grid;
+  place-items:center;
+  background:var(--surface);
+  color:var(--teal);
+  border-radius:8px;
+  font-size:17px;
+  flex-shrink:0;
+}
+.running .step-icon { background:var(--gold); color:var(--ink); }
+.done .step-icon { background:var(--teal); color:var(--white); }
+.failed .step-icon { background:var(--ink); color:var(--white); }
+
+.step-title { font-size:12px; font-weight:700; color:var(--teal); }
+.step-service { color:var(--secondary); font-size:10px; }
+.step-bottom {
+  display:flex;
+  justify-content:space-between;
+  margin-top:6px;
+  font-size:9px;
+  color:var(--secondary);
+}
+.step-status { text-transform:uppercase; font-weight:700; letter-spacing:.4px; }
+.step-progress { position:absolute; bottom:0; left:0; height:3px; width:0; background:var(--gold); }
+.done .step-progress { background:var(--soft); }
+
+.outcome {
+  height:82px;
+  padding:10px 12px;
+  background:var(--surface);
+  border:1px dashed var(--soft);
+  border-radius:9px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:4px;
+}
+.outcome strong { color:var(--teal); font-size:12px; }
+.outcome span { font-size:10px; color:var(--secondary); }
+.outcome.success { border-style:solid; border-color:var(--teal); }
+.outcome.error { background:var(--pale); border-color:var(--ink); }
+
+.legend {
+  flex-wrap:wrap;
+  gap:13px;
+  font-size:10px;
+  color:var(--secondary);
+  margin-top:12px;
+}
+.legend-item { display:flex; align-items:center; gap:5px; }
+.swatch { width:9px; height:9px; border-radius:3px; background:var(--surface); border:1px solid var(--border); }
+.swatch.running { background:var(--gold); border-color:var(--gold); }
+.swatch.done { background:var(--teal); border-color:var(--teal); }
+.swatch.skipped { background:transparent; border:1px dashed var(--secondary); }
+.swatch.failed { background:var(--ink); border-color:var(--ink); }
+.swatch.blocked { opacity:.4; background:var(--soft); }
+.route { margin-left:auto; }
+
+.observability {
+  flex:1;
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.2fr);
+  gap:12px;
+}
+
+.observability .panel {
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.panel-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:10px 13px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.panel-header button { font-size:10px; padding:4px 8px; }
+
+.inspector-content {
+  padding:11px 13px;
+  min-height:0;
+  overflow:auto;
+}
+.inspector-title { font-size:13px; font-weight:700; color:var(--teal); }
+.inspector-description { margin:4px 0 8px; color:var(--secondary); font-size:11px; }
+.inspector-meta { display:flex; gap:15px; font-size:10px; color:var(--secondary); }
+
+pre {
+  margin:8px 0 0;
+  padding:9px;
+  border-radius:7px;
+  background:var(--mist);
+  color:var(--teal);
+  font-size:10px;
+  line-height:1.5;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+
+.logs { flex:1; min-height:0; overflow:auto; padding:0 12px; }
+.log {
+  display:grid;
+  grid-template-columns:58px 1fr;
+  gap:9px;
+  padding:8px 0;
+  border-bottom:1px solid var(--surface);
+  font-size:10px;
+}
+.log time { color:var(--secondary); }
+.log strong { color:var(--teal); display:block; }
+.log span { color:var(--secondary); overflow-wrap:anywhere; }
+.log.error { background:var(--pale); }
+.empty { padding:18px 0; text-align:center; color:var(--secondary); font-size:11px; }
+
+footer {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:9px;
+  color:var(--secondary);
+  flex-shrink:0;
+}
+
+.sr-only {
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+}
+
+@media (min-width:901px) and (max-height:760px) {
+  .app { gap:8px; padding:10px 18px; }
+  .step,.outcome { height:72px; }
+  .step { padding:7px 10px; }
+  .workflow { padding:9px 13px; }
+  .section-heading { margin-bottom:8px; }
+  .legend { margin-top:8px; }
+}
+
+/* Smaller screens retain readable cards rather than shrinking everything. */
+@media (max-width:900px) {
+  .app { height:auto; min-height:100dvh; padding:12px; }
+  .grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .step-wrap::after,.step-wrap::before { display:none; }
+  .step-wrap:not(:nth-child(3n)):not(:last-child)::after { display:block; }
+  .observability { flex:none; height:270px; }
+  .route { margin-left:0; }
+}
+@media (max-width:600px) {
+  h1 { font-size:20px; }
+  .grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 20px; }
+  .step-wrap::after { display:none!important; }
+  .step-wrap:nth-child(odd)::after { display:block!important; right:-17px; }
+  .observability { grid-template-columns:1fr; height:auto; }
+  .observability .panel { height:230px; }
+  .metrics { flex-wrap:wrap; gap:10px; }
+  .metrics .run-id { margin-left:0; }
+  .header-status { font-size:10px; }
+  footer { flex-wrap:wrap; }
+}
+@media (min-width:901px) and (max-height:610px) {
+  .app { height:auto; min-height:100dvh; }
+  .observability { flex:none; height:190px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  * { transition:none!important; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">⇄</div>
+      <h1>Document → SAP</h1>
+    </div>
+    <div class="header-status">
+      <span id="statusDot" class="status-dot"></span>
+      <span id="headerStatus">Ready to process</span>
+    </div>
+  </header>
+
+  <section class="panel controls" aria-label="Workflow controls">
+    <div class="toolbar">
+      <div class="actions">
+        <button id="start" class="primary">▶ Run workflow</button>
+        <button id="pause" disabled>Ⅱ Pause</button>
+        <button id="reset">↻ Reset</button>
+      </div>
+      <div class="settings">
+        <label>Speed
+          <select id="speed">
+            <option value=".5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+            <option value="4">4×</option>
+          </select>
+        </label>
+        <label>Failure
+          <select id="failure">
+            <option value="">None</option>
+          </select>
+        </label>
+        <label>
+          <input type="checkbox" id="correction" checked>
+          Correction required
+        </label>
+      </div>
+    </div>
+    <div class="progress-label">
+      <strong id="progressStatus">Waiting for execution</strong>
+      <span id="progressCount">0 / 11 stages resolved</span>
+    </div>
+    <div class="track" id="progress" role="progressbar"
+         aria-label="Workflow progress" aria-valuemin="0"
+         aria-valuemax="100" aria-valuenow="0">
+      <div id="progressFill"></div>
+    </div>
+  </section>
+
+  <div class="metrics" aria-label="Run metrics">
+    <span>Status<strong id="metricStatus">Idle</strong></span>
+    <span>Active time<strong id="elapsed">00:00</strong></span>
+    <span>Mock tokens<strong id="tokens">0</strong></span>
+    <span>Events<strong id="eventCount">0</strong></span>
+    <span class="run-id" id="runId">No active run</span>
+  </div>
+
+  <section class="panel workflow">
+    <div class="section-heading">
+      <h2>Processing workflow</h2>
+      <span class="muted small">Read left → right, then next row ↓</span>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="legend" aria-label="Workflow legend">
+      <strong>Legend</strong>
+      <span class="legend-item"><i class="swatch"></i>Pending</span>
+      <span class="legend-item"><i class="swatch running"></i>Running</span>
+      <span class="legend-item"><i class="swatch done"></i>Completed</span>
+      <span class="legend-item"><i class="swatch skipped"></i>Skipped</span>
+      <span class="legend-item"><i class="swatch failed"></i>Failed</span>
+      <span class="legend-item"><i class="swatch blocked"></i>Blocked</span>
+      <span class="route">Judge passes → skip correction · Failure → ✉ alert + exit</span>
+    </div>
+  </section>
+
+  <section class="observability" aria-label="Observability and event logs">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>◉ Stage inspector</h2>
+        <span class="small muted">Select a stage</span>
+      </div>
+      <div class="inspector-content">
+        <div id="inspectTitle" class="inspector-title"></div>
+        <p id="inspectDescription" class="inspector-description"></p>
+        <div class="inspector-meta">
+          <span>Status: <strong id="inspectStatus"></strong></span>
+          <span>Tokens: <strong id="inspectTokens"></strong></span>
+        </div>
+        <pre id="payload"></pre>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>≡ RunLogger event stream</h2>
+        <button id="export">↓ Export JSON</button>
+      </div>
+      <div id="logs" class="logs">
+        <div class="empty">Run the workflow to see events.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Simulation · No external GPT, Snowflake, SAP, or email requests.</span>
+    <span>Upload preflight + 10 processing stages · Nordic Blue & Mist</span>
+  </footer>
+  <div id="announce" class="sr-only" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const stages = [
+  {
+    id:"upload", n:"PRE", name:"Upload PDF", icon:"↥",
+    service:"Snowflake stage", duration:1300, tokens:0,
+    description:"Upload the raw PDF to the Snowflake stage for DocAI.",
+    output:{file:"purchase_order.pdf", stage:"@DOC_AI_STAGE", uploaded:true}
+  },
+  {
+    id:"extract", n:"01", name:"GPT extraction", icon:"✦",
+    service:"GPT · Structured JSON", duration:2200, tokens:1840,
+    description:"Extract structured header and line-item JSON from PDF text.",
+    output:{purchase_order:"PO-10482", line_items:3, currency:"EUR"}
+  },
+  {
+    id:"judge", n:"02", name:"Judge JSON", icon:"✓",
+    service:"GPT · Quality check", duration:1600, tokens:740,
+    description:"Check JSON format and completeness. Route to correction only if needed.",
+    output:{}
+  },
+  {
+    id:"correction", n:"03", name:"Correct JSON", icon:"✎",
+    service:"GPT · Conditional repair", duration:1700, tokens:920,
+    description:"Repair the JSON when the judge requests fixes; otherwise skip this stage.",
+    output:{repaired_fields:["ship_to.postal_code"], format_valid:true}
+  },
+  {
+    id:"docai", n:"04", name:"Snowflake DocAI", icon:"▤",
+    service:"DocAI · Critical-field check", duration:2400, tokens:0,
+    description:"Generate an independent DocAI JSON and verify critical fields.",
+    output:{critical_fields_ok:true, line_items:3}
+  },
+  {
+    id:"merge", n:"05", name:"Select / merge", icon:"⋈",
+    service:"GPT · Best composite", duration:2000, tokens:2130,
+    description:"Compare GPT and DocAI JSONs and build the best composite.",
+    output:{sources:["GPT","DocAI"], merged:true, conflicts_resolved:2}
+  },
+  {
+    id:"sap", n:"06", name:"SAP validation", icon:"⛨",
+    service:"HANA · Header + items", duration:1800, tokens:0,
+    description:"Cross-check header data and all line items against SAP HANA.",
+    output:{header_valid:true, valid_items:3}
+  },
+  {
+    id:"candidates", n:"07", name:"Ship-To candidates", icon:"▥",
+    service:"DB · Customer lookup", duration:1400, tokens:0,
+    description:"Query possible Ship-To customer numbers.",
+    output:{candidates:["0001045201","0001045202","0001045203"]}
+  },
+  {
+    id:"match", n:"08", name:"Ship-To match", icon:"⌕",
+    service:"GPT · Candidate selection", duration:1900, tokens:1160,
+    description:"Choose the best Ship-To match from the candidate list.",
+    output:{ship_to:"0001045202", reason:"Address and postal code match"}
+  },
+  {
+    id:"sold", n:"09", name:"Sold-To fetch", icon:"◎",
+    service:"DB · Customer relationship", duration:1300, tokens:0,
+    description:"Derive the Sold-To customer number from the selected Ship-To.",
+    output:{ship_to:"0001045202", sold_to:"0001000834"}
+  },
+  {
+    id:"send", n:"10", name:"Build IDoc & send", icon:"➤",
+    service:"GPT → HTTP POST → SAP", duration:2600, tokens:1680,
+    description:"Format IDoc XML using GPT, then send it to SAP via HTTP POST.",
+    output:{idoc:"0000000094810257", mock_http_status:200, xml_created:true}
+  }
+];
+
+const errors = {
+  upload:"PDF upload failed.",
+  extract:"Extraction returned unusable JSON.",
+  judge:"Judge response could not be parsed.",
+  correction:"Corrected JSON remains invalid.",
+  docai:"Critical field missing: purchase_order.",
+  merge:"Composite JSON could not be built.",
+  sap:"Line item 2 failed HANA material validation.",
+  candidates:"No Ship-To candidates found.",
+  match:"No reliable Ship-To match.",
+  sold:"Sold-To relationship not found.",
+  send:"Mock SAP endpoint returned HTTP 503."
+};
+
+let states, events, current, selected, running, paused;
+let stageTime, elapsed, tokens, runId, config;
+let lastTick = performance.now();
+
+stages.forEach(s => {
+  $("failure").add(new Option(`${s.n} · ${s.name}`, s.id));
+});
+
+function buildGrid() {
+  $("grid").innerHTML = stages.map((s,i) => `
+    <div class="step-wrap">
+      <button class="step" id="step-${i}" data-index="${i}"
+              aria-pressed="false" title="${s.description}">
+        <div class="step-top">
+          <span class="step-icon" aria-hidden="true">${s.icon}</span>
+          <div>
+            <div class="step-title">${s.name}</div>
+            <div class="step-service">${s.service}</div>
+          </div>
+        </div>
+        <div class="step-bottom">
+          <span>${s.n === "PRE" ? "PREFLIGHT" : "STAGE " + s.n}</span>
+          <span class="step-status">Pending</span>
+        </div>
+        <div class="step-progress"></div>
+      </button>
+    </div>
+  `).join("") + `
+    <div class="outcome" id="outcome" aria-live="polite">
+      <strong id="outcomeTitle">✉ Notification</strong>
+      <span id="outcomeText">Success → confirmation email<br>Failure → error email + early exit</span>
+    </div>
+  `;
+}
+
+function refresh() {
+  stages.forEach((s,i) => {
+    const state = states[i];
+    const card = $(`step-${i}`);
+    card.className = `step ${state.status}${i === selected ? " selected" : ""}`;
+    card.setAttribute("aria-pressed", i === selected);
+    card.querySelector(".step-status").textContent =
+      state.status === "running" && paused ? "Paused" : state.status;
+    card.querySelector(".step-icon").textContent =
+      state.status === "done" ? "✓" :
+      state.status === "failed" ? "!" :
+      state.status === "skipped" ? "↷" : s.icon;
+    card.querySelector(".step-progress").style.width = state.progress + "%";
+  });
+}
+
+function inspect(i) {
+  selected = i;
+  const s = stages[i], state = states[i];
+  $("inspectTitle").textContent = `${s.n} · ${s.name}`;
+  $("inspectDescription").textContent = s.description;
+  $("inspectStatus").textContent =
+    state.status === "running" && paused ? "paused" : state.status;
+  $("inspectTokens").textContent = state.tokens.toLocaleString();
+  $("payload").textContent = JSON.stringify(
+    state.payload || {stage:s.id, status:state.status, note:"Waiting for execution."},
+    null, 2
+  );
+  refresh();
+}
+
+function addLog(type, title, payload={}) {
+  const date = new Date();
+  const event = {
+    timestamp:date.toISOString(), run_id:runId,
+    mode:"simulation", type, event:title, payload
+  };
+  events.push(event);
+
+  $("logs").querySelector(".empty")?.remove();
+  const row = document.createElement("div");
+  row.className = "log" + (type === "error" ? " error" : "");
+
+  const time = document.createElement("time");
+  time.textContent = date.toLocaleTimeString("en-GB", {hour12:false});
+  time.dateTime = event.timestamp;
+
+  const body = document.createElement("div");
+  const heading = document.createElement("strong");
+  heading.textContent = title;
+  const details = document.createElement("span");
+  details.textContent = JSON.stringify(payload);
+
+  body.append(heading, details);
+  row.append(time, body);
+  $("logs").append(row);
+  $("logs").scrollTop = $("logs").scrollHeight;
+  $("eventCount").textContent = events.length;
+}
+
+function metrics() {
+  const resolved = states.filter(s => ["done","skipped"].includes(s.status)).length;
+  const fraction = current >= 0 && current < stages.length &&
+    states[current].status === "running" ? states[current].progress / 100 : 0;
+  const percent = Math.round((resolved + fraction) / stages.length * 100);
+
+  $("progressFill").style.width = percent + "%";
+  $("progress").setAttribute("aria-valuenow", percent);
+  $("progressCount").textContent = `${resolved} / 11 stages resolved`;
+  $("tokens").textContent = tokens.toLocaleString();
+
+  const seconds = Math.floor(elapsed / 1000);
+  $("elapsed").textContent =
+    `${String(Math.floor(seconds/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`;
+}
+
+function lock(value) {
+  $("start").disabled = value;
+  $("failure").disabled = value;
+  $("correction").disabled = value;
+}
+
+function status(text, metric, dot="") {
+  $("headerStatus").textContent = text;
+  $("progressStatus").textContent = text;
+  $("metricStatus").textContent = metric;
+  $("statusDot").className = "status-dot " + dot;
+}
+
+function startStage() {
+  if (current >= stages.length) return finish(true);
+
+  const s = stages[current];
+
+  if (s.id === "correction" && !config.correction) {
+    states[current] = {
+      status:"skipped", progress:100, tokens:0,
+      payload:{reason:"Judge passed; correction bypassed."}
+    };
+    addLog("route","Correction skipped",{next:"docai"});
+    current++;
+    return startStage();
+  }
+
+  stageTime = 0;
+  states[current].status = "running";
+  states[current].payload = {stage:s.id, event:"started", simulation:true};
+  status(`Running · ${s.name}`, "Running", "active");
+  addLog("start",`${s.name} started`,{stage:s.id, service:s.service});
+  inspect(current);
+  metrics();
+  $("announce").textContent = `${s.name} started`;
+}
+
+function completeStage() {
+  const s = stages[current];
+
+  if (config.failure === s.id) {
+    states[current].status = "failed";
+    states[current].payload = {error:errors[s.id], early_exit:true};
+
+    for (let i=current+1; i<stages.length; i++) {
+      states[i].status = "blocked";
+      states[i].payload = {reason:"Upstream failure", failed_stage:s.id};
+    }
+
+    addLog("error",`${s.name} failed`,states[current].payload);
+    addLog("email","Error email simulated",{reason:errors[s.id], actually_sent:false});
+    return finish(false);
+  }
+
+  const output = s.id === "judge"
+    ? {
+        format_valid:true,
+        correction_required:config.correction,
+        next_stage:config.correction ? "correction" : "docai"
+      }
+    : {...s.output};
+
+  states[current] = {
+    status:"done", progress:100, tokens:s.tokens,
+    payload:{...output, simulation:true}
+  };
+
+  tokens += s.tokens;
+  addLog("success",`${s.name} completed`,{
+    stage:s.id, token_usage:s.tokens, output:states[current].payload
+  });
+
+  current++;
+  startStage();
+}
+
+function finish(success) {
+  running = false;
+  paused = false;
+  $("pause").disabled = true;
+  lock(false);
+
+  status(
+    success ? "Completed · SAP send simulated" : `Stopped · ${stages[current].name}`,
+    success ? "Complete" : "Failed",
+    success ? "complete" : "failed"
+  );
+
+  if (success) {
+    addLog("email","Success email simulated",{
+      idoc:"0000000094810257", actually_sent:false
+    });
+  }
+
+  addLog("run",success ? "Run completed" : "Run stopped",{
+    early_exit:!success, mock_tokens:tokens
+  });
+
+  $("outcome").className = "outcome " + (success ? "success" : "error");
+  $("outcomeTitle").textContent = success ? "✓ Workflow completed" : "! Early exit";
+  $("outcomeText").textContent = success
+    ? "SAP acceptance + success email simulated."
+    : `${errors[stages[current].id]} Error email simulated.`;
+
+  inspect(success ? stages.length-1 : current);
+  metrics();
+  $("announce").textContent = success ? "Workflow completed." : "Workflow failed and stopped.";
+}
+
+function reset() {
+  states = stages.map(() => ({status:"pending", progress:0, tokens:0, payload:null}));
+  events = [];
+  current = -1;
+  selected = 0;
+  running = false;
+  paused = false;
+  stageTime = elapsed = tokens = 0;
+  runId = null;
+
+  $("logs").innerHTML = '<div class="empty">Run the workflow to see events.</div>';
+  $("eventCount").textContent = "0";
+  $("runId").textContent = "No active run";
+  $("pause").textContent = "Ⅱ Pause";
+  $("pause").disabled = true;
+
+  lock(false);
+  status("Ready to process","Idle");
+  buildGrid();
+  inspect(0);
+  metrics();
+}
+
+$("start").onclick = () => {
+  reset();
+  config = {
+    correction:$("correction").checked,
+    failure:$("failure").value
+  };
+
+  runId = "RUN-" + Date.now().toString(36).toUpperCase();
+  $("runId").textContent = runId;
+  running = true;
+  current = 0;
+  lastTick = performance.now();
+
+  lock(true);
+  $("pause").disabled = false;
+  addLog("run","Workflow started",{
+    file:"purchase_order.pdf", simulation:true
+  });
+  startStage();
+};
+
+$("pause").onclick = () => {
+  if (!running) return;
+  paused = !paused;
+  lastTick = performance.now();
+  $("pause").textContent = paused ? "▶ Resume" : "Ⅱ Pause";
+  status(
+    `${paused ? "Paused" : "Running"} · ${stages[current].name}`,
+    paused ? "Paused" : "Running",
+    "active"
+  );
+  addLog("control",paused ? "Playback paused" : "Playback resumed");
+  inspect(selected);
+};
+
+$("reset").onclick = reset;
+
+$("grid").onclick = event => {
+  const card = event.target.closest("[data-index]");
+  if (card) inspect(Number(card.dataset.index));
+};
+
+$("correction").onchange = () => {
+  const option = [...$("failure").options].find(o => o.value === "correction");
+  option.disabled = !$("correction").checked;
+  if (option.disabled && $("failure").value === "correction") {
+    $("failure").value = "";
+  }
+};
+
+$("export").onclick = () => {
+  const blob = new Blob(
+    [JSON.stringify({mode:"simulation",run_id:runId,events},null,2)],
+    {type:"application/json"}
+  );
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${runId || "workflow"}-events.json`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url),1000);
+};
+
+setInterval(() => {
+  const now = performance.now();
+  const delta = now-lastTick;
+  lastTick = now;
+
+  if (!running || paused) return;
+
+  elapsed += delta;
+  stageTime += delta * Number($("speed").value);
+
+  states[current].progress =
+    Math.min(100,stageTime/stages[current].duration*100);
+
+  $(`step-${current}`).querySelector(".step-progress").style.width =
+    states[current].progress + "%";
+
+  metrics();
+  if (states[current].progress >= 100) completeStage();
+},80);
+
+reset();
+</script>
+</body>
+</html>

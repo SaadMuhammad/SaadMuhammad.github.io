@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-Agent Social Studio</title>
+<style>
+:root {
+  --teal:#294753; --gold:#D09242; --mist:#F3F6F5;
+  --surface:#E4ECEA; --white:#FFFFFF; --ink:#182B35;
+  --secondary:#52646C; --soft:#A9C5C8; --pale:#FAECD9;
+  --border:#D7E2E0;
+}
+* { box-sizing:border-box }
+body {
+  margin:0; background:var(--mist); color:var(--ink);
+  font:13px/1.45 Inter,system-ui,-apple-system,sans-serif;
+}
+button,input,select,textarea { font:inherit }
+button {
+  cursor:pointer; border:1px solid var(--border); border-radius:9px;
+  background:white; color:var(--teal); padding:8px 12px; font-weight:650;
+}
+button.primary { background:var(--gold); border-color:var(--gold); color:var(--ink) }
+button.dark { background:var(--teal); color:white; border-color:var(--teal) }
+button:disabled { opacity:.45; cursor:not-allowed }
+button:hover:not(:disabled) { filter:brightness(.97) }
+input,select,textarea {
+  border:1px solid var(--border); border-radius:8px; background:var(--mist);
+  padding:9px; color:var(--ink);
+}
+textarea { resize:vertical; width:100%; min-height:140px; line-height:1.6 }
+:focus-visible { outline:3px solid var(--gold); outline-offset:2px }
+h1,h2,h3,p { margin:0 }
+h1 { font-size:23px; letter-spacing:-.7px; color:var(--teal) }
+h2 { font-size:14px; color:var(--teal) }
+h3 { font-size:13px; color:var(--teal) }
+small,.muted { color:var(--secondary) }
+svg.icon {
+  width:24px; height:24px; fill:none; stroke:currentColor;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;
+}
+.app {
+  height:100dvh; max-width:1600px; margin:auto; padding:16px 22px;
+  display:flex; flex-direction:column; gap:12px;
+}
+header,.row,.heading { display:flex; align-items:center; justify-content:space-between; gap:12px }
+header { flex-shrink:0 }
+.brand { display:flex; gap:12px; align-items:center }
+.brand-symbol {
+  background:var(--teal); color:var(--gold); border-radius:13px;
+  width:43px; height:43px; display:grid; place-items:center;
+}
+.eyebrow {
+  text-transform:uppercase; font-size:9px; font-weight:750;
+  letter-spacing:1.4px; color:var(--secondary); margin-bottom:3px;
+}
+.pill { padding:5px 10px; border-radius:20px; background:var(--surface); color:var(--teal); font-size:10px }
+.panel { background:white; border:1px solid var(--border); border-radius:14px }
+.memory {
+  display:grid; grid-template-columns:220px minmax(200px,1fr) 245px;
+  gap:16px; padding:13px 17px; align-items:center; flex-shrink:0;
+}
+.live { display:flex; gap:7px; align-items:center; font-size:10px; color:var(--secondary) }
+.live-dot { width:7px; height:7px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 4px var(--pale) }
+.memory p { font-size:11px; color:var(--secondary); margin-top:5px }
+.source-tags { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px }
+.source-tags span { background:var(--mist); padding:3px 6px; font-size:9px; border-radius:5px; color:var(--teal) }
+.graph-wrap { height:105px; background:var(--mist); border-radius:10px; overflow:hidden }
+#graph { width:100%; height:100% }
+#graph line { stroke:var(--soft); stroke-width:1.2 }
+#graph circle { stroke:white; stroke-width:3 }
+#graph text { font:9px system-ui; fill:var(--teal) }
+#graph .graph-pulse { transform-box:fill-box; transform-origin:center; animation:graphPulse 1s ease-out }
+@keyframes graphPulse { from { transform:scale(.4); opacity:.3 } to { transform:scale(1); opacity:1 } }
+.memory-numbers { display:flex; gap:22px; margin-bottom:8px }
+.memory-numbers strong { display:block; font-size:21px; color:var(--teal); line-height:1.1 }
+.memory-numbers span { font-size:9px; color:var(--secondary) }
+.memory-controls { display:flex; gap:6px; margin-top:7px }
+.memory-controls button { padding:4px 8px; font-size:10px }
+.composer {
+  display:flex; gap:10px; padding:11px 14px; align-items:end; flex-shrink:0;
+}
+.field { display:flex; flex-direction:column; gap:4px }
+.field label { font-size:9px; letter-spacing:.7px; text-transform:uppercase; color:var(--secondary); font-weight:700 }
+.prompt-field { flex:1 }
+.composer input { width:100% }
+.composer button { min-height:38px }
+.pipeline { padding:13px 18px 10px; flex-shrink:0 }
+.stage-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:20px; margin-top:13px }
+.stage {
+  border:0; padding:0 2px; background:none; text-align:center;
+  position:relative; border-radius:10px; min-width:0;
+}
+.stage:not(:last-child)::after {
+  content:""; position:absolute; height:2px; background:var(--surface);
+  width:calc(100% - 53px); left:calc(50% + 36px); top:31px;
+}
+.stage.done::after { background:var(--soft) }
+.stage.active::after {
+  background:linear-gradient(90deg,var(--gold),var(--pale),var(--gold));
+  background-size:200% 100%; animation:flow 1.1s linear infinite;
+}
+@keyframes flow { to { background-position:-200% 0 } }
+.orb {
+  position:relative; width:64px; height:64px; margin:auto auto 7px;
+  border-radius:20px; display:grid; place-items:center;
+  background:var(--surface); color:var(--teal);
+  box-shadow:inset 0 0 0 1px var(--border);
+  transition:background .3s,box-shadow .3s;
+}
+.orb .icon { width:29px; height:29px }
+.stage.human .orb { border-radius:50%; background:var(--pale); color:var(--teal) }
+.stage.active .orb {
+  background:var(--gold); color:var(--ink);
+  box-shadow:0 0 0 5px var(--pale),0 7px 20px #D0924233;
+}
+.stage.active .orb::before {
+  content:""; position:absolute; inset:-7px; border:2px dashed var(--gold);
+  border-radius:24px; animation:orbit 9s linear infinite;
+}
+.stage.human.active .orb::before { border-radius:50% }
+.stage.active .icon { animation:float 1.4s ease-in-out infinite }
+.stage.done .orb { background:var(--teal); color:white }
+.stage.done .orb::after {
+  content:"✓"; position:absolute; right:-3px; bottom:-2px;
+  background:var(--gold); color:var(--ink); border:2px solid white;
+  border-radius:50%; width:20px; height:20px; font-size:11px;
+}
+.stage-name { display:block; color:var(--teal); font-size:11px; font-weight:750 }
+.stage-sub { display:block; font-size:9px; color:var(--secondary); margin-top:2px }
+.stage-status { display:block; font-size:8px; text-transform:uppercase; color:var(--secondary); margin-top:5px; letter-spacing:.6px }
+@keyframes orbit { to { transform:rotate(360deg) } }
+@keyframes float { 50% { transform:translateY(-3px) scale(1.07) } }
+.pipeline-footer { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:13px; font-size:9px; color:var(--secondary) }
+.legend { display:flex; gap:12px; flex-wrap:wrap }
+.legend span { display:flex; align-items:center; gap:4px }
+.dot { width:8px; height:8px; border-radius:3px; background:var(--surface) }
+.dot.active { background:var(--gold) }
+.dot.done { background:var(--teal) }
+.dot.human { border-radius:50%; background:var(--pale); border:1px solid var(--gold) }
+.workspace {
+  flex:1; min-height:0; display:grid;
+  grid-template-columns:minmax(0,1fr) 305px; gap:12px;
+}
+.workspace>.panel { display:flex; flex-direction:column; min-height:0; overflow:hidden }
+.panel-head { padding:10px 14px; border-bottom:1px solid var(--border); flex-shrink:0 }
+.content { overflow:auto; min-height:0; padding:14px }
+.logs { overflow:auto; flex:1; min-height:0; padding:0 12px }
+.log { padding:9px 0; border-bottom:1px solid var(--surface); font-size:10px }
+.log time { color:var(--secondary); font-size:9px; margin-right:7px }
+.log strong { color:var(--teal) }
+.log p { color:var(--secondary); margin-top:3px; overflow-wrap:anywhere }
+.empty { display:grid; place-items:center; text-align:center; height:100%; min-height:100px; color:var(--secondary) }
+.empty .icon { width:35px; height:35px; color:var(--soft); margin-bottom:7px }
+.info { background:var(--mist); border:1px solid var(--border); border-radius:9px; padding:10px; font-size:11px; color:var(--secondary) }
+.card-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:10px }
+.draft { border:1px solid var(--border); border-radius:10px; padding:11px; text-align:left }
+.draft p { font-size:11px; color:var(--secondary); white-space:pre-wrap; margin:8px 0 10px }
+.draft button { font-size:10px; padding:6px 8px }
+.edit-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:14px; margin-top:10px }
+.preview { background:var(--mist); border:1px solid var(--border); border-radius:10px; padding:10px }
+.preview svg { display:block; width:100%; max-height:190px }
+.review-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:10px }
+.channels { display:flex; gap:12px; margin-top:9px; font-size:11px; color:var(--secondary) }
+.channels input { accent-color:var(--teal) }
+.source-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:10px }
+.source { padding:9px; background:var(--mist); border-radius:8px; font-size:11px }
+.source small { display:block; font-size:9px; margin-top:4px }
+footer { font-size:9px; color:var(--secondary); display:flex; justify-content:space-between; gap:10px; flex-shrink:0 }
+.sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0) }
+
+@media(max-width:1100px) {
+  .memory { grid-template-columns:190px 1fr 190px }
+  .stage-grid { gap:10px }
+  .workspace { grid-template-columns:1fr 260px }
+}
+@media(max-width:850px), (max-height:740px) {
+  .app { height:auto; min-height:100dvh }
+  .workspace { flex:none; height:410px }
+}
+@media(max-width:700px) {
+  .app { padding:12px }
+  .memory { grid-template-columns:1fr 1fr }
+  .graph-wrap { grid-column:1/-1; grid-row:2 }
+  .composer { flex-wrap:wrap }
+  .prompt-field { flex-basis:100% }
+  .stage-grid { grid-template-columns:repeat(4,1fr); row-gap:18px }
+  .stage:nth-child(4)::after { display:none }
+  .workspace { grid-template-columns:1fr; height:auto }
+  .workspace>.panel { height:380px }
+  .workspace>.panel:last-child { height:210px }
+  .card-grid,.edit-grid { grid-template-columns:1fr }
+  .pipeline-footer { align-items:flex-start; flex-direction:column }
+  header .pill { display:none }
+  .source-list { grid-template-columns:1fr }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation:none!important; transition:none!important }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="brand-symbol" id="brandIcon"></div>
+      <div>
+        <div class="eyebrow">Research. Create. Review. Remember.</div>
+        <h1>Multi-Agent Social Studio</h1>
+      </div>
+    </div>
+    <span class="pill">Graph memory + human oversight</span>
+  </header>
+
+  <section class="panel memory">
+    <div>
+      <div class="live"><span class="live-dot"></span><span id="collectionStatus">Knowledge collection active</span></div>
+      <h2 style="margin-top:5px">A living source of context</h2>
+      <p>Sources → entities → relationships → reusable memory</p>
+      <div class="source-tags">
+        <span>News</span><span>Articles</span><span>Papers</span>
+        <span>Blogs</span><span>Human posts</span>
+      </div>
+    </div>
+    <div class="graph-wrap">
+      <svg id="graph" viewBox="0 0 550 105" role="img" aria-label="Illustrative knowledge graph"></svg>
+    </div>
+    <div>
+      <div class="memory-numbers">
+        <div><strong id="nodeCount">0</strong><span>MEMORY RECORDS</span></div>
+        <div><strong id="postCount">0</strong><span>APPROVED POSTS</span></div>
+      </div>
+      <div class="small muted" id="lastSync" style="font-size:10px">Persistent browser memory</div>
+      <div class="memory-controls">
+        <button id="collect">＋ Collect source</button>
+        <button id="toggleCollect">Pause</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel composer">
+    <div class="field prompt-field">
+      <label for="prompt">What would you like to create?</label>
+      <input id="prompt" value="Create a post about multi-agent AI with human oversight">
+    </div>
+    <div class="field">
+      <label for="window">Research window</label>
+      <select id="window">
+        <option value="48">Last 48 hours</option>
+        <option value="168" selected>Last 7 days</option>
+        <option value="720">Last 30 days</option>
+        <option value="0">All time</option>
+      </select>
+    </div>
+    <button class="primary" id="generate">✦ Create content</button>
+    <button id="reset">Reset run</button>
+  </section>
+
+  <section class="panel pipeline">
+    <div class="heading">
+      <h2>Agent collaboration</h2>
+      <span class="pill" id="runStatus">Ready for your brief</span>
+    </div>
+    <div class="stage-grid" id="stages"></div>
+    <div class="pipeline-footer">
+      <div class="legend">
+        <span><i class="dot"></i>Waiting</span>
+        <span><i class="dot active"></i>Active agent</span>
+        <span><i class="dot done"></i>Complete</span>
+        <span><i class="dot human"></i>Human checkpoint</span>
+      </div>
+      <span>↺ Approved content returns to memory · Research continues independently</span>
+    </div>
+  </section>
+
+  <section class="workspace">
+    <div class="panel">
+      <div class="panel-head heading">
+        <h2 id="workTitle">Creative workspace</h2>
+        <span class="muted" id="workHint" style="font-size:10px">Human decisions happen here</span>
+      </div>
+      <div class="content" id="work"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head heading">
+        <h2>Activity & decisions</h2>
+        <button id="export" style="font-size:10px;padding:4px 7px">Export</button>
+      </div>
+      <div class="logs" id="logs"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Local simulation · No live research, AI, image generation, or channel publishing.</span>
+    <span id="storageStatus">Approved memory persists in this browser.</span>
+  </footer>
+  <div class="sr" id="announce" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const escapeHTML = value => String(value).replace(/[&<>"']/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const paths = {
+  graph:'<circle cx="12" cy="12" r="3"/><circle cx="4" cy="4" r="2"/><circle cx="20" cy="5" r="2"/><circle cx="5" cy="20" r="2"/><circle cx="20" cy="20" r="2"/><path d="m6 6 4 4m4-1 4-3M7 18l3-4m4 0 4 4"/>',
+  search:'<circle cx="10" cy="10" r="7"/><path d="m15 15 6 6M7 10h6m-3-3v6"/>',
+  plan:'<rect x="4" y="3" width="16" height="18" rx="3"/><path d="m7 8 1 1 2-2m2 1h5M7 13h10M7 17h7"/>',
+  write:'<path d="m14 5 5 5M4 20l5-1L21 7l-4-4L5 15ZM13 20h8"/>',
+  human:'<circle cx="10" cy="7" r="4"/><path d="M3 21v-3a7 7 0 0 1 12-5m0 5 3 3 5-6"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="2"/><path d="m3 17 6-6 4 4 3-3 5 5"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4ZM11 13 22 2"/>'
+};
+const icon = name => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${paths[name]}</svg>`;
+$("brandIcon").innerHTML = icon("graph");
+
+const steps = [
+  ["search","Retrieve context","Research agent"],
+  ["plan","Build a plan","Strategy agent"],
+  ["write","Three drafts","Writing agent"],
+  ["human","Approve / edit","Human checkpoint"],
+  ["image","Create visual","Visual agent"],
+  ["human","Final review","Human checkpoint"],
+  ["send","Publish + learn","Delivery & memory"]
+];
+
+let active=-1, timer=null, completed=new Set(), logs=[];
+let collectionOn=true, draft="", variants=[], context=[], priorPosts=[], brief="", visualTitle="";
+let chosenChannels=[], runNumber=0;
+const KEY="nordic-social-memory-v1";
+let storageOK=true;
+const now=Date.now();
+
+const seed = [
+  {id:"s1",type:"Paper",title:"Multi-agent review patterns",fact:"Specialist agents can separate research, drafting, and review responsibilities.",tags:["agent","ai","research"],age:5},
+  {id:"s2",type:"Article",title:"Human oversight in content operations",fact:"Human approval creates an explicit checkpoint before public distribution.",tags:["human","oversight","content"],age:18},
+  {id:"s3",type:"Blog",title:"Graph-based retrieval for content teams",fact:"A graph connects source material, topics, and previously approved posts.",tags:["graph","memory","retrieval"],age:36},
+  {id:"s4",type:"News",title:"Designing source-aware workflows",fact:"Source timestamps help constrain a research window without discarding historical style examples.",tags:["research","source","ai"],age:75},
+  {id:"s5",type:"Article",title:"Building a reusable editorial memory",fact:"Approved content can become context for future writing tasks.",tags:["memory","content","agent"],age:120},
+  {id:"p1",type:"Post",title:"Human-authored style example",text:"Good automation should support judgment, not hide it. Start with clear evidence, keep the workflow simple, and leave room for a human decision.",tags:["human","ai","oversight"],age:240}
+].map(s => ({...s,time:now-s.age*3600000,simulated:true}));
+
+let memory;
+try {
+  const saved=JSON.parse(localStorage.getItem(KEY));
+  memory=Array.isArray(saved) && saved.every(r =>
+    r && typeof r.id==="string" && typeof r.title==="string" &&
+    typeof r.type==="string" && Number.isFinite(r.time) && Array.isArray(r.tags)
+  ) ? saved : seed;
+} catch { memory=seed; storageOK=false; }
+
+function persist() {
+  try { localStorage.setItem(KEY,JSON.stringify(memory)); }
+  catch { storageOK=false; }
+  $("storageStatus").textContent=storageOK
+    ? "Approved memory persists in this browser."
+    : "Storage unavailable · Memory lasts for this session only.";
+}
+function log(title,detail="") {
+  const event={timestamp:new Date().toISOString(),run:runNumber,simulation:true,title,detail};
+  logs.push(event);
+  const row=document.createElement("div");
+  row.className="log";
+  row.innerHTML=`<time>${new Date().toLocaleTimeString("en-GB")}</time>
+    <strong>${escapeHTML(title)}</strong><p>${escapeHTML(detail)}</p>`;
+  $("logs").prepend(row);
+}
+function renderGraph(highlight=false) {
+  const posts=memory.filter(s=>s.type==="Post");
+  $("nodeCount").textContent=memory.length;
+  $("postCount").textContent=posts.length;
+  const nodes=[
+    [70,25,"News"],[65,79,"Papers"],[178,53,"Topics"],
+    [275,20,"Facts"],[282,85,"Relations"],[388,50,"Memory"],
+    [480,22,"Blogs"],[480,83,"Posts"]
+  ];
+  const edges=[[0,2],[1,2],[2,3],[2,4],[3,5],[4,5],[5,6],[5,7],[3,4]];
+  $("graph").innerHTML=edges.map(([a,b])=>
+    `<line x1="${nodes[a][0]}" y1="${nodes[a][1]}" x2="${nodes[b][0]}" y2="${nodes[b][1]}"/>`
+  ).join("")+nodes.map(([x,y,label],i)=>
+    `<g class="${highlight ? "graph-pulse":""}">
+      <circle cx="${x}" cy="${y}" r="${i===5?17:11}" fill="${i===5?'#294753':i===3||i===7?'#D09242':'#A9C5C8'}"/>
+      <text x="${x+18}" y="${y+3}">${label}</text>
+    </g>`
+  ).join("");
+}
+function renderStages() {
+  $("stages").innerHTML=steps.map(([ic,title,sub],i)=>`
+    <div class="stage ${i===3||i===5?'human':''} ${i===active?'active':''} ${completed.has(i)?'done':''}"
+         ${i===active?'aria-current="step"':''}>
+      <div class="orb">${icon(ic)}</div>
+      <span class="stage-name">${title}</span>
+      <span class="stage-sub">${sub}</span>
+      <span class="stage-status">${completed.has(i)?'Complete':i===active?(i===3||i===5?'Your decision':'Working'):'Waiting'}</span>
+    </div>`).join("");
+}
+function setStage(i,message) {
+  active=i;
+  $("runStatus").textContent=message;
+  $("announce").textContent=message;
+  renderStages();
+}
+function done(i) { completed.add(i); renderStages(); }
+function show(title,html,hint="") {
+  $("workTitle").textContent=title;
+  $("workHint").textContent=hint;
+  $("work").innerHTML=html;
+}
+function later(fn,delay=1600) {
+  clearTimeout(timer);
+  timer=setTimeout(fn,delay);
+}
+function collect() {
+  const templates=seed.filter(s=>s.type!=="Post");
+  const source=templates[Math.floor(Math.random()*templates.length)];
+  const record={
+    ...source,id:"source-"+Date.now(),time:Date.now(),
+    title:source.title+" · simulated update"
+  };
+  memory.push(record);
+  persist(); renderGraph(true);
+  $("lastSync").textContent="Source added · "+new Date().toLocaleTimeString("en-GB");
+  log("Source ingested",`${record.type} → topic edges → memory. Mock content, not live research.`);
+}
+$("collect").onclick=collect;
+$("toggleCollect").onclick=()=>{
+  collectionOn=!collectionOn;
+  $("toggleCollect").textContent=collectionOn?"Pause":"Resume";
+  $("collectionStatus").textContent=collectionOn?"Knowledge collection active":"Knowledge collection paused";
+};
+setInterval(()=>{ if(collectionOn) collect(); },20000);
+
+function lock(value) {
+  $("generate").disabled=value;
+  $("prompt").disabled=value;
+  $("window").disabled=value;
+}
+function retrieve() {
+  const hours=Number($("window").value);
+  const cutoff=hours ? Date.now()-hours*3600000 : 0;
+  const words=brief.toLowerCase().match(/[a-z]{3,}/g)||[];
+  const score=r=>words.reduce((sum,w)=>
+    sum+(`${r.title} ${r.fact||r.text||""} ${r.tags.join(" ")}`.toLowerCase().includes(w)?1:0),0);
+
+  // Current evidence uses the selected time window.
+  // Historical posts remain eligible as voice/style memory.
+  context=memory.filter(r=>r.type!=="Post" && r.time>=cutoff && score(r)>0)
+    .sort((a,b)=>score(b)-score(a)||b.time-a.time)
+    .filter((r,i,all)=>all.findIndex(x=>x.fact===r.fact)===i).slice(0,4);
+  priorPosts=memory.filter(r=>r.type==="Post")
+    .sort((a,b)=>score(b)-score(a)||b.time-a.time).slice(0,2);
+
+  if(!context.length) {
+    log("No relevant evidence","Change the topic or widen the research window.");
+    setStage(-1,"No matching research");
+    show("No matching sources",'<div class="info">This local demo contains sources about AI, agent workflows, graph memory, and human oversight. Try one of those topics or widen the research window.</div>');
+    lock(false); return;
+  }
+
+  log("Context retrieved",`${context.length} unique mock sources; ${priorPosts.length} historical style examples. Research window: ${hours||"all"} hours.`);
+  show("Retrieved evidence",
+    `<div class="info">Research is filtered by your time window. Historical posts are retrieved separately for style. This demo uses keyword matching and template generation, not a live graph database or LLM.</div>
+    <div class="source-list">${context.map((r,i)=>`
+      <div class="source"><strong>[${i+1}] ${escapeHTML(r.title)}</strong>
+        <div>${escapeHTML(r.fact)}</div>
+        <small>${escapeHTML(r.type)} · ${new Date(r.time).toLocaleDateString()} · Mock source</small>
+      </div>`).join("")}</div>`,
+    `${context.length} sources + ${priorPosts.length} previous posts`
+  );
+  done(0); setStage(1,"Strategy agent · shaping the narrative");
+  later(()=>{
+    log("Editorial plan ready","Audience: professional teams. Structure: hook → evidence → takeaway → question. Three angles selected.");
+    done(1); setStage(2,"Writing agent · creating three versions");
+    later(buildDrafts,1800);
+  },1700);
+}
+
+function buildDrafts() {
+  const facts=context.map((r,i)=>`${r.fact} [${i+1}]`).join("\n\n");
+  variants=[
+    {name:"01 · Insight-led",text:`Better content starts with better context.\n\n${facts}\n\nThe opportunity: connect research, reusable memory, and human judgment, not just more automation.\n\nWhere would a human checkpoint add the most value in your workflow?`},
+    {name:"02 · Practical playbook",text:`A practical approach to human-guided content workflows:\n\n${context.map((r,i)=>`${i+1}. ${r.fact} [${i+1}]`).join("\n\n")}\n\nStart small. Review the draft. Review the visual. Publish only after approval.\n\nWhat would you add to this checklist?`},
+    {name:"03 · Conversation starter",text:`Should an AI workflow publish without a human review?\n\nMy starting point: keep the evidence visible and the decision deliberate.\n\n${facts}\n\nAutomation can prepare the work. People can own the final call.\n\nHow does your team balance speed with oversight?`}
+  ];
+  done(2); setStage(3,"Human checkpoint · choose a draft");
+  log("Three drafts prepared",`Brief: ${brief}. Source markers refer to retrieved mock evidence. Select a version, then edit or approve.`);
+  show("Choose your direction",`
+    <div class="info"><strong>Your brief:</strong> ${escapeHTML(brief)}<br>These are template-generated previews. Review every claim before approving.</div>
+    <div class="card-grid">${variants.map((v,i)=>`
+      <div class="draft"><h3>${v.name}</h3><p>${escapeHTML(v.text)}</p>
+        <button class="dark" data-action="choose" data-index="${i}">Choose & edit →</button>
+      </div>`).join("")}</div>`,
+    "Checkpoint 1 of 2"
+  );
+}
+function editDraft(i) {
+  draft=variants[i].text;
+  renderEditor();
+}
+function renderEditor() {
+  show("Edit and approve the copy",`
+    <div class="info">Nothing moves to visual creation until you approve this text. Citation markers refer to the mock research sources.</div>
+    <label for="draftText" class="sr">Post text</label>
+    <textarea id="draftText" style="margin-top:10px">${escapeHTML(draft)}</textarea>
+    <div class="review-actions">
+      <button class="primary" data-action="approveCopy">Approve copy → Create visual</button>
+      <button data-action="variants">Back to versions</button>
+    </div>`, "Checkpoint 1 of 2"
+  );
+}
+function visualSVG() {
+  const labels=["Research","Context","Draft","Review"];
+  return `<svg viewBox="0 0 520 260" role="img" aria-label="Generated template diagram preview">
+    <rect width="520" height="260" rx="18" fill="#294753"/>
+    <circle cx="490" cy="15" r="100" fill="#A9C5C8" opacity=".13"/>
+    <text x="28" y="43" fill="#D09242" font-family="system-ui" font-size="10" letter-spacing="2">HUMAN-GUIDED INTELLIGENCE</text>
+    <text x="28" y="78" fill="white" font-family="system-ui" font-size="19" font-weight="700">${escapeHTML(visualTitle.slice(0,43))}</text>
+    ${labels.map((label,i)=>`
+      ${i<3?`<path d="M${123+i*122} 145h20" stroke="#A9C5C8" stroke-width="2"/>`:""}
+      <rect x="${28+i*122}" y="114" width="94" height="63" rx="12" fill="${i===3?'#D09242':'#E4ECEA'}"/>
+      <text x="${75+i*122}" y="151" text-anchor="middle" fill="#182B35" font-family="system-ui" font-size="13" font-weight="600">${label}</text>
+    `).join("")}
+    <path d="M440 188v22H75v-22" fill="none" stroke="#A9C5C8" stroke-dasharray="5 5"/>
+    <text x="260" y="237" text-anchor="middle" fill="#A9C5C8" font-family="system-ui" font-size="11">Approved knowledge becomes reusable memory</text>
+  </svg>`;
+}
+function approveCopy() {
+  const value=$("draftText").value.trim();
+  if(!value) { $("draftText").focus(); return; }
+  draft=value;
+  done(3); setStage(4,"Visual agent · composing a diagram");
+  log("Copy approved by human","Approved text handed to visual agent.");
+  show("Creating the visual",'<div class="empty"><div>Composing a Nordic Blue diagram…<br><small>Local SVG template · no external image model</small></div></div>');
+  later(()=>{
+    visualTitle="From information to informed content";
+    done(4); setStage(5,"Human checkpoint · review the full package");
+    log("Visual prepared","Editable SVG diagram generated from a local template.");
+    finalReview();
+  },2000);
+}
+function finalReview() {
+  show("Review the complete post",`
+    <div class="edit-grid">
+      <div>
+        <h3>Final copy</h3>
+        <label for="finalText" class="sr">Final post text</label>
+        <textarea id="finalText" style="margin-top:7px">${escapeHTML(draft)}</textarea>
+      </div>
+      <div>
+        <div class="preview" id="visualPreview">${visualSVG()}</div>
+        <label for="visualTitle" class="muted" style="display:block;font-size:10px;margin-top:6px">Diagram headline</label>
+        <input id="visualTitle" value="${escapeHTML(visualTitle)}" maxlength="43" style="width:100%;padding:6px">
+      </div>
+    </div>
+    <div class="channels">
+      <label><input type="checkbox" name="channel" value="LinkedIn" checked> LinkedIn</label>
+      <label><input type="checkbox" name="channel" value="X"> X</label>
+      <label><input type="checkbox" name="channel" value="Threads"> Threads</label>
+    </div>
+    <div class="review-actions">
+      <button class="primary" data-action="publish">Approve package & simulate publish</button>
+      <button data-action="revise">← Revise copy</button>
+      <button data-action="downloadVisual">Download SVG</button>
+    </div>
+    <p id="reviewError" class="muted" style="font-size:10px;margin-top:6px">Channel-specific formatting and limits are not validated in this demo.</p>`,
+    "Checkpoint 2 of 2"
+  );
+}
+function publish() {
+  const value=$("finalText").value.trim();
+  chosenChannels=[...document.querySelectorAll('[name="channel"]:checked')].map(c=>c.value);
+  if(!value || !chosenChannels.length) {
+    $("reviewError").textContent="Please provide post text and select at least one channel.";
+    return;
+  }
+  draft=value;
+  visualTitle=$("visualTitle").value.trim()||"Human-guided content";
+  done(5); setStage(6,"Delivery agent · publishing and updating memory");
+  log("Final package approved",`Human approved copy + visual for ${chosenChannels.join(", ")}.`);
+  show("Delivering and learning",'<div class="empty"><div>Simulating channel delivery…<br><small>Adding approved content to persistent memory.</small></div></div>');
+  later(()=>{
+    chosenChannels.forEach(channel=>log("Publish simulated",`${channel}: mock success. No external post was created.`));
+    memory.push({
+      id:"post-"+Date.now(),type:"Post",title:draft.split("\n")[0].slice(0,80),
+      text:draft,time:Date.now(),tags:["human","approved","content","agent"],
+      sources:context.map(s=>s.id),channels:chosenChannels,
+      visualTitle,approved:true,simulated:true
+    });
+    persist(); renderGraph(true);
+    log("Approved post saved","Stored locally with source relationships, channels, and visual headline. Available to future retrieval.");
+    done(6); active=-1; renderStages();
+    $("runStatus").textContent="Complete · approved content remembered";
+    $("announce").textContent="Simulation complete. Approved post saved to memory.";
+    show("Content delivered. Knowledge retained.",`
+      <div class="info"><strong>✓ Publishing simulated for ${escapeHTML(chosenChannels.join(", "))}</strong><br>
+      Your approved post is now part of local memory. No real social channel was contacted.</div>
+      <div class="edit-grid"><div class="draft"><h3>Approved copy</h3><p>${escapeHTML(draft)}</p></div>
+      <div class="preview">${visualSVG()}</div></div>`,
+      "Feedback loop complete"
+    );
+    lock(false);
+  },1900);
+}
+
+$("work").addEventListener("click",e=>{
+  const button=e.target.closest("[data-action]");
+  if(!button) return;
+  switch(button.dataset.action) {
+    case "choose": editDraft(Number(button.dataset.index)); break;
+    case "variants": buildDrafts(); break;
+    case "approveCopy": approveCopy(); break;
+    case "publish": publish(); break;
+    case "revise":
+      draft=$("finalText").value;
+      completed.delete(3); completed.delete(4);
+      setStage(3,"Human checkpoint · revise the copy");
+      log("Revision requested","Returned to copy review. Visual must be regenerated and reviewed again.");
+      renderEditor(); break;
+    case "downloadVisual":
+      download(visualSVG(),"social-visual.svg","image/svg+xml"); break;
+  }
+});
+$("work").addEventListener("input",e=>{
+  if(e.target.id==="visualTitle") {
+    visualTitle=e.target.value;
+    $("visualPreview").innerHTML=visualSVG();
+  }
+});
+function download(content,name,type) {
+  const url=URL.createObjectURL(new Blob([content],{type}));
+  const a=document.createElement("a"); a.href=url; a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("export").onclick=()=>download(JSON.stringify(logs,null,2),"social-workflow-events.json","application/json");
+
+function reset() {
+  clearTimeout(timer); timer=null; active=-1; completed.clear();
+  draft=""; context=[]; priorPosts=[]; variants=[];
+  lock(false); renderStages();
+  $("runStatus").textContent="Ready for your brief";
+  show("Creative workspace",`
+    <div class="empty"><div>${icon("write")}
+    <h3>Turn knowledge into something worth sharing.</h3>
+    <p style="margin-top:6px;font-size:11px">Enter a brief and choose a research window.<br>
+    Review three drafts, approve a visual, and complete the memory loop.</p></div></div>`,
+    "Human decisions happen here"
+  );
+}
+$("reset").onclick=()=>{
+  reset();
+  log("Run reset","In-flight local work cancelled. Persistent memory and collection are unchanged.");
+};
+$("generate").onclick=()=>{
+  if(!$("prompt").value.trim()) { $("prompt").focus(); return; }
+  reset(); runNumber++;
+  brief=$("prompt").value.trim();
+  lock(true);
+  setStage(0,"Research agent · retrieving graph context");
+  log("Brief received",brief);
+  show("Searching memory",'<div class="empty"><div>Matching topics, facts, and past approved posts…<br><small>Time-filtered research + historical style context</small></div></div>');
+  later(retrieve,1800);
+};
+
+persist(); renderGraph(); reset();
+log("Memory initialized",`${memory.length} local records. Graph visualization is illustrative; records and relationships are stored as JSON.`);
+</script>
+</body>
+</html>

@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F3F6F5">
+
+  <title>BI CLUE: Live Architecture Blueprint</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    :root {
+      --teal: #294753;
+      --gold: #D09242;
+      --mist: #F3F6F5;
+      --surface: #E4ECEA;
+      --white: #FFFFFF;
+      --ink: #182B35;
+      --muted: #52646C;
+      --soft: #A9C5C8;
+      --pale: #FAECD9;
+
+      --border: rgba(41, 71, 83, .14);
+      --shadow: 0 16px 48px rgba(24, 43, 53, .06);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 95% 0%, #FAECD980, transparent 38%),
+        var(--mist);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    button, select { font: inherit; }
+
+    button, select, input {
+      accent-color: var(--teal);
+    }
+
+    button, select {
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+    }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 14px;
+      background: var(--white);
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+    }
+
+    button:hover {
+      background: var(--surface);
+      transform: translateY(-1px);
+    }
+
+    button:active { transform: translateY(0); }
+
+    button:focus-visible,
+    select:focus-visible,
+    input:focus-visible,
+    .diagram-scroll:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 4px;
+    }
+
+    button.primary {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: var(--white);
+    }
+
+    button.primary:hover {
+      background: var(--ink);
+      box-shadow: 0 5px 15px #29475322;
+    }
+
+    button svg {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .app {
+      width: min(1600px, 100%);
+      margin: auto;
+      padding: 28px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .project-tag {
+      padding: 5px 8px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--teal);
+      background: var(--surface);
+    }
+
+    h1 {
+      margin: 10px 0 6px;
+      color: var(--teal);
+      font: 800 clamp(23px, 2.5vw, 36px)/1.2 "Manrope", sans-serif;
+      letter-spacing: -.045em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .signal {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-shrink: 0;
+      padding: 11px 15px;
+      border: 1px solid #D0924240;
+      border-radius: 100px;
+      background: var(--pale);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .signal-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 4px #D0924218;
+    }
+
+    .workspace {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .toolbar-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toolbar-title strong {
+      display: block;
+      color: var(--teal);
+      font-size: 13px;
+    }
+
+    .toolbar-title small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .live-indicator {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    body.is-playing .live-indicator {
+      animation: livePulse 1.8s ease-in-out infinite;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .speed-control,
+    .loop-control {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .speed-control { margin-left: 4px; }
+
+    select {
+      padding: 7px 27px 7px 10px;
+      background: var(--mist);
+      color: var(--teal);
+      cursor: pointer;
+    }
+
+    .loop-control {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .loop-control input {
+      width: 15px;
+      height: 15px;
+      margin: 0;
+    }
+
+    .diagram-scroll {
+      overflow-x: auto;
+      background: var(--mist);
+    }
+
+    .blueprint {
+      display: block;
+      width: 100%;
+      min-width: 960px;
+      height: auto;
+    }
+
+    /* SVG typography */
+
+    svg text {
+      fill: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    svg .stage {
+      fill: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+    }
+
+    svg .name {
+      fill: var(--teal);
+      font-family: "Manrope", sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    svg .note {
+      fill: var(--muted);
+      font-size: 10px;
+    }
+
+    svg .micro {
+      fill: var(--muted);
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: .8px;
+    }
+
+    /* Node surfaces */
+
+    .node .node-card {
+      fill: var(--white);
+      stroke: var(--border);
+      stroke-width: 1;
+      transition: fill .35s ease, stroke .35s ease;
+    }
+
+    .node .icon-surface {
+      fill: var(--mist);
+      transition: fill .35s ease;
+    }
+
+    .node .icon-ring {
+      fill: none;
+      stroke: var(--soft);
+      stroke-width: 1.3;
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .node .icon {
+      fill: none;
+      stroke: var(--teal);
+      stroke-width: 1.65;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .node .state-dot {
+      fill: var(--soft);
+      transition: fill .3s ease;
+    }
+
+    .node.is-active .node-card {
+      fill: #FFFDF9;
+      stroke: var(--gold);
+      stroke-width: 1.6;
+      filter: url(#active-shadow);
+    }
+
+    .node.is-active .icon-surface {
+      fill: var(--pale);
+    }
+
+    .node.is-active .state-dot { fill: var(--gold); }
+
+    .node.is-done .state-dot { fill: var(--teal); }
+    .node.is-done .node-card { stroke: var(--soft); }
+
+    .node.is-active .icon-ring {
+      opacity: .8;
+      animation: ringPulse 2s ease-out infinite;
+    }
+
+    .node.is-active .animated-icon {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: iconFloat 2s ease-in-out infinite;
+    }
+
+    .node.is-active .spark {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: sparkTurn 5s linear infinite;
+    }
+
+    .node .scan-line {
+      opacity: 0;
+      stroke: var(--gold);
+      stroke-width: 2;
+    }
+
+    .node.is-active .scan-line {
+      opacity: 1;
+      animation: scanMove 1.7s ease-in-out infinite;
+    }
+
+    .node .typing-dot { opacity: .35; }
+
+    .node.is-active .typing-dot {
+      animation: typing 1.1s ease-in-out infinite;
+    }
+
+    .node.is-active .typing-dot:nth-child(2) { animation-delay: .15s; }
+    .node.is-active .typing-dot:nth-child(3) { animation-delay: .3s; }
+
+    /* Wires */
+
+    .wire {
+      fill: none;
+      stroke: var(--soft);
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      marker-end: url(#arrow-muted);
+      transition: stroke .3s ease, opacity .3s ease;
+    }
+
+    .wire.evidence { stroke: #D0924255; }
+
+    .wire.support {
+      stroke: #52646C70;
+      stroke-dasharray: 5 6;
+    }
+
+    .wire.is-traversed {
+      stroke: var(--teal);
+      opacity: .65;
+    }
+
+    .wire.evidence.is-traversed {
+      stroke: var(--gold);
+    }
+
+    .wire.is-active {
+      stroke: var(--teal);
+      stroke-width: 2.5;
+      stroke-dasharray: 7 6;
+      marker-end: url(#arrow-teal);
+      opacity: 1;
+      animation: wireDash .8s linear infinite;
+    }
+
+    .wire.evidence.is-active {
+      stroke: var(--gold);
+      marker-end: url(#arrow-gold);
+    }
+
+    #packet {
+      pointer-events: none;
+      filter: url(#packet-glow);
+    }
+
+    /* Evidence panel */
+
+    .evidence-panel {
+      fill: var(--surface);
+      fill-opacity: .65;
+      stroke: var(--border);
+    }
+
+    .evidence-check {
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: .25;
+      transition: opacity .35s ease;
+    }
+
+    .has-evidence .evidence-check { opacity: 1; }
+
+    /* Bottom status */
+
+    .run-panel {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 20px;
+      padding: 19px 22px;
+      border-top: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .step-caption {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .step-pill {
+      padding: 4px 7px;
+      border-radius: 5px;
+      background: var(--pale);
+      color: var(--ink);
+    }
+
+    #step-title {
+      margin: 0 0 5px;
+      color: var(--teal);
+      font: 800 16px/1.4 "Manrope", sans-serif;
+    }
+
+    #step-description {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .progress-block { width: 220px; }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .progress-track {
+      height: 5px;
+      overflow: hidden;
+      border-radius: 20px;
+      background: var(--surface);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--gold);
+    }
+
+    .step-dots {
+      display: flex;
+      gap: 5px;
+      margin-top: 12px;
+    }
+
+    .step-dot {
+      flex: 1;
+      height: 4px;
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .step-dot.done { background: var(--soft); }
+    .step-dot.active { background: var(--gold); }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 15px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .mobile-hint { display: none; }
+
+    /* Pause every decorative animation along with playback. */
+
+    body:not(.is-playing) .node *,
+    body:not(.is-playing) .wire {
+      animation-play-state: paused !important;
+    }
+
+    @keyframes livePulse {
+      50% { box-shadow: 0 0 0 5px #D0924220; }
+    }
+
+    @keyframes ringPulse {
+      0% { transform: scale(.93); opacity: .7; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+
+    @keyframes iconFloat {
+      50% { transform: translateY(-3px); }
+    }
+
+    @keyframes sparkTurn {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes scanMove {
+      0%, 100% { transform: translateY(-9px); }
+      50% { transform: translateY(9px); }
+    }
+
+    @keyframes typing {
+      50% { opacity: 1; }
+    }
+
+    @keyframes wireDash {
+      to { stroke-dashoffset: -26; }
+    }
+
+    @media (min-width: 1600px) {
+      .app { padding-top: 36px; }
+    }
+
+    @media (max-width: 850px) {
+      .app { padding: 18px; }
+      .signal { display: none; }
+      .toolbar { align-items: flex-start; }
+      .run-panel { grid-template-columns: 1fr; }
+      .progress-block { width: 100%; }
+      footer { flex-direction: column; gap: 4px; }
+      .mobile-hint {
+        display: block;
+        margin: 0;
+        padding: 9px 20px;
+        background: var(--mist);
+        color: var(--muted);
+        font-size: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .app { padding: 12px; }
+      header { margin-bottom: 18px; }
+      .eyebrow { font-size: 8px; gap: 8px; }
+      .subtitle { font-size: 11px; }
+      .toolbar { padding: 14px; }
+      .controls { gap: 6px; }
+      button { padding: 8px 10px; }
+      .loop-control { margin-left: 0; }
+      .run-panel { padding: 16px; }
+      footer span:last-child { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      #packet { display: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <div class="eyebrow">
+          <span class="project-tag">Project 30</span>
+          <span>Enterprise AI & Agents</span>
+        </div>
+
+        <h1>BI CLUE Knowledge Assistant</h1>
+
+        <p class="subtitle">
+          From a business question to a grounded, source-linked answer.
+        </p>
+      </div>
+
+      <div class="signal">
+        <span class="signal-dot" aria-hidden="true"></span>
+        Questions → Evidence → Answers
+      </div>
+    </header>
+
+    <main class="workspace">
+      <div class="toolbar">
+        <div class="toolbar-title">
+          <span class="live-indicator" aria-hidden="true"></span>
+          <div>
+            <strong>Architecture in motion</strong>
+            <small>Illustrative workflow · No live backend connection</small>
+          </div>
+        </div>
+
+        <div class="controls" aria-label="Workflow playback controls">
+          <button id="play-button" class="primary" type="button">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path id="play-icon" d="M7 4L16 10L7 16Z"/>
+            </svg>
+            <span id="play-label">Play</span>
+          </button>
+
+          <button id="next-button" type="button" title="Pause and advance one step">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M4 4L12 10L4 16ZM15 4V16"/>
+            </svg>
+            Next
+          </button>
+
+          <button id="reset-button" type="button" title="Reset workflow">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M4 7A6 6 0 1 1 4 13M4 3V7H8"/>
+            </svg>
+            Reset
+          </button>
+
+          <label class="speed-control">
+            Speed
+            <select id="speed-select">
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+          </label>
+
+          <label class="loop-control">
+            <input id="loop-input" type="checkbox" checked>
+            Loop
+          </label>
+        </div>
+      </div>
+
+      <p class="mobile-hint">Scroll horizontally to explore the full blueprint →</p>
+
+      <div
+        class="diagram-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="Scrollable workflow diagram"
+      >
+        <svg
+          id="blueprint"
+          class="blueprint"
+          viewBox="0 0 1280 650"
+          role="img"
+          aria-labelledby="diagram-title diagram-description"
+        >
+          <title id="diagram-title">
+            BI CLUE animated knowledge retrieval architecture
+          </title>
+
+          <desc id="diagram-description">
+            Internal BI documents are prepared and indexed in Azure AI Search.
+            A Streamlit question passes through retrieval planning and MCP
+            retrieval tools. Search results return as evidence for answer
+            generation. A cited answer is returned to the conversation.
+            Indexing is shown as a separate preparation stage, not something
+            that must happen for every question. Use the playback controls
+            and the text explanation below to follow each step.
+          </desc>
+
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path
+                d="M24 0H0V24"
+                fill="none"
+                stroke="#294753"
+                stroke-opacity=".045"
+                stroke-width=".7"
+              />
+            </pattern>
+
+            <pattern id="major-grid" width="120" height="120" patternUnits="userSpaceOnUse">
+              <rect width="120" height="120" fill="url(#grid)"/>
+              <path
+                d="M120 0H0V120"
+                fill="none"
+                stroke="#294753"
+                stroke-opacity=".055"
+              />
+            </pattern>
+
+            <marker id="arrow-muted" viewBox="0 0 10 10"
+              refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="#A9C5C8" stroke-width="1.5"/>
+            </marker>
+
+            <marker id="arrow-teal" viewBox="0 0 10 10"
+              refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="#294753" stroke-width="1.5"/>
+            </marker>
+
+            <marker id="arrow-gold" viewBox="0 0 10 10"
+              refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M1 1L9 5L1 9" fill="none" stroke="#D09242" stroke-width="1.5"/>
+            </marker>
+
+            <filter id="active-shadow" x="-25%" y="-25%" width="150%" height="160%">
+              <feDropShadow dx="0" dy="5" stdDeviation="7"
+                flood-color="#D09242" flood-opacity=".13"/>
+            </filter>
+
+            <filter id="packet-glow" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+
+            <!-- Reusable line icons -->
+
+            <symbol id="icon-conversation" viewBox="0 0 64 64">
+              <rect x="5" y="8" width="54" height="39" rx="5"/>
+              <path d="M5 18H59M24 56H40M32 47V56"/>
+              <path d="M15 26H42V36H26L20 41V36H15Z"/>
+              <path d="M12 13H12.1M17 13H17.1M22 13H22.1"/>
+            </symbol>
+
+            <symbol id="icon-plan" viewBox="0 0 64 64">
+              <circle cx="14" cy="14" r="7"/>
+              <rect x="41" y="7" width="15" height="14" rx="4"/>
+              <rect x="41" y="42" width="15" height="14" rx="4"/>
+              <path d="M21 14H41M49 21V42M41 49H21A7 7 0 0 1 14 42V30"/>
+              <path d="M8 36L14 30L20 36M27 28H34M27 35H34"/>
+            </symbol>
+
+            <symbol id="icon-tools" viewBox="0 0 64 64">
+              <path d="M22 7V21M42 7V21M15 21H49V31A17 17 0 0 1 15 31Z"/>
+              <path d="M32 48V58M24 29H40M24 36H34"/>
+            </symbol>
+
+            <symbol id="icon-search" viewBox="0 0 64 64">
+              <ellipse cx="26" cy="12" rx="18" ry="7"/>
+              <path d="M8 12V28C8 34 22 37 33 33M8 28V43C8 48 19 51 28 49M44 12V22"/>
+              <circle cx="43" cy="39" r="11"/>
+              <path d="M51 47L60 56"/>
+            </symbol>
+
+            <symbol id="icon-documents" viewBox="0 0 64 64">
+              <path d="M23 5H44L55 16V52H23ZM44 5V16H55"/>
+              <path d="M16 13H9V59H42V52M31 25H47M31 33H47M31 41H41"/>
+            </symbol>
+
+            <symbol id="icon-prepare" viewBox="0 0 64 64">
+              <rect x="7" y="8" width="18" height="15" rx="3"/>
+              <rect x="39" y="8" width="18" height="15" rx="3"/>
+              <rect x="7" y="41" width="18" height="15" rx="3"/>
+              <rect x="39" y="41" width="18" height="15" rx="3"/>
+              <path d="M25 16H39M16 23V41M48 23V41M25 49H39"/>
+              <path d="M28 31L31 34L37 28"/>
+            </symbol>
+
+            <symbol id="icon-evidence" viewBox="0 0 64 64">
+              <path d="M12 7H41L52 18V57H12ZM41 7V18H52"/>
+              <path d="M20 27H43M20 35H37M21 44H27V51H21ZM34 44H40V51H34Z"/>
+            </symbol>
+
+            <symbol id="icon-generate" viewBox="0 0 64 64">
+              <path d="M32 7L39 25L57 32L39 39L32 57L25 39L7 32L25 25Z"/>
+            </symbol>
+
+            <symbol id="icon-citation" viewBox="0 0 64 64">
+              <path d="M8 9H56V43H28L16 54V43H8Z"/>
+              <path d="M17 20H46M17 28H37M38 35L42 39L49 32"/>
+            </symbol>
+          </defs>
+
+          <!-- Background -->
+
+          <rect width="1280" height="650" fill="#F3F6F5"/>
+          <rect width="1280" height="650" fill="url(#major-grid)"/>
+
+          <rect x="795" y="82" width="450" height="482" rx="20"
+            fill="#E4ECEA" fill-opacity=".35"/>
+
+          <path
+            d="M20 39V20H39M1241 20H1260V39M20 611V630H39M1241 630H1260V611"
+            fill="none"
+            stroke="#A9C5C8"
+          />
+
+          <text x="50" y="56" class="stage">01 / CONVERSATION</text>
+          <text x="310" y="56" class="stage">02 / RETRIEVAL ORCHESTRATION</text>
+          <text x="820" y="56" class="stage">03 / KNOWLEDGE ACCESS</text>
+          <text x="50" y="367" class="stage">04 / GROUNDED RESPONSE</text>
+
+          <path d="M272 88V323M768 88V550"
+            stroke="#294753" stroke-opacity=".12" stroke-dasharray="3 7"/>
+
+          <!-- Connections: animated by JavaScript -->
+
+          <path id="edge-question" d="M240 190H290" class="wire"/>
+          <text x="265" y="173" text-anchor="middle" class="micro">ASK</text>
+
+          <path id="edge-plan" d="M474 190H530" class="wire"/>
+          <text x="502" y="173" text-anchor="middle" class="micro">INTENT</text>
+
+          <path id="edge-search" d="M714 177H814" class="wire"/>
+          <text x="764" y="160" text-anchor="middle" class="micro">SEARCH</text>
+
+          <path id="edge-result" d="M814 211H714" class="wire evidence"/>
+          <text x="764" y="233" text-anchor="middle" class="micro">RESULTS</text>
+
+          <path id="edge-ingest" d="M1144 292V399" class="wire support"/>
+          <text x="1160" y="346" class="micro">PREPARE</text>
+
+          <path id="edge-index"
+            d="M1052 445H1020V190H998"
+            class="wire support"/>
+
+          <text x="1036" y="375" class="micro"
+            transform="rotate(-90 1036 375)">INDEX + METADATA</text>
+
+          <path id="edge-evidence" d="M622 292V399" class="wire evidence"/>
+          <text x="639" y="346" class="micro">PASSAGES + SOURCES</text>
+
+          <path id="edge-context" d="M382 292V399" class="wire support"/>
+          <text x="398" y="324" class="micro">QUESTION</text>
+          <text x="398" y="338" class="micro">CONTEXT</text>
+
+          <path id="edge-ground" d="M530 445H474" class="wire evidence"/>
+          <text x="502" y="428" text-anchor="middle" class="micro">GROUND</text>
+
+          <path id="edge-answer" d="M290 445H240" class="wire evidence"/>
+          <text x="265" y="428" text-anchor="middle" class="micro">CITE</text>
+
+          <path id="edge-return"
+            d="M56 445H34V190H56"
+            class="wire evidence"/>
+
+          <!-- Streamlit -->
+
+          <g id="node-ui" class="node">
+            <rect class="node-card" x="56" y="125" width="184" height="167" rx="13"/>
+            <circle class="state-dot" cx="223" cy="142" r="3"/>
+            <circle class="icon-surface" cx="148" cy="185" r="37"/>
+            <circle class="icon-ring" cx="148" cy="185" r="39"/>
+
+            <g class="animated-icon">
+              <use href="#icon-conversation" x="119" y="155" width="58" height="58" class="icon"/>
+              <g fill="#D09242">
+                <circle class="typing-dot" cx="141" cy="183" r="1.6"/>
+                <circle class="typing-dot" cx="147" cy="183" r="1.6"/>
+                <circle class="typing-dot" cx="153" cy="183" r="1.6"/>
+              </g>
+            </g>
+
+            <text x="148" y="245" text-anchor="middle" class="name">Streamlit interface</text>
+            <text x="148" y="265" text-anchor="middle" class="note">Question + conversation context</text>
+          </g>
+
+          <!-- Planning -->
+
+          <g id="node-plan" class="node">
+            <rect class="node-card" x="290" y="125" width="184" height="167" rx="13"/>
+            <circle class="state-dot" cx="457" cy="142" r="3"/>
+            <circle class="icon-surface" cx="382" cy="185" r="37"/>
+            <circle class="icon-ring" cx="382" cy="185" r="39"/>
+
+            <use href="#icon-plan" x="354" y="157" width="56" height="56"
+              class="icon animated-icon"/>
+
+            <text x="382" y="245" text-anchor="middle" class="name">Retrieval planning</text>
+            <text x="382" y="265" text-anchor="middle" class="note">Information needs / search queries</text>
+          </g>
+
+          <!-- MCP -->
+
+          <g id="node-mcp" class="node">
+            <rect class="node-card" x="530" y="125" width="184" height="167" rx="13"/>
+            <circle class="state-dot" cx="697" cy="142" r="3"/>
+            <circle class="icon-surface" cx="622" cy="185" r="37"/>
+            <circle class="icon-ring" cx="622" cy="185" r="39"/>
+
+            <use href="#icon-tools" x="594" y="157" width="56" height="56"
+              class="icon animated-icon"/>
+
+            <text x="622" y="245" text-anchor="middle" class="name">MCP integration</text>
+            <text x="622" y="265" text-anchor="middle" class="note">Client ↔ server / retrieval tools</text>
+            <text x="622" y="112" text-anchor="middle" class="micro">MODEL CONTEXT PROTOCOL</text>
+          </g>
+
+          <!-- Search -->
+
+          <g id="node-search" class="node">
+            <rect class="node-card" x="814" y="125" width="184" height="167" rx="13"/>
+            <circle class="state-dot" cx="981" cy="142" r="3"/>
+            <circle class="icon-surface" cx="906" cy="185" r="37"/>
+            <circle class="icon-ring" cx="906" cy="185" r="39"/>
+
+            <use href="#icon-search" x="878" y="157" width="56" height="56"
+              class="icon animated-icon"/>
+            <path class="scan-line" d="M890 183H915"/>
+
+            <text x="906" y="245" text-anchor="middle" class="name">Azure AI Search</text>
+            <text x="906" y="265" text-anchor="middle" class="note">Relevant BI knowledge retrieval</text>
+          </g>
+
+          <!-- Documents -->
+
+          <g id="node-docs" class="node">
+            <rect class="node-card" x="1052" y="125" width="184" height="167" rx="13"/>
+            <circle class="state-dot" cx="1219" cy="142" r="3"/>
+            <circle class="icon-surface" cx="1144" cy="185" r="37"/>
+            <circle class="icon-ring" cx="1144" cy="185" r="39"/>
+
+            <use href="#icon-documents" x="1116" y="157" width="56" height="56"
+              class="icon animated-icon"/>
+
+            <text x="1144" y="245" text-anchor="middle" class="name">Internal BI knowledge</text>
+            <text x="1144" y="265" text-anchor="middle" class="note">Documents / reference material</text>
+          </g>
+
+          <!-- Prepare and index -->
+
+          <g id="node-index" class="node">
+            <rect class="node-card" x="1052" y="399" width="184" height="152" rx="13"/>
+            <circle class="state-dot" cx="1219" cy="416" r="3"/>
+            <circle class="icon-surface" cx="1144" cy="446" r="32"/>
+            <circle class="icon-ring" cx="1144" cy="446" r="34"/>
+
+            <use href="#icon-prepare" x="1119" y="421" width="50" height="50"
+              class="icon animated-icon"/>
+
+            <text x="1144" y="508" text-anchor="middle" class="name">Prepare & index</text>
+            <text x="1144" y="528" text-anchor="middle" class="note">Content + source metadata</text>
+          </g>
+
+          <!-- Evidence -->
+
+          <g id="node-evidence" class="node">
+            <rect class="node-card" x="530" y="399" width="184" height="152" rx="13"/>
+            <circle class="state-dot" cx="697" cy="416" r="3"/>
+            <circle class="icon-surface" cx="622" cy="446" r="32"/>
+            <circle class="icon-ring" cx="622" cy="446" r="34"/>
+
+            <use href="#icon-evidence" x="597" y="421" width="50" height="50"
+              class="icon animated-icon"/>
+
+            <text x="622" y="508" text-anchor="middle" class="name">Evidence context</text>
+            <text x="622" y="528" text-anchor="middle" class="note">Passages + source references</text>
+          </g>
+
+          <!-- Generation -->
+
+          <g id="node-generate" class="node">
+            <rect class="node-card" x="290" y="399" width="184" height="152" rx="13"/>
+            <circle class="state-dot" cx="457" cy="416" r="3"/>
+            <circle class="icon-surface" cx="382" cy="446" r="32"/>
+            <circle class="icon-ring" cx="382" cy="446" r="34"/>
+
+            <use href="#icon-generate" x="357" y="421" width="50" height="50"
+              class="icon spark"/>
+            <circle cx="382" cy="446" r="3.5" fill="#D09242"/>
+
+            <text x="382" y="508" text-anchor="middle" class="name">Answer generation</text>
+            <text x="382" y="528" text-anchor="middle" class="note">Question + retrieved evidence</text>
+          </g>
+
+          <!-- Answer -->
+
+          <g id="node-answer" class="node">
+            <rect class="node-card" x="56" y="399" width="184" height="152" rx="13"/>
+            <circle class="state-dot" cx="223" cy="416" r="3"/>
+            <circle class="icon-surface" cx="148" cy="446" r="32"/>
+            <circle class="icon-ring" cx="148" cy="446" r="34"/>
+
+            <use href="#icon-citation" x="123" y="421" width="50" height="50"
+              class="icon animated-icon"/>
+
+            <text x="148" y="508" text-anchor="middle" class="name">Cited answer</text>
+            <text x="148" y="528" text-anchor="middle" class="note">Response linked to source evidence</text>
+          </g>
+
+          <!-- Evidence details -->
+
+          <g transform="translate(820 399)">
+            <rect class="evidence-panel" width="172" height="152" rx="12"/>
+            <text x="16" y="26" class="stage">EVIDENCE LINKS</text>
+
+            <path class="evidence-check" d="M17 51L21 55L28 47"/>
+            <text x="38" y="55" class="note">Passage content</text>
+
+            <path class="evidence-check" d="M17 77L21 81L28 73"/>
+            <text x="38" y="81" class="note">Source reference</text>
+
+            <path class="evidence-check" d="M17 103L21 107L28 99"/>
+            <text x="38" y="107" class="note">Citation mapping</text>
+
+            <text x="16" y="133" class="micro">TRACEABLE CONTEXT</text>
+          </g>
+
+          <!-- Traveling signal -->
+
+          <g id="packet" visibility="hidden" aria-hidden="true">
+            <circle id="packet-halo" r="10" fill="#294753" opacity=".12"/>
+            <circle id="packet-core" r="4" fill="#294753"/>
+            <circle r="1.6" fill="#FFFFFF"/>
+          </g>
+
+          <!-- Legend -->
+
+          <path d="M55 578H1225" stroke="#294753" stroke-opacity=".13"/>
+
+          <path d="M55 606H85" fill="none" stroke="#294753"
+            stroke-width="2" marker-end="url(#arrow-teal)"/>
+          <text x="97" y="610" class="note">Request / orchestration</text>
+
+          <path d="M290 606H320" fill="none" stroke="#D09242"
+            stroke-width="2" marker-end="url(#arrow-gold)"/>
+          <text x="332" y="610" class="note">Evidence / answer</text>
+
+          <path d="M505 606H535" fill="none" stroke="#52646C"
+            stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text x="547" y="610" class="note">Ingestion / supporting context</text>
+
+          <text x="1225" y="610" text-anchor="end" class="micro">
+            LOGICAL BLUEPRINT · TOOL BOUNDARIES ILLUSTRATIVE
+          </text>
+        </svg>
+      </div>
+
+      <section class="run-panel" aria-label="Current workflow step">
+        <div>
+          <div class="step-caption">
+            <span id="phase-label">Knowledge preparation</span>
+            <span id="step-counter" class="step-pill">Step 01 / 11</span>
+          </div>
+
+          <div role="status" aria-live="polite" aria-atomic="true">
+            <h2 id="step-title">Prepare internal knowledge</h2>
+            <p id="step-description">
+              Source documents enter a separate preparation pipeline.
+            </p>
+          </div>
+        </div>
+
+        <div class="progress-block">
+          <div class="progress-meta">
+            <span id="playback-status">Ready</span>
+            <span id="progress-label">0%</span>
+          </div>
+
+          <div
+            id="progress"
+            class="progress-track"
+            role="progressbar"
+            aria-label="Workflow progress"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+
+          <div id="step-dots" class="step-dots" aria-hidden="true"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>
+        Conceptual simulation · Indexing runs separately from user queries.
+        Citations support verification, not a guarantee of accuracy.
+      </span>
+      <span>RAG · MCP · Azure AI Search · Streamlit</span>
+    </footer>
+
+    <noscript>
+      <p>This blueprint remains visible without JavaScript. Enable JavaScript for workflow playback.</p>
+    </noscript>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = id => document.getElementById(id);
+
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
+
+      /*
+       * Illustrative sequence only.
+       * The first two steps represent a separate indexing pipeline.
+       * No API calls or actual model execution occur.
+       */
+      const steps = [
+        {
+          phase: "Knowledge preparation",
+          title: "Prepare internal knowledge",
+          description:
+            "Internal BI documents enter a separate preparation pipeline. Content is organized for retrieval while source references are preserved.",
+          nodes: ["docs", "index"],
+          edge: "ingest",
+          duration: 2600
+        },
+        {
+          phase: "Knowledge preparation",
+          title: "Make knowledge searchable",
+          description:
+            "Prepared content and source metadata populate Azure AI Search. This preparation happens independently of individual user questions.",
+          nodes: ["index", "search"],
+          edge: "index",
+          duration: 2800
+        },
+        {
+          phase: "Conversation",
+          title: "Receive a business question",
+          description:
+            "The Streamlit interface passes the user's question and relevant conversation context to retrieval planning.",
+          nodes: ["ui", "plan"],
+          edge: "question",
+          duration: 2600
+        },
+        {
+          phase: "Retrieval orchestration",
+          title: "Plan the retrieval",
+          description:
+            "Retrieval planning identifies the information needed and forms search intent for the available MCP retrieval tools.",
+          nodes: ["plan", "mcp"],
+          edge: "plan",
+          duration: 2600
+        },
+        {
+          phase: "Knowledge access",
+          title: "Call the search tool",
+          description:
+            "The MCP client/server integration carries a retrieval tool request to a backend powered by Azure AI Search.",
+          nodes: ["mcp", "search"],
+          edge: "search",
+          duration: 2700
+        },
+        {
+          phase: "Knowledge access",
+          title: "Return relevant search results",
+          description:
+            "Relevant passages and their source metadata return through the retrieval tool boundary. These results provide candidate evidence.",
+          nodes: ["search", "mcp"],
+          edge: "result",
+          duration: 2700
+        },
+        {
+          phase: "Grounded response",
+          title: "Assemble the evidence context",
+          description:
+            "Retrieved passages and source references are assembled as grounding material, preserving the information needed to map citations.",
+          nodes: ["mcp", "evidence"],
+          edge: "evidence",
+          duration: 2700
+        },
+        {
+          phase: "Grounded response",
+          title: "Carry forward the question context",
+          description:
+            "The original question and relevant conversation context accompany the evidence so the generated response addresses the user's request.",
+          nodes: ["plan", "generate"],
+          edge: "context",
+          duration: 2300
+        },
+        {
+          phase: "Grounded response",
+          title: "Generate with retrieved evidence",
+          description:
+            "Answer generation uses the question together with retrieved evidence. Unsupported details should not be presented as established facts.",
+          nodes: ["evidence", "generate"],
+          edge: "ground",
+          duration: 3100
+        },
+        {
+          phase: "Grounded response",
+          title: "Attach source citations",
+          description:
+            "The response is linked to source references so the user can inspect supporting material. Citations help verification but do not guarantee correctness.",
+          nodes: ["generate", "answer"],
+          edge: "answer",
+          duration: 2800
+        },
+        {
+          phase: "Conversation",
+          title: "Return the cited answer",
+          description:
+            "The source-linked answer returns to the Streamlit conversation, where the user can review the evidence and ask a follow-up question.",
+          nodes: ["answer", "ui"],
+          edge: "return",
+          duration: 3000
+        }
+      ];
+
+      const nodeElements = [...document.querySelectorAll(".node")];
+      const wireElements = [...document.querySelectorAll(".wire")];
+
+      const paths = Object.fromEntries(
+        wireElements.map(path => [
+          path.id.replace("edge-", ""),
+          { element: path, length: path.getTotalLength() }
+        ])
+      );
+
+      const dots = steps.map(() => {
+        const dot = document.createElement("span");
+        dot.className = "step-dot";
+        $("step-dots").appendChild(dot);
+        return dot;
+      });
+
+      const state = {
+        index: 0,
+        elapsed: 0,
+        playing: false,
+        speed: 1,
+        lastTime: null,
+        frameId: null,
+        complete: false
+      };
+
+      function renderStep() {
+        const step = steps[state.index];
+
+        nodeElements.forEach(node => {
+          node.classList.remove("is-active", "is-done");
+        });
+
+        wireElements.forEach(wire => {
+          wire.classList.remove("is-active", "is-traversed");
+        });
+
+        for (let i = 0; i < state.index; i++) {
+          steps[i].nodes.forEach(name => {
+            $("node-" + name).classList.add("is-done");
+          });
+
+          paths[steps[i].edge].element.classList.add("is-traversed");
+        }
+
+        step.nodes.forEach(name => {
+          const node = $("node-" + name);
+          node.classList.remove("is-done");
+          node.classList.add("is-active");
+        });
+
+        paths[step.edge].element.classList.add("is-active");
+
+        $("blueprint").classList.toggle(
+          "has-evidence",
+          state.index >= 6
+        );
+
+        $("phase-label").textContent = step.phase;
+        $("step-counter").textContent =
+          `Step ${String(state.index + 1).padStart(2, "0")} / ${steps.length}`;
+
+        $("step-title").textContent = step.title;
+        $("step-description").textContent = step.description;
+
+        dots.forEach((dot, index) => {
+          dot.classList.toggle("done", index < state.index);
+          dot.classList.toggle("active", index === state.index);
+        });
+
+        const color = paths[step.edge].element.classList.contains("evidence")
+          ? "#D09242"
+          : "#294753";
+
+        $("packet-core").setAttribute("fill", color);
+        $("packet-halo").setAttribute("fill", color);
+
+        renderProgress();
+      }
+
+      function renderProgress() {
+        const step = steps[state.index];
+        const fraction = Math.min(state.elapsed / step.duration, 1);
+
+        const progress = state.complete
+          ? 100
+          : ((state.index + fraction) / steps.length) * 100;
+
+        const rounded = Math.round(progress);
+
+        $("progress-fill").style.width = progress + "%";
+        $("progress-label").textContent = rounded + "%";
+        $("progress").setAttribute("aria-valuenow", rounded);
+
+        /*
+         * Hold briefly at either end of a connection.
+         * The packet follows the actual SVG path, including corners.
+         */
+        const travel = Math.max(0, Math.min(1, (fraction - .12) / .76));
+        const eased = travel * travel * (3 - 2 * travel);
+        const path = paths[step.edge];
+
+        const point = path.element.getPointAtLength(path.length * eased);
+
+        $("packet").setAttribute(
+          "transform",
+          `translate(${point.x} ${point.y})`
+        );
+
+        $("packet").setAttribute(
+          "visibility",
+          reducedMotion.matches || state.complete ? "hidden" : "visible"
+        );
+      }
+
+      function updatePlaybackUI() {
+        document.body.classList.toggle("is-playing", state.playing);
+
+        $("play-label").textContent = state.playing
+          ? "Pause"
+          : state.complete ? "Replay" : "Play";
+
+        $("play-icon").setAttribute(
+          "d",
+          state.playing
+            ? "M7 4V16M13 4V16"
+            : "M7 4L16 10L7 16Z"
+        );
+
+        $("playback-status").textContent = state.complete
+          ? "Completed"
+          : state.playing ? "Running simulation" : "Paused / ready";
+      }
+
+      function pause() {
+        state.playing = false;
+        state.lastTime = null;
+
+        if (state.frameId !== null) {
+          cancelAnimationFrame(state.frameId);
+          state.frameId = null;
+        }
+
+        updatePlaybackUI();
+      }
+
+      function play() {
+        if (state.playing) return;
+
+        if (state.complete) {
+          state.index = 0;
+          state.elapsed = 0;
+          state.complete = false;
+          renderStep();
+        }
+
+        state.playing = true;
+        state.lastTime = null;
+        updatePlaybackUI();
+
+        state.frameId = requestAnimationFrame(tick);
+      }
+
+      function completeRun() {
+        state.complete = true;
+        pause();
+
+        nodeElements.forEach(node => {
+          node.classList.remove("is-active");
+          node.classList.add("is-done");
+        });
+
+        wireElements.forEach(wire => {
+          wire.classList.remove("is-active");
+          wire.classList.add("is-traversed");
+        });
+
+        dots.forEach(dot => {
+          dot.classList.remove("active");
+          dot.classList.add("done");
+        });
+
+        $("step-title").textContent = "Workflow complete";
+        $("step-description").textContent =
+          "The cited answer has returned to the conversation. Replay the simulation or reset to inspect the preparation and retrieval stages again.";
+
+        renderProgress();
+      }
+
+      function tick(timestamp) {
+        if (!state.playing) return;
+
+        if (state.lastTime === null) state.lastTime = timestamp;
+
+        // Clamp elapsed time after browser stalls or backgrounding.
+        const delta = Math.min(timestamp - state.lastTime, 100);
+        state.lastTime = timestamp;
+        state.elapsed += delta * state.speed;
+
+        const step = steps[state.index];
+
+        if (state.elapsed >= step.duration) {
+          if (state.index < steps.length - 1) {
+            state.index++;
+            state.elapsed = 0;
+            renderStep();
+          } else if ($("loop-input").checked) {
+            state.index = 0;
+            state.elapsed = 0;
+            renderStep();
+          } else {
+            state.elapsed = step.duration;
+            completeRun();
+            return;
+          }
+        }
+
+        renderProgress();
+        state.frameId = requestAnimationFrame(tick);
+      }
+
+      $("play-button").addEventListener("click", () => {
+        state.playing ? pause() : play();
+      });
+
+      $("reset-button").addEventListener("click", () => {
+        pause();
+
+        state.index = 0;
+        state.elapsed = 0;
+        state.complete = false;
+
+        renderStep();
+        updatePlaybackUI();
+      });
+
+      $("next-button").addEventListener("click", () => {
+        pause();
+
+        if (state.complete) {
+          state.index = 0;
+          state.elapsed = 0;
+          state.complete = false;
+        } else if (state.index < steps.length - 1) {
+          state.index++;
+          state.elapsed = 0;
+        } else {
+          state.elapsed = steps[state.index].duration;
+          completeRun();
+          return;
+        }
+
+        renderStep();
+        updatePlaybackUI();
+      });
+
+      $("speed-select").addEventListener("change", event => {
+        state.speed = Number(event.target.value);
+      });
+
+      // Suspend playback when the page is hidden.
+      let resumeAfterVisibility = false;
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          resumeAfterVisibility = state.playing;
+          pause();
+        } else if (resumeAfterVisibility) {
+          resumeAfterVisibility = false;
+          play();
+        }
+      });
+
+      // Respect reduced motion on initial load and preference changes.
+      reducedMotion.addEventListener("change", () => {
+        if (reducedMotion.matches) pause();
+        renderProgress();
+      });
+
+      renderStep();
+      updatePlaybackUI();
+
+      if (!reducedMotion.matches) play();
+    })();
+  </script>
+</body>
+</html>

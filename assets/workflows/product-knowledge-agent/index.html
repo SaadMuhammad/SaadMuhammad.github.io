@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F3F6F5">
+
+  <title>Product Knowledge Base Agent: Live Workflow</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --teal: #294753;
+      --gold: #D09242;
+      --mist: #F3F6F5;
+      --surface: #E4ECEA;
+      --white: #FFFFFF;
+      --ink: #182B35;
+      --muted: #52646C;
+      --soft: #A9C5C8;
+      --pale: #FAECD9;
+      --line: #29475320;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 95% 0, #FAECD980, transparent 35%),
+        var(--mist);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    button, select { font: inherit; }
+
+    button, select {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--teal);
+      background: var(--white);
+      cursor: pointer;
+    }
+
+    button {
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    button:hover { background: var(--surface); }
+
+    button.primary {
+      background: var(--teal);
+      color: white;
+      border-color: var(--teal);
+    }
+
+    button.primary:hover { background: var(--ink); }
+
+    button:focus-visible, select:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    select {
+      padding: 7px 8px;
+      font-size: 11px;
+    }
+
+    .app {
+      width: min(1800px, 100%);
+      height: 100%;
+      height: 100dvh;
+      margin: auto;
+      padding: 20px 24px 12px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 16px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+    }
+
+    .project {
+      padding: 4px 7px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--teal);
+    }
+
+    h1 {
+      margin: 7px 0 4px;
+      font: 800 clamp(20px, 2.1vw, 32px)/1.2 "Manrope", sans-serif;
+      letter-spacing: -.045em;
+      color: var(--teal);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .signal {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--pale);
+      border: 1px solid #D0924235;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    /* One desktop viewport: neither panel creates a scroll container. */
+
+    .workspace {
+      min-height: 0;
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.85fr) minmax(310px, 1fr);
+      gap: 16px;
+    }
+
+    .panel {
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--white);
+      box-shadow: 0 12px 35px #182B3505;
+    }
+
+    .workflow {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+
+    .panel-head {
+      min-width: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 17px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--teal);
+    }
+
+    .panel-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .diagram {
+      min-height: 0;
+      position: relative;
+      background: var(--mist);
+    }
+
+    .blueprint {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    svg text {
+      font-family: "DM Sans", sans-serif;
+      fill: var(--ink);
+    }
+
+    .stage {
+      fill: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+    }
+
+    .node-card {
+      fill: white;
+      stroke: #29475325;
+      stroke-width: 1;
+      transition: stroke .3s, fill .3s;
+    }
+
+    .node-name {
+      fill: var(--teal);
+      font-family: "Manrope", sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .node-note { fill: var(--muted); font-size: 9px; }
+    .icon-bg { fill: var(--surface); }
+    .node-state { fill: var(--soft); }
+
+    .icon {
+      fill: none;
+      stroke: var(--teal);
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .ring {
+      fill: none;
+      stroke: var(--gold);
+      stroke-width: 1;
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .node.active .node-card {
+      stroke: var(--gold);
+      stroke-width: 1.8;
+      fill: #FFFDF9;
+      filter: url(#shadow);
+    }
+
+    .node.active .icon-bg { fill: var(--pale); }
+    .node.active .node-state { fill: var(--gold); }
+
+    .node.active .ring {
+      animation: ring 1.8s ease-out infinite;
+    }
+
+    .node.active .icon-motion {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: float 1.8s ease-in-out infinite;
+    }
+
+    .node.done .node-state { fill: var(--teal); }
+    .node.done .node-card { stroke: var(--soft); }
+
+    .wire {
+      fill: none;
+      stroke: var(--soft);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      marker-end: url(#arrow-muted);
+    }
+
+    .wire.evidence { stroke: #D0924255; }
+    .wire.support { stroke-dasharray: 4 5; }
+
+    .wire.done { stroke: var(--teal); opacity: .7; }
+    .wire.evidence.done { stroke: var(--gold); }
+
+    .wire.active {
+      stroke: var(--teal);
+      stroke-width: 2.3;
+      stroke-dasharray: 6 5;
+      marker-end: url(#arrow-teal);
+      animation: dash .9s linear infinite;
+      opacity: 1;
+    }
+
+    .wire.evidence.active {
+      stroke: var(--gold);
+      marker-end: url(#arrow-gold);
+    }
+
+    .edge-label {
+      fill: var(--muted);
+      font-size: 7.5px;
+      font-weight: 600;
+      letter-spacing: .65px;
+    }
+
+    .step-panel {
+      padding: 15px 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .step-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .step-number {
+      color: var(--ink);
+      background: var(--pale);
+      padding: 4px 6px;
+      border-radius: 4px;
+    }
+
+    #step-title {
+      margin: 0 0 5px;
+      color: var(--teal);
+      font: 800 14px/1.35 "Manrope", sans-serif;
+    }
+
+    #step-description {
+      margin: 0;
+      min-height: 32px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .progress {
+      height: 4px;
+      background: var(--surface);
+      border-radius: 10px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    #progress-fill {
+      width: 0;
+      height: 100%;
+      background: var(--gold);
+    }
+
+    /* Right-side example results */
+
+    .example {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+
+    .demo-badge {
+      padding: 5px 7px;
+      border-radius: 5px;
+      background: var(--pale);
+      color: var(--ink);
+      font-size: 9px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .example-body {
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .question {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px;
+      background: var(--mist);
+    }
+
+    .block-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .avatar {
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--teal);
+      font-size: 10px;
+      letter-spacing: 0;
+    }
+
+    .question p {
+      margin: 8px 0 0;
+      font-size: clamp(11px, .95vw, 14px);
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    .retrieval {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: white;
+    }
+
+    .retrieval-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    #tool-status {
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .query {
+      padding: 8px 9px;
+      border-radius: 6px;
+      background: var(--mist);
+      color: var(--teal);
+      font: 10px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .source-list {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .source {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px;
+      background: var(--mist);
+      border-radius: 7px;
+      opacity: .4;
+      transition: opacity .4s, background .4s;
+    }
+
+    .source.ready { opacity: 1; background: #E4ECEA80; }
+
+    .source-number {
+      display: grid;
+      place-items: center;
+      width: 23px;
+      height: 25px;
+      flex-shrink: 0;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .source strong {
+      display: block;
+      color: var(--teal);
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .source small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    .answer {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 13px;
+      border: 1px solid #D0924245;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #FAECD966, #FFFFFF);
+    }
+
+    .answer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .answer-head .avatar {
+      background: var(--pale);
+    }
+
+    #answer-state {
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .answer-content {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .waiting {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    .waiting-symbol {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .waiting-symbol i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: typing 1.2s infinite;
+    }
+
+    .waiting-symbol i:nth-child(2) { animation-delay: .15s; }
+    .waiting-symbol i:nth-child(3) { animation-delay: .3s; }
+
+    #answer-text {
+      font-size: clamp(10px, .86vw, 13px);
+      line-height: 1.65;
+    }
+
+    #answer-text p { margin: 9px 0; }
+
+    #answer-text ol {
+      padding-left: 18px;
+      margin: 8px 0;
+    }
+
+    #answer-text li { margin: 5px 0; }
+
+    .citation {
+      display: inline-block;
+      padding: 0 4px;
+      border-radius: 4px;
+      background: var(--pale);
+      color: var(--teal);
+      font-size: 9px;
+      font-weight: 700;
+      visibility: hidden;
+    }
+
+    .cited .citation { visibility: visible; }
+
+    .answer-note {
+      padding-top: 8px;
+      border-top: 1px solid #D0924225;
+      font-size: 9px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .example-foot {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 16px;
+      background: var(--mist);
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.4;
+    }
+
+    [hidden] { display: none !important; }
+
+    body:not(.playing) *,
+    body:not(.playing) *::before,
+    body:not(.playing) *::after {
+      animation-play-state: paused !important;
+    }
+
+    body.playing .live-dot {
+      animation: live 1.8s ease-in-out infinite;
+    }
+
+    @keyframes live {
+      50% { box-shadow: 0 0 0 4px #D0924220; }
+    }
+
+    @keyframes ring {
+      from { opacity: .7; transform: scale(.95); }
+      to { opacity: 0; transform: scale(1.22); }
+    }
+
+    @keyframes float {
+      50% { transform: translateY(-2.5px); }
+    }
+
+    @keyframes dash {
+      to { stroke-dashoffset: -22; }
+    }
+
+    @keyframes typing {
+      50% { opacity: .25; }
+    }
+
+    /* Compact desktop/laptop heights. */
+
+    @media (max-height: 800px) {
+      .app { padding: 14px 18px 9px; gap: 11px; }
+      h1 { font-size: 25px; }
+      .panel-head { padding: 11px 13px; }
+      .example-body { padding: 12px; gap: 9px; }
+      .question, .retrieval, .answer { padding: 10px; }
+      .source { padding: 6px; }
+      .step-panel { padding: 11px 14px; }
+      #answer-text { font-size: 11px; line-height: 1.5; }
+      #answer-text li { margin: 4px 0; }
+    }
+
+    @media (max-height: 680px) {
+      .app { padding: 10px 14px 7px; gap: 8px; }
+      h1 { font-size: 22px; margin: 5px 0 0; }
+      .subtitle, .panel-subtitle { display: none; }
+      .panel-head { padding: 9px 11px; }
+      .example-body { padding: 9px; gap: 7px; }
+      .question, .retrieval, .answer { padding: 8px; }
+      .question p { margin-top: 5px; font-size: 11px; }
+      .source-list { margin-top: 6px; gap: 5px; }
+      .source small { display: none; }
+      .query { padding: 5px 7px; font-size: 9px; }
+      .source { padding: 5px; align-items: center; }
+      .retrieval-head { margin-bottom: 6px; }
+      #answer-text { font-size: 10px; line-height: 1.4; }
+      #answer-text p, #answer-text ol { margin: 5px 0; }
+      #answer-text li { margin: 3px 0; }
+      .answer-note { padding-top: 5px; font-size: 8px; }
+      .example-foot { padding: 8px 10px; font-size: 8px; }
+      .step-panel { padding: 9px 12px; }
+      #step-description { font-size: 10px; min-height: 28px; }
+      #step-title { font-size: 12px; }
+      .progress { margin-top: 8px; }
+      footer { font-size: 8px; }
+    }
+
+    @media (max-width: 1100px) {
+      .workspace {
+        grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
+        gap: 10px;
+      }
+      .signal { display: none; }
+      .panel-head { gap: 6px; }
+      .panel-title { font-size: 11px; }
+      button { padding: 7px 8px; font-size: 10px; }
+      footer span:last-child { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      #packet { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <div class="eyebrow">
+          <span class="project">Project 31</span>
+          Enterprise AI & Agents
+        </div>
+        <h1>Product Knowledge Base Agent</h1>
+        <p class="subtitle">
+          Internal documentation → grounded product support.
+        </p>
+      </div>
+
+      <div class="signal">
+        <span class="dot"></span>
+        Knowledge → Support
+      </div>
+    </header>
+
+    <main class="workspace">
+      <!-- LEFT: actively running architecture -->
+      <section class="panel workflow" aria-label="Animated agent workflow">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">
+              <span class="dot live-dot"></span>
+              Live workflow
+            </div>
+            <div class="panel-subtitle">
+              Logical architecture · Illustrative execution
+            </div>
+          </div>
+
+          <div class="controls" aria-label="Playback controls">
+            <button id="play" class="primary" type="button">Pause</button>
+            <button id="next" type="button">Next</button>
+            <button id="reset" type="button">Reset</button>
+            <select id="speed" aria-label="Playback speed">
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="diagram">
+          <svg
+            class="blueprint"
+            viewBox="0 0 840 580"
+            role="img"
+            aria-labelledby="svg-title svg-desc"
+          >
+            <title id="svg-title">Product knowledge agent workflow</title>
+            <desc id="svg-desc">
+              A product question enters Copilot Studio. The agent invokes an
+              internal technical-document API, which retrieves product
+              documentation. Evidence and instructions support answer
+              composition. A cited answer returns to the user.
+            </desc>
+
+            <defs>
+              <pattern id="grid" width="22" height="22" patternUnits="userSpaceOnUse">
+                <path d="M22 0H0V22" fill="none" stroke="#294753" stroke-opacity=".045"/>
+              </pattern>
+
+              <marker id="arrow-muted" viewBox="0 0 10 10"
+                refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M1 1L9 5L1 9" fill="none" stroke="#A9C5C8" stroke-width="1.5"/>
+              </marker>
+
+              <marker id="arrow-teal" viewBox="0 0 10 10"
+                refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M1 1L9 5L1 9" fill="none" stroke="#294753" stroke-width="1.5"/>
+              </marker>
+
+              <marker id="arrow-gold" viewBox="0 0 10 10"
+                refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                <path d="M1 1L9 5L1 9" fill="none" stroke="#D09242" stroke-width="1.5"/>
+              </marker>
+
+              <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
+                <feDropShadow dx="0" dy="4" stdDeviation="6"
+                  flood-color="#D09242" flood-opacity=".12"/>
+              </filter>
+
+              <symbol id="i-chat" viewBox="0 0 48 48">
+                <rect x="5" y="7" width="38" height="29" rx="4"/>
+                <path d="M5 15H43M15 43H33M24 36V43M13 23H34M13 29H26"/>
+                <path d="M11 11H11.1M16 11H16.1"/>
+              </symbol>
+
+              <symbol id="i-agent" viewBox="0 0 48 48">
+                <rect x="9" y="14" width="30" height="25" rx="8"/>
+                <path d="M24 5V14M4 23V31M44 23V31M18 32H30"/>
+                <circle cx="24" cy="5" r="2"/>
+                <circle cx="18" cy="24" r="2"/>
+                <circle cx="30" cy="24" r="2"/>
+              </symbol>
+
+              <symbol id="i-api" viewBox="0 0 48 48">
+                <rect x="4" y="6" width="40" height="36" rx="4"/>
+                <path d="M4 14H44M17 22L11 28L17 34M31 22L37 28L31 34M27 20L21 36"/>
+                <path d="M10 10H10.1M15 10H15.1"/>
+              </symbol>
+
+              <symbol id="i-docs" viewBox="0 0 48 48">
+                <path d="M17 4H33L41 12V39H17ZM33 4V12H41"/>
+                <path d="M11 11H6V44H31V39M23 19H35M23 25H35M23 31H31"/>
+              </symbol>
+
+              <symbol id="i-evidence" viewBox="0 0 48 48">
+                <path d="M9 5H31L39 13V43H9ZM31 5V13H39"/>
+                <path d="M15 20H32M15 26H28M16 33H21V38H16ZM26 33H31V38H26Z"/>
+              </symbol>
+
+              <symbol id="i-spark" viewBox="0 0 48 48">
+                <path d="M24 5L29 19L43 24L29 29L24 43L19 29L5 24L19 19Z"/>
+                <path d="M40 3V11M36 7H44"/>
+              </symbol>
+
+              <symbol id="i-answer" viewBox="0 0 48 48">
+                <path d="M5 7H43V33H23L13 42V33H5Z"/>
+                <path d="M12 16H34M12 22H25M29 27L32 30L38 24"/>
+              </symbol>
+            </defs>
+
+            <rect width="840" height="580" fill="#F3F6F5"/>
+            <rect width="840" height="580" fill="url(#grid)"/>
+
+            <rect x="634" y="72" width="183" height="418" rx="17"
+              fill="#E4ECEA" fill-opacity=".6"/>
+
+            <text x="42" y="42" class="stage">01 / QUESTION</text>
+            <text x="239" y="42" class="stage">02 / AGENT & API</text>
+            <text x="657" y="42" class="stage">03 / KNOWLEDGE</text>
+            <text x="42" y="319" class="stage">04 / GROUNDED SUPPORT</text>
+
+            <!-- Request path -->
+            <path id="w-question" class="wire" d="M186 152H239"/>
+            <text x="212" y="138" text-anchor="middle" class="edge-label">ASK</text>
+
+            <path id="w-call" class="wire" d="M383 152H438"/>
+            <text x="410" y="138" text-anchor="middle" class="edge-label">CALL</text>
+
+            <path id="w-lookup" class="wire" d="M582 136H657"/>
+            <text x="619" y="123" text-anchor="middle" class="edge-label">LOOKUP</text>
+
+            <path id="w-content" class="wire evidence" d="M657 172H582"/>
+            <text x="619" y="191" text-anchor="middle" class="edge-label">CONTENT</text>
+
+            <!-- API response and grounding -->
+            <path id="w-evidence" class="wire evidence" d="M510 238V355"/>
+            <text x="525" y="287" class="edge-label">API RESPONSE</text>
+
+            <path id="w-context" class="wire support" d="M311 238V355"/>
+            <text x="325" y="275" class="edge-label">CONTEXT +</text>
+            <text x="325" y="289" class="edge-label">INSTRUCTIONS</text>
+
+            <path id="w-ground" class="wire evidence" d="M438 401H383"/>
+            <text x="410" y="387" text-anchor="middle" class="edge-label">GROUND</text>
+
+            <path id="w-answer" class="wire evidence" d="M239 401H186"/>
+            <text x="212" y="387" text-anchor="middle" class="edge-label">CITE</text>
+
+            <path id="w-return" class="wire evidence" d="M42 401H20V152H42"/>
+
+            <!-- Nodes inserted from the configuration below -->
+            <g id="nodes"></g>
+
+            <!-- Evidence annotation -->
+            <g transform="translate(654 342)">
+              <rect width="143" height="133" rx="10"
+                fill="white" stroke="#29475315"/>
+              <text x="13" y="25" class="stage" style="font-size:8px">
+                EVIDENCE LINKS
+              </text>
+
+              <circle cx="16" cy="49" r="2.5" fill="#D09242"/>
+              <text x="26" y="52" class="node-note">Product content</text>
+
+              <circle cx="16" cy="73" r="2.5" fill="#D09242"/>
+              <text x="26" y="76" class="node-note">Source reference</text>
+
+              <circle cx="16" cy="97" r="2.5" fill="#D09242"/>
+              <text x="26" y="100" class="node-note">Citation mapping</text>
+
+              <text x="13" y="119" class="edge-label">TRACEABLE SUPPORT</text>
+            </g>
+
+            <g id="packet" visibility="hidden">
+              <circle id="packet-halo" r="10" fill="#294753" opacity=".12"/>
+              <circle id="packet-core" r="4" fill="#294753"/>
+              <circle r="1.5" fill="white"/>
+            </g>
+
+            <!-- Legend -->
+            <path d="M42 519H797" stroke="#29475320"/>
+
+            <path d="M42 542H67" stroke="#294753" stroke-width="2"/>
+            <text x="76" y="545" class="node-note">Request</text>
+
+            <path d="M169 542H194" stroke="#D09242" stroke-width="2"/>
+            <text x="203" y="545" class="node-note">Evidence / answer</text>
+
+            <path d="M350 542H375" stroke="#52646C" stroke-dasharray="4 4"/>
+            <text x="384" y="545" class="node-note">Supporting context</text>
+
+            <text x="797" y="545" text-anchor="end" class="edge-label">
+              CONCEPTUAL ARCHITECTURE
+            </text>
+          </svg>
+        </div>
+
+        <div class="step-panel">
+          <div class="step-meta">
+            <span id="phase">Conversation</span>
+            <span id="counter" class="step-number">01 / 09</span>
+          </div>
+
+          <div role="status" aria-live="polite" aria-atomic="true">
+            <h2 id="step-title">Receive a product question</h2>
+            <p id="step-description"></p>
+          </div>
+
+          <div
+            id="progress"
+            class="progress"
+            role="progressbar"
+            aria-label="Workflow progress"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div id="progress-fill"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: synchronized illustrative results -->
+      <aside class="panel example" aria-label="Illustrative product support result">
+        <div class="panel-head">
+          <div>
+            <div class="panel-title">Example support conversation</div>
+            <div class="panel-subtitle">Updates with the workflow on the left</div>
+          </div>
+          <span class="demo-badge">SIMULATED</span>
+        </div>
+
+        <div class="example-body">
+          <section class="question">
+            <div class="block-label">
+              <span class="avatar">U</span>
+              Product question
+            </div>
+            <p>
+              How do I enable SSO in Northstar Cloud, and which role is required?
+            </p>
+          </section>
+
+          <section class="retrieval" aria-label="Example API retrieval">
+            <div class="retrieval-head">
+              <div class="block-label">Technical-document API</div>
+              <span id="tool-status">Waiting</span>
+            </div>
+
+            <div id="query" class="query">
+              Awaiting retrieval intent…
+            </div>
+
+            <div class="source-list">
+              <div id="source-1" class="source">
+                <span class="source-number">1</span>
+                <div>
+                  <strong>SSO Setup Guide</strong>
+                  <small id="source-detail-1">Source content not retrieved yet</small>
+                </div>
+              </div>
+
+              <div id="source-2" class="source">
+                <span class="source-number">2</span>
+                <div>
+                  <strong>Workspace Roles & Permissions</strong>
+                  <small id="source-detail-2">Source content not retrieved yet</small>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="answer" aria-label="Example grounded answer">
+            <div class="answer-head">
+              <div class="block-label">
+                <span class="avatar">✧</span>
+                Agent answer
+              </div>
+              <span id="answer-state">Waiting for evidence</span>
+            </div>
+
+            <div class="answer-content">
+              <div id="waiting" class="waiting">
+                <div class="waiting-symbol" aria-hidden="true">
+                  <i></i><i></i><i></i>
+                </div>
+                <span id="waiting-text">
+                  The agent will retrieve product documentation before composing an answer.
+                </span>
+              </div>
+
+              <div id="answer-text" hidden>
+                <p>
+                  You need the <strong>Workspace Admin</strong> role to configure
+                  SSO in Northstar Cloud.
+                  <span class="citation">[2]</span>
+                </p>
+
+                <ol>
+                  <li>
+                    Open <strong>Settings → Security → Single sign-on</strong>.
+                    <span class="citation">[1]</span>
+                  </li>
+                  <li>
+                    Add your identity provider’s <strong>SAML metadata</strong>
+                    and save the configuration.
+                    <span class="citation">[1]</span>
+                  </li>
+                  <li>
+                    Run <strong>Test sign-in</strong>, then enable SSO after the
+                    test succeeds.
+                    <span class="citation">[1]</span>
+                  </li>
+                </ol>
+
+                <div class="answer-note">
+                  Source references correspond to the two example documents above.
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="example-foot">
+          <span class="dot"></span>
+          <span id="result-status">Illustrative run · No backend connected</span>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <span>
+        Product, documents, and answer for demonstration.
+        Citations support verification, not guaranteed accuracy.
+      </span>
+      <span>Copilot Studio · API Integration · Retrieval · Grounding</span>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const $ = id => document.getElementById(id);
+      const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+
+      /*
+       * Static SVG nodes.
+       * Icons are generic illustrations, not official product logos.
+       */
+      const nodes = [
+        {
+          id: "user", x: 42, y: 98, width: 144, height: 140,
+          icon: "chat", title: "Product question",
+          note: "Conversation interface"
+        },
+        {
+          id: "agent", x: 239, y: 98, width: 144, height: 140,
+          icon: "agent", title: "Copilot Studio",
+          note: "Instruction-guided agent"
+        },
+        {
+          id: "api", x: 438, y: 98, width: 144, height: 140,
+          icon: "api", title: "Document API",
+          note: "Internal knowledge access"
+        },
+        {
+          id: "docs", x: 657, y: 98, width: 144, height: 140,
+          icon: "docs", title: "Product docs",
+          note: "Technical reference material"
+        },
+        {
+          id: "evidence", x: 438, y: 355, width: 144, height: 133,
+          icon: "evidence", title: "Evidence context",
+          note: "Content + source references"
+        },
+        {
+          id: "compose", x: 239, y: 355, width: 144, height: 133,
+          icon: "spark", title: "Compose answer",
+          note: "Question + retrieved evidence"
+        },
+        {
+          id: "answer", x: 42, y: 355, width: 144, height: 133,
+          icon: "answer", title: "Cited response",
+          note: "Product support with sources"
+        }
+      ];
+
+      $("nodes").innerHTML = nodes.map(node => {
+        const cx = node.x + node.width / 2;
+        const cy = node.y + 46;
+
+        return `
+          <g id="node-${node.id}" class="node">
+            <rect class="node-card"
+              x="${node.x}" y="${node.y}"
+              width="${node.width}" height="${node.height}" rx="11"/>
+
+            <circle class="node-state"
+              cx="${node.x + node.width - 13}" cy="${node.y + 13}" r="2.8"/>
+
+            <circle class="icon-bg" cx="${cx}" cy="${cy}" r="27"/>
+            <circle class="ring" cx="${cx}" cy="${cy}" r="29"/>
+
+            <g class="icon-motion">
+              <use href="#i-${node.icon}"
+                x="${cx - 21}" y="${cy - 21}"
+                width="42" height="42" class="icon"/>
+            </g>
+
+            <text x="${cx}" y="${node.y + 103}"
+              text-anchor="middle" class="node-name">${node.title}</text>
+
+            <text x="${cx}" y="${node.y + 120}"
+              text-anchor="middle" class="node-note">${node.note}</text>
+          </g>
+        `;
+      }).join("");
+
+      /*
+       * Demonstration only:
+       * no actual Copilot execution, API request, or source retrieval.
+       */
+      const steps = [
+        {
+          phase: "Conversation",
+          title: "Receive a product question",
+          description:
+            "The conversation sends the user's SSO question and relevant context to the Copilot Studio agent.",
+          nodes: ["user", "agent"],
+          wire: "question",
+          duration: 3000
+        },
+        {
+          phase: "Agent orchestration",
+          title: "Form retrieval intent",
+          description:
+            "Agent instructions guide an API lookup for SSO setup steps and the permissions required.",
+          nodes: ["agent", "api"],
+          wire: "call",
+          duration: 3200
+        },
+        {
+          phase: "Knowledge access",
+          title: "Look up technical documentation",
+          description:
+            "The internal API accesses relevant product reference material. Backend search details are illustrative.",
+          nodes: ["api", "docs"],
+          wire: "lookup",
+          duration: 3200
+        },
+        {
+          phase: "Knowledge retrieval",
+          title: "Retrieve content and source references",
+          description:
+            "The example result contains an SSO setup guide and a roles document, each retaining its source reference.",
+          nodes: ["docs", "api"],
+          wire: "content",
+          duration: 3500
+        },
+        {
+          phase: "Evidence assembly",
+          title: "Provide evidence to the agent",
+          description:
+            "Relevant passages and source references from the API become the grounding context for the response.",
+          nodes: ["api", "evidence"],
+          wire: "evidence",
+          duration: 3000
+        },
+        {
+          phase: "Agent instructions",
+          title: "Carry forward context and instructions",
+          description:
+            "The original question and agent instructions guide the response alongside retrieved evidence.",
+          nodes: ["agent", "compose"],
+          wire: "context",
+          duration: 2800
+        },
+        {
+          phase: "Grounded response",
+          title: "Compose an evidence-based answer",
+          description:
+            "The agent combines the required role and SSO setup steps into a concise product-support answer.",
+          nodes: ["evidence", "compose"],
+          wire: "ground",
+          duration: 4000
+        },
+        {
+          phase: "Source attribution",
+          title: "Attach source references",
+          description:
+            "The response maps setup instructions to source [1] and the required administrator role to source [2].",
+          nodes: ["compose", "answer"],
+          wire: "answer",
+          duration: 3500
+        },
+        {
+          phase: "Conversation",
+          title: "Return the source-linked answer",
+          description:
+            "The user receives the grounded response and can inspect the supporting documentation. The demo then repeats.",
+          nodes: ["answer", "user"],
+          wire: "return",
+          duration: 6000
+        }
+      ];
+
+      const wireElements = [...document.querySelectorAll(".wire")];
+      const nodeElements = [...document.querySelectorAll(".node")];
+
+      const paths = Object.fromEntries(
+        wireElements.map(element => [
+          element.id.slice(2),
+          { element, length: element.getTotalLength() }
+        ])
+      );
+
+      const state = {
+        index: 0,
+        elapsed: 0,
+        playing: false,
+        speed: 1,
+        lastTime: null,
+        frame: null
+      };
+
+      function updateExample() {
+        const index = state.index;
+        const retrieved = index >= 3;
+
+        $("tool-status").textContent = [
+          "Waiting",
+          "Intent ready",
+          "Looking up",
+          "2 example sources",
+          "Evidence ready",
+          "Evidence ready",
+          "Evidence ready",
+          "Sources mapped",
+          "Complete"
+        ][index];
+
+        $("query").textContent = index === 0
+          ? "Awaiting retrieval intent…"
+          : 'query: "Northstar Cloud SSO setup required role"';
+
+        $("source-1").classList.toggle("ready", retrieved);
+        $("source-2").classList.toggle("ready", retrieved);
+
+        $("source-detail-1").textContent = retrieved
+          ? "SAML configuration · Test sign-in · Enable SSO"
+          : "Source content not retrieved yet";
+
+        $("source-detail-2").textContent = retrieved
+          ? "Workspace Admin · Security configuration access"
+          : "Source content not retrieved yet";
+
+        $("answer-state").textContent = index >= 8
+          ? "Delivered"
+          : index >= 7
+            ? "Sources attached"
+            : index >= 6
+              ? "Composing"
+              : index >= 4
+                ? "Grounding ready"
+                : "Waiting for evidence";
+
+        $("waiting").hidden = index >= 6;
+        $("answer-text").hidden = index < 6;
+        $("answer-text").classList.toggle("cited", index >= 7);
+
+        $("waiting-text").textContent = index < 2
+          ? "The agent will retrieve product documentation before composing an answer."
+          : index < 4
+            ? "Looking for setup instructions and the required administrator role."
+            : "Evidence is available. The agent is combining it with the question and its instructions.";
+
+        $("result-status").textContent = index >= 8
+          ? "Example delivered · 2 source references · Repeats automatically"
+          : "Illustrative run · No backend connected";
+      }
+
+      function renderStep() {
+        const step = steps[state.index];
+
+        nodeElements.forEach(node => {
+          node.classList.remove("active", "done");
+        });
+
+        wireElements.forEach(wire => {
+          wire.classList.remove("active", "done");
+        });
+
+        for (let i = 0; i < state.index; i++) {
+          steps[i].nodes.forEach(id => {
+            $("node-" + id).classList.add("done");
+          });
+          paths[steps[i].wire].element.classList.add("done");
+        }
+
+        step.nodes.forEach(id => {
+          const node = $("node-" + id);
+          node.classList.remove("done");
+          node.classList.add("active");
+        });
+
+        paths[step.wire].element.classList.add("active");
+
+        $("phase").textContent = step.phase;
+        $("counter").textContent =
+          `${String(state.index + 1).padStart(2, "0")} / ${String(steps.length).padStart(2, "0")}`;
+
+        $("step-title").textContent = step.title;
+        $("step-description").textContent = step.description;
+
+        const color = paths[step.wire].element.classList.contains("evidence")
+          ? "#D09242"
+          : "#294753";
+
+        $("packet-core").setAttribute("fill", color);
+        $("packet-halo").setAttribute("fill", color);
+
+        updateExample();
+        renderFrame();
+      }
+
+      function renderFrame() {
+        const step = steps[state.index];
+        const fraction = Math.min(state.elapsed / step.duration, 1);
+
+        const progress =
+          ((state.index + fraction) / steps.length) * 100;
+
+        $("progress-fill").style.width = progress + "%";
+        $("progress").setAttribute("aria-valuenow", Math.round(progress));
+
+        const travel = Math.max(0, Math.min(1, (fraction - .1) / .8));
+        const eased = travel * travel * (3 - 2 * travel);
+
+        const path = paths[step.wire];
+        const point = path.element.getPointAtLength(path.length * eased);
+
+        $("packet").setAttribute(
+          "transform",
+          `translate(${point.x} ${point.y})`
+        );
+
+        $("packet").setAttribute(
+          "visibility",
+          motionPreference.matches ? "hidden" : "visible"
+        );
+      }
+
+      function syncControls() {
+        document.body.classList.toggle("playing", state.playing);
+        $("play").textContent = state.playing ? "Pause" : "Play";
+        $("play").setAttribute(
+          "aria-label",
+          state.playing ? "Pause simulation" : "Play simulation"
+        );
+      }
+
+      function pause() {
+        state.playing = false;
+        state.lastTime = null;
+
+        if (state.frame !== null) {
+          cancelAnimationFrame(state.frame);
+          state.frame = null;
+        }
+
+        syncControls();
+      }
+
+      function play() {
+        if (state.playing) return;
+
+        state.playing = true;
+        state.lastTime = null;
+        syncControls();
+
+        state.frame = requestAnimationFrame(tick);
+      }
+
+      function tick(time) {
+        if (!state.playing) return;
+
+        if (state.lastTime === null) state.lastTime = time;
+
+        const delta = Math.min(time - state.lastTime, 100);
+        state.lastTime = time;
+        state.elapsed += delta * state.speed;
+
+        if (state.elapsed >= steps[state.index].duration) {
+          state.index = (state.index + 1) % steps.length;
+          state.elapsed = 0;
+          renderStep();
+        }
+
+        renderFrame();
+        state.frame = requestAnimationFrame(tick);
+      }
+
+      $("play").addEventListener("click", () => {
+        state.playing ? pause() : play();
+      });
+
+      $("next").addEventListener("click", () => {
+        pause();
+        state.index = (state.index + 1) % steps.length;
+        state.elapsed = 0;
+        renderStep();
+      });
+
+      $("reset").addEventListener("click", () => {
+        pause();
+        state.index = 0;
+        state.elapsed = 0;
+        renderStep();
+      });
+
+      $("speed").addEventListener("change", event => {
+        state.speed = Number(event.target.value);
+      });
+
+      let resumeWhenVisible = false;
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          resumeWhenVisible = state.playing;
+          pause();
+        } else if (resumeWhenVisible) {
+          resumeWhenVisible = false;
+          play();
+        }
+      });
+
+      motionPreference.addEventListener("change", () => {
+        if (motionPreference.matches) pause();
+        renderFrame();
+      });
+
+      renderStep();
+      syncControls();
+
+      if (!motionPreference.matches) play();
+    })();
+  </script>
+</body>
+</html>

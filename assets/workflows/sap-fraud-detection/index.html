@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#294753">
+  <title>SAP Transaction Fraud Detection</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap");
+
+    :root {
+      --teal: #294753;
+      --gold: #D09242;
+      --mist: #F3F6F5;
+      --surface: #E4ECEA;
+      --white: #FFFFFF;
+      --ink: #182B35;
+      --muted: #52646C;
+      --soft: #A9C5C8;
+      --pale: #FAECD9;
+      --border: rgba(41, 71, 83, .13);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      color: var(--ink);
+      background: var(--mist);
+      font: 12px "DM Sans", sans-serif;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; color: inherit; }
+    button:disabled { cursor: wait; opacity: .6; }
+    :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { font-family: "Manrope", sans-serif; }
+    .icon {
+      width: 20px; height: 20px; flex-shrink: 0;
+      fill: none; stroke: currentColor; stroke-width: 1.7;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+    .app {
+      height: 100%; max-width: 1600px; margin: auto;
+      display: grid; grid-template-rows: 62px auto minmax(0, 1fr) 37px;
+      padding-inline: 30px;
+    }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 9px; font-weight: 700; font-size: 13px; letter-spacing: -.03em; }
+    .brand-mark { width: 33px; height: 33px; border-radius: 9px; background: var(--teal); color: white; display: grid; place-items: center; }
+    .header-meta { display: flex; align-items: center; gap: 16px; font-size: 10px; color: var(--muted); }
+    .badge { display: inline-flex; gap: 6px; align-items: center; border: 1px solid var(--border); padding: 5px 9px; border-radius: 20px; font-size: 9px; font-weight: 700; white-space: nowrap; }
+    .dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+    .intro { padding: 22px 0; display: flex; justify-content: space-between; align-items: center; gap: 25px; }
+    .eyebrow { color: var(--muted); font-size: 9px; letter-spacing: .14em; font-weight: 800; text-transform: uppercase; }
+    .eyebrow b { color: var(--gold); margin-right: 8px; }
+    h1 { font-size: clamp(24px, 2.7vw, 38px); line-height: 1.2; color: var(--teal); letter-spacing: -.055em; margin: 7px 0 9px; }
+    h1 span { color: var(--gold); }
+    .description { max-width: 760px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .signal { display: flex; gap: 12px; align-items: center; padding-left: 23px; border-left: 1px solid var(--border); flex-shrink: 0; }
+    .signal-icon { width: 44px; height: 44px; background: var(--pale); color: var(--teal); border-radius: 12px; display: grid; place-items: center; }
+    .signal strong { display: block; color: var(--teal); font: 800 16px "Manrope", sans-serif; letter-spacing: -.035em; }
+    .signal small { display: block; color: var(--muted); font-size: 10px; margin-top: 4px; }
+
+    .workspace {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 15px; min-height: 0; overflow: hidden;
+      display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto;
+      box-shadow: 0 12px 40px #182b3506;
+    }
+    .toolbar { padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 15px; border-bottom: 1px solid var(--border); }
+    .toolbar-title { display: flex; align-items: center; gap: 9px; }
+    .toolbar-title .icon { color: var(--teal); }
+    .toolbar-title strong { font-size: 12px; display: block; }
+    .toolbar-title small { font-size: 9px; color: var(--muted); display: block; margin-top: 3px; }
+    .controls { display: flex; align-items: center; gap: 8px; }
+    .controls > span { font-size: 10px; color: var(--muted); margin-right: 8px; }
+    .button { border: 0; background: var(--gold); border-radius: 7px; padding: 10px 13px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-size: 11px; font-weight: 800; }
+    .button .icon { width: 15px; height: 15px; }
+    .button:hover:not(:disabled) { filter: brightness(1.045); }
+    .reset { padding: 9px; border: 1px solid var(--border); background: white; color: var(--muted); }
+
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--border); background: #f3f6f566; padding: 13px 0; }
+    .metric { padding: 0 20px; }
+    .metric + .metric { border-left: 1px solid var(--border); }
+    .metric-label { font-size: 9px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+    .metric-label .icon { width: 13px; height: 13px; }
+    .metric strong { font: 800 26px "Manrope", sans-serif; color: var(--teal); letter-spacing: -.055em; display: inline-block; margin-top: 4px; }
+    .metric.accent strong { color: var(--gold); }
+    .metric small { font-size: 9px; color: var(--muted); margin-left: 6px; }
+
+    .panes { display: grid; grid-template-columns: .95fr 1.18fr 1fr; min-height: 0; overflow: hidden; }
+    .pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; padding: 18px; }
+    .pane + .pane { border-left: 1px solid var(--border); }
+    .pane-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 15px; flex-shrink: 0; }
+    .pane-heading h2 { font-size: 12px; display: flex; align-items: center; gap: 7px; color: var(--teal); }
+    .pane-heading .icon { width: 16px; height: 16px; }
+    .label { padding: 4px 7px; border-radius: 5px; background: var(--mist); color: var(--muted); font-size: 9px; white-space: nowrap; }
+    .scroll { min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--soft) transparent; padding: 2px 3px 5px 0; }
+
+    .model-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .model-head { background: var(--teal); color: white; padding: 13px; }
+    .model-head strong { font-size: 12px; display: flex; align-items: center; gap: 7px; }
+    .model-head strong .icon { width: 17px; height: 17px; color: var(--soft); }
+    .model-head p { color: var(--soft); font-size: 10px; margin-top: 6px; line-height: 1.5; }
+    .network-wrap { padding: 14px 10px 10px; background: radial-gradient(var(--surface) .7px, transparent .7px); background-size: 12px 12px; }
+    .network-labels { display: flex; justify-content: space-between; padding-inline: 7px; color: var(--muted); font-size: 8px; font-weight: 700; }
+    #network { width: 100%; height: 140px; display: block; }
+    .network-edge { stroke: var(--soft); stroke-width: 1; opacity: .5; }
+    .network-node { fill: white; stroke: var(--teal); stroke-width: 1.5; }
+    .network-latent { fill: var(--pale); stroke: var(--gold); }
+    .running .network-edge { stroke-dasharray: 4 8; animation: flow 1.3s linear infinite; }
+    .running .network-latent { animation: glow 1s infinite alternate; }
+    @keyframes flow { to { stroke-dashoffset: -24; } }
+    @keyframes glow { to { fill: var(--gold); } }
+    .model-foot { padding: 10px 12px; font-size: 9px; line-height: 1.6; color: var(--muted); background: var(--mist); border-top: 1px solid var(--border); }
+    .stages { margin-top: 14px; }
+    .stage { display: flex; align-items: center; gap: 9px; padding: 8px 0; }
+    .step { width: 24px; height: 24px; border-radius: 7px; background: var(--surface); display: grid; place-items: center; color: var(--teal); font-size: 9px; font-weight: 800; flex-shrink: 0; }
+    .stage strong { display: block; font-size: 10px; }
+    .stage small { display: block; color: var(--muted); font-size: 9px; margin-top: 2px; }
+    .stage .state { margin-left: auto; font-size: 8px; color: var(--muted); }
+    .stage.active .step { background: var(--gold); }
+    .stage.done .step { background: var(--teal); color: white; }
+    .trace { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 10px; font-family: ui-monospace, monospace; font-size: 9px; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; }
+
+    .chart-card { border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+    .chart-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .chart-heading strong { font-size: 10px; color: var(--teal); }
+    .legend { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 8px; }
+    .legend span { display: flex; align-items: center; gap: 4px; }
+    .legend i { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--soft); }
+    .legend .flag { background: var(--gold); }
+    #score-chart { display: block; width: 100%; height: 150px; margin-top: 8px; overflow: visible; }
+    .chart-note { font-size: 8px; color: var(--muted); margin-top: 3px; }
+    .threshold-control { margin-top: 13px; padding: 11px 12px; background: var(--mist); border-radius: 8px; }
+    .threshold-top { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; color: var(--teal); }
+    .threshold-top output { font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: var(--gold); margin: 10px 0 4px; }
+    .range-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 8px; }
+    .queue-heading { display: flex; align-items: center; justify-content: space-between; margin: 16px 0 9px; }
+    .queue-heading strong { color: var(--teal); font-size: 11px; }
+    .queue-heading span { color: var(--muted); font-size: 9px; }
+    .transaction { width: 100%; display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: center; text-align: left; background: white; border: 1px solid var(--border); border-radius: 7px; padding: 10px; margin-bottom: 7px; }
+    .transaction:hover { background: var(--mist); }
+    .transaction.selected { background: var(--pale); border-color: #d0924277; }
+    .transaction strong { display: block; font-size: 10px; }
+    .transaction small { display: block; font-size: 8px; color: var(--muted); margin-top: 3px; }
+    .transaction .score { color: var(--teal); font-size: 11px; font-weight: 800; }
+    .transaction .icon { width: 13px; height: 13px; color: var(--muted); }
+    .queue-empty { color: var(--muted); padding: 18px 8px; font-size: 10px; text-align: center; line-height: 1.7; }
+
+    .inspection { background: #f3f6f566; }
+    .empty { padding: 34px 10px; text-align: center; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .empty-icon { width: 52px; height: 52px; display: grid; place-items: center; background: var(--surface); border-radius: 15px; color: var(--teal); margin: 0 auto 15px; }
+    .empty-icon .icon { width: 26px; height: 26px; }
+    .empty strong { color: var(--teal); display: block; margin-bottom: 7px; }
+    .detail-card { background: white; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; animation: appear .3s ease; }
+    @keyframes appear { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .detail-head { padding: 15px; border-bottom: 1px solid var(--border); }
+    .detail-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .detail-top h3 { font-size: 17px; color: var(--teal); letter-spacing: -.04em; }
+    .status-tag { background: var(--pale); padding: 4px 6px; border-radius: 4px; font-size: 8px; color: var(--ink); }
+    .detail-meta { font-size: 9px; color: var(--muted); margin-top: 6px; }
+    .detail-body { padding: 15px; }
+    .score-banner { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px; background: var(--mist); border-radius: 7px; }
+    .score-banner span { font-size: 9px; color: var(--muted); display: block; }
+    .score-banner strong { font: 800 24px "Manrope", sans-serif; color: var(--teal); letter-spacing: -.05em; }
+    .score-banner small { color: var(--muted); font-size: 9px; display: block; text-align: right; }
+    .section-label { font-size: 10px; color: var(--teal); font-weight: 700; margin: 16px 0 9px; }
+    .residual-row { margin-bottom: 11px; }
+    .residual-top { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-bottom: 5px; }
+    .residual-track { height: 5px; background: var(--mist); border-radius: 5px; overflow: hidden; }
+    .residual-fill { height: 100%; background: var(--gold); border-radius: 5px; }
+    .detail-note { font-size: 9px; color: var(--muted); line-height: 1.7; }
+    .review-note { background: var(--pale); padding: 10px; border-radius: 7px; color: var(--ink); font-size: 9px; line-height: 1.6; margin-top: 13px; }
+    details { margin-top: 12px; font-size: 9px; color: var(--muted); line-height: 1.7; }
+    summary { cursor: pointer; font-weight: 700; color: var(--teal); }
+    .feature-table { width: 100%; border-collapse: collapse; margin-top: 7px; font-size: 8px; }
+    .feature-table th, .feature-table td { text-align: right; border-bottom: 1px solid var(--border); padding: 6px 2px; }
+    .feature-table th:first-child, .feature-table td:first-child { text-align: left; }
+
+    .workspace-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 17px; border-top: 1px solid var(--border); color: var(--muted); font-size: 9px; }
+    .progress-group { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .progress-track { width: 60px; height: 4px; border-radius: 4px; background: var(--surface); overflow: hidden; }
+    #progress { width: 0; height: 100%; background: var(--gold); transition: width .3s; }
+    footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 9px; color: var(--muted); }
+    .tech { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tech span + span::before { content: "·"; margin-right: 7px; color: var(--gold); }
+    .mobile-tabs { display: none; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+    @media (max-width: 1100px) {
+      .app { padding-inline: 20px; }
+      .signal { display: none; }
+      .pane { padding: 13px; }
+      .panes { grid-template-columns: .9fr 1.1fr 1fr; }
+      .toolbar-title small { display: none; }
+      .controls > span { display: none; }
+      .metric { padding-inline: 15px; }
+    }
+    @media (max-width: 780px) {
+      .app { padding-inline: 12px; grid-template-rows: 50px auto minmax(0, 1fr) 29px; }
+      .header-meta > span:first-child { display: none; }
+      .brand { font-size: 12px; }
+      .intro { padding-block: 14px; }
+      h1 { font-size: 25px; margin: 5px 0 6px; }
+      .description { font-size: 10px; line-height: 1.5; }
+      .workspace { grid-template-rows: auto auto auto minmax(0, 1fr) auto; }
+      .toolbar { padding: 9px 10px; }
+      .toolbar-title strong { font-size: 10px; }
+      .toolbar-title > .icon { display: none; }
+      .button { padding: 9px 10px; font-size: 10px; }
+      .reset { padding: 8px; }
+      .metrics { padding-block: 10px; }
+      .metric { padding-inline: 9px; }
+      .metric-label { font-size: 8px; }
+      .metric-label .icon { display: none; }
+      .metric strong { font-size: 21px; }
+      .metric small { display: block; margin: 2px 0 0; font-size: 8px; }
+      .mobile-tabs { display: flex; border-bottom: 1px solid var(--border); padding-inline: 10px; }
+      .mobile-tabs button { flex: 1; background: transparent; border: 0; border-bottom: 2px solid transparent; padding: 10px 3px; color: var(--muted); font-size: 10px; }
+      .mobile-tabs button[aria-pressed="true"] { color: var(--teal); font-weight: 800; border-color: var(--gold); }
+      .panes { display: flex; }
+      .pane { display: none; width: 100%; border: 0 !important; padding: 14px; }
+      .pane.visible { display: flex; }
+      .workspace-footer { padding: 8px 10px; font-size: 8px; }
+      .progress-track { width: 30px; }
+      .footer-end { display: none; }
+      .tech { font-size: 8px; gap: 4px; }
+      .tech span + span::before { margin-right: 4px; }
+    }
+    @media (max-height: 650px) {
+      .app { grid-template-rows: 43px auto minmax(0, 1fr) 24px; }
+      .intro { padding-block: 9px; }
+      h1 { font-size: 24px; margin: 4px 0; }
+      .description { display: none; }
+      .metrics { padding-block: 8px; }
+      .metric strong { font-size: 21px; }
+      .toolbar { padding-block: 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></symbol>
+    <symbol id="i-network" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="8" rx="2"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5M5 5l3 3M16 16l3 3M19 5l-3 3"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 3v18h17M8 16v-5M13 16V7M18 16V4"/></symbol>
+    <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2zM12 9v5M12 17v.5"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 2 8M3 4v6h6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8ZM2 12l10 5 10-5M2 16l10 5 10-5"/></symbol>
+  </svg>
+
+  <div class="app">
+    <header>
+      <div class="brand">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg></span>
+        Applied intelligence<span style="color:var(--gold)">.</span>
+      </div>
+      <div class="header-meta">
+        <span>Machine Learning & Deep Learning</span>
+        <span class="badge"><span class="dot"></span> FEATURED PROJECT</span>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="title">
+      <div>
+        <div class="eyebrow"><b>PROJECT 05</b> Financial risk monitoring</div>
+        <h1>SAP Transaction <span>Fraud Detection.</span></h1>
+        <p class="description">An autoencoder-based system to identify unusual and potentially fraudulent SAP transactions combining exploratory analysis, unsupervised learning, and anomaly detection.</p>
+      </div>
+      <div class="signal">
+        <div class="signal-icon"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg></div>
+        <div><strong>Signals → Insight</strong><small>Surface anomalies. Focus investigation.</small></div>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <div class="toolbar">
+        <div class="toolbar-title">
+          <svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>
+          <div><strong>Transaction monitoring lab</strong><small>Reconstruction error → anomaly score → analyst review</small></div>
+        </div>
+        <div class="controls">
+          <span>Synthetic SAP-style transactions</span>
+          <button class="button" id="run">
+            <svg class="icon" aria-hidden="true"><use href="#i-play"/></svg>
+            <span>Analyze batch</span>
+          </button>
+          <button class="button reset" id="reset" aria-label="Reset demonstration" title="Reset demonstration">
+            <svg class="icon" aria-hidden="true"><use href="#i-reset"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <section class="metrics" aria-label="Batch statistics">
+        <div class="metric">
+          <div class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-database"/></svg> Batch size</div>
+          <strong>48</strong><small>transactions</small>
+        </div>
+        <div class="metric">
+          <div class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg> Feature space</div>
+          <strong>6 → 2</strong><small>compression</small>
+        </div>
+        <div class="metric accent">
+          <div class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg> Flagged for review</div>
+          <strong id="flagged">-</strong><small id="flagged-percent">awaiting analysis</small>
+        </div>
+        <div class="metric">
+          <div class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg> Median error</div>
+          <strong id="median-error">-</strong><small>standardized MSE</small>
+        </div>
+      </section>
+
+      <nav class="mobile-tabs" aria-label="Workspace panels">
+        <button data-panel="model" aria-pressed="true">01 · Model</button>
+        <button data-panel="monitor" aria-pressed="false">02 · Signals</button>
+        <button data-panel="inspect" aria-pressed="false">03 · Inspect</button>
+      </nav>
+
+      <div class="panes">
+        <section class="pane visible" id="panel-model" aria-labelledby="model-title">
+          <div class="pane-heading">
+            <h2 id="model-title"><svg class="icon" aria-hidden="true"><use href="#i-network"/></svg> Learn the usual</h2>
+            <span class="label" id="model-state">Standby</span>
+          </div>
+          <div class="scroll">
+            <div class="model-card" id="model-card">
+              <div class="model-head">
+                <strong><svg class="icon" aria-hidden="true"><use href="#i-network"/></svg> Autoencoder principle</strong>
+                <p>Compress transaction features. Reconstruct them. Measure what the model cannot explain.</p>
+              </div>
+              <div class="network-wrap">
+                <div class="network-labels"><span>INPUT · 6</span><span>LATENT · 2</span><span>OUTPUT · 6</span></div>
+                <svg id="network" viewBox="0 0 300 150" role="img" aria-label="Six input features are compressed to two latent dimensions and reconstructed as six outputs"></svg>
+              </div>
+              <div class="model-foot">Browser demo: a PCA-equivalent linear autoencoder fitted to a synthetic baseline. Illustrates reconstruction scoring, not the production deep-learning model.</div>
+            </div>
+
+            <div class="stages">
+              <div class="stage" data-step="0">
+                <span class="step">01</span>
+                <div><strong>Explore & standardize</strong><small>Baseline means and feature scales</small></div>
+                <span class="state">Queued</span>
+              </div>
+              <div class="stage" data-step="1">
+                <span class="step">02</span>
+                <div><strong>Fit the bottleneck</strong><small>Learn two principal directions</small></div>
+                <span class="state">Queued</span>
+              </div>
+              <div class="stage" data-step="2">
+                <span class="step">03</span>
+                <div><strong>Reconstruct & score</strong><small>Mean squared feature residuals</small></div>
+                <span class="state">Queued</span>
+              </div>
+              <div class="stage" data-step="3">
+                <span class="step">04</span>
+                <div><strong>Prioritize review</strong><small>Rank unusual transactions</small></div>
+                <span class="state">Queued</span>
+              </div>
+            </div>
+            <p class="trace" id="trace">Ready to analyze 48 synthetic transactions.</p>
+          </div>
+        </section>
+
+        <section class="pane" id="panel-monitor" aria-labelledby="monitor-title">
+          <div class="pane-heading">
+            <h2 id="monitor-title"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg> Spot the unusual</h2>
+            <span class="label">Batch overview</span>
+          </div>
+          <div class="scroll">
+            <div class="chart-card">
+              <div class="chart-heading">
+                <strong>Reconstruction error</strong>
+                <div class="legend"><span><i></i> Below</span><span><i class="flag"></i> Flagged</span></div>
+              </div>
+              <svg id="score-chart" viewBox="0 0 360 150" role="img" aria-label="Reconstruction scores will appear after analysis"></svg>
+              <p class="chart-note">X: transaction sequence · Y: standardized MSE · Dashed line: review threshold</p>
+            </div>
+
+            <div class="threshold-control">
+              <div class="threshold-top">
+                <label for="threshold">Review threshold</label>
+                <output id="threshold-value" for="threshold">0.50</output>
+              </div>
+              <input id="threshold" type="range" min="0.05" max="2.5" step="0.05" value="0.5" disabled>
+              <div class="range-labels"><span>Lower → more flags</span><span>Higher → fewer flags</span></div>
+            </div>
+
+            <div class="queue-heading">
+              <strong>Review queue</strong>
+              <span id="queue-count">Highest errors first</span>
+            </div>
+            <div id="queue"><p class="queue-empty">Analyze the batch to rank transactions.<br>Thresholds guide review, not fraud verdicts.</p></div>
+          </div>
+        </section>
+
+        <section class="pane inspection" id="panel-inspect" aria-labelledby="inspect-title">
+          <div class="pane-heading">
+            <h2 id="inspect-title"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg> Inspect the evidence</h2>
+            <span class="label">Analyst view</span>
+          </div>
+          <div class="scroll" id="inspection-scroll">
+            <div id="inspection"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="workspace-footer">
+        <span>Synthetic data · Local computation · Anomaly ≠ confirmed fraud</span>
+        <div class="progress-group">
+          <span id="progress-label">Ready</span>
+          <div class="progress-track" aria-hidden="true"><div id="progress"></div></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <div class="tech"><span>Autoencoders</span><span>Deep Learning</span><span>Unsupervised Learning</span><span>Anomaly Detection</span><span>EDA</span><span>SAP</span></div>
+      <span class="footer-end">Financial signals, made inspectable.</span>
+    </footer>
+    <div class="sr-only" id="announcement" role="status" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const $ = selector => document.querySelector(selector);
+    const icon = name => `<svg class="icon" aria-hidden="true"><use href="#i-${name}"/></svg>`;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = ms => new Promise(resolve => setTimeout(resolve, reducedMotion ? 60 : ms));
+
+    const features = [
+      "Document amount",
+      "Line-item count",
+      "Posting delay",
+      "Vendor tenure",
+      "Payment term",
+      "Monthly frequency"
+    ];
+
+    let running = false;
+    let results = [];
+    let selectedId = null;
+    let model = null;
+
+    // Seeded synthetic data: no connection to SAP or actual financial records.
+    let seed = 2025;
+    function random() {
+      seed = (1664525 * seed + 1013904223) >>> 0;
+      return seed / 4294967296;
+    }
+    function normal() {
+      return Math.sqrt(-2 * Math.log(Math.max(random(), 1e-9))) *
+        Math.cos(2 * Math.PI * random());
+    }
+
+    function sample() {
+      const a = normal();
+      const b = normal();
+      const noise = () => normal() * .14;
+      return [
+        a + .2 * b + noise(),
+        .85 * a - .15 * b + noise(),
+        .15 * a + b + noise(),
+        -.25 * a + .9 * b + noise(),
+        .7 * a + .55 * b + noise(),
+        -.6 * a + .65 * b + noise()
+      ];
+    }
+
+    const baseline = Array.from({ length: 180 }, sample);
+    const batch = Array.from({ length: 48 }, (_, i) => {
+      const values = sample();
+
+      // Deliberate feature inconsistencies, not labels of real-world fraud.
+      if ([6, 15, 23, 31, 40, 45].includes(i)) {
+        values[i % 6] += 4.2 + random() * 2.7;
+        values[(i + 2) % 6] -= 2 + random();
+      }
+
+      return {
+        id: `SAP-${510001 + i}`,
+        vendor: `Vendor ${String(101 + (i * 7) % 23)}`,
+        company: i % 2 ? "DE02" : "DE01",
+        sequence: i + 1,
+        values
+      };
+    });
+
+    function showPanel(name) {
+      document.querySelectorAll(".pane").forEach(pane => {
+        pane.classList.toggle("visible", pane.id === `panel-${name}`);
+      });
+      document.querySelectorAll("[data-panel]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.panel === name));
+      });
+    }
+    document.querySelectorAll("[data-panel]").forEach(button => {
+      button.addEventListener("click", () => showPanel(button.dataset.panel));
+    });
+
+    function drawNetwork() {
+      const input = [15, 39, 63, 87, 111, 135];
+      const latent = [55, 95];
+      const lines = input.flatMap(y => latent.map(z =>
+        `<line class="network-edge" x1="27" y1="${y}" x2="150" y2="${z}"/>
+         <line class="network-edge" x1="150" y1="${z}" x2="273" y2="${y}"/>`
+      )).join("");
+      const nodes = input.map(y =>
+        `<circle class="network-node" cx="27" cy="${y}" r="6"/>
+         <circle class="network-node" cx="273" cy="${y}" r="6"/>`
+      ).join("") + latent.map(y =>
+        `<circle class="network-node network-latent" cx="150" cy="${y}" r="9"/>`
+      ).join("");
+      $("#network").innerHTML = lines + nodes;
+    }
+
+    const dot = (a, b) => a.reduce((sum, value, i) => sum + value * b[i], 0);
+
+    function standardizeBaseline() {
+      const means = features.map((_, j) =>
+        baseline.reduce((sum, row) => sum + row[j], 0) / baseline.length
+      );
+      const scales = features.map((_, j) =>
+        Math.sqrt(baseline.reduce((sum, row) =>
+          sum + (row[j] - means[j]) ** 2, 0) / baseline.length) || 1
+      );
+      const rows = baseline.map(row => row.map((x, j) => (x - means[j]) / scales[j]));
+      return { means, scales, rows };
+    }
+
+    function fitLinearAutoencoder(prepared) {
+      const covariance = features.map((_, i) => features.map((_, j) =>
+        prepared.rows.reduce((sum, row) => sum + row[i] * row[j], 0) /
+        prepared.rows.length
+      ));
+
+      const components = [];
+
+      // Orthogonal power iteration: PCA's rank-2 reconstruction is equivalent
+      // to an optimal rank-2 linear autoencoder under squared error.
+      for (let k = 0; k < 2; k++) {
+        let vector = features.map((_, j) => Math.sin((j + 1) * (k + 1) + .3));
+
+        for (let iteration = 0; iteration < 100; iteration++) {
+          let next = covariance.map(row => dot(row, vector));
+
+          for (const previous of components) {
+            const projection = dot(next, previous);
+            next = next.map((value, j) => value - projection * previous[j]);
+          }
+
+          const magnitude = Math.sqrt(dot(next, next)) || 1;
+          vector = next.map(value => value / magnitude);
+        }
+        components.push(vector);
+      }
+      return { ...prepared, components };
+    }
+
+    function scoreBatch() {
+      return batch.map(transaction => {
+        const input = transaction.values.map((value, j) =>
+          (value - model.means[j]) / model.scales[j]
+        );
+        const encoded = model.components.map(component => dot(input, component));
+        const reconstructed = features.map((_, j) =>
+          model.components.reduce((sum, component, k) =>
+            sum + encoded[k] * component[j], 0)
+        );
+        const errors = input.map((value, j) => (value - reconstructed[j]) ** 2);
+        const score = errors.reduce((sum, value) => sum + value, 0) / features.length;
+        return { ...transaction, input, reconstructed, errors, score };
+      });
+    }
+
+    function drawChart() {
+      const svg = $("#score-chart");
+      const threshold = Number($("#threshold").value);
+      const maximum = Math.max(1, threshold * 1.2, ...results.map(row => row.score * 1.15));
+      const x = index => 30 + index / 47 * 316;
+      const y = score => 125 - score / maximum * 105;
+
+      let markup = [0, .5, 1].map(fraction => {
+        const value = maximum * fraction;
+        return `<line x1="30" y1="${y(value)}" x2="346" y2="${y(value)}" stroke="#E4ECEA"/>
+          <text x="24" y="${y(value) + 3}" text-anchor="end" fill="#52646C" font-size="8">${value.toFixed(1)}</text>`;
+      }).join("");
+
+      markup += `<text x="30" y="143" fill="#52646C" font-size="8">01</text>
+        <text x="346" y="143" text-anchor="end" fill="#52646C" font-size="8">48</text>`;
+
+      if (!results.length) {
+        markup += `<text x="188" y="72" text-anchor="middle" fill="#52646C" font-size="10">Run analysis to reveal the signals</text>`;
+      } else {
+        markup += `<line x1="30" y1="${y(threshold)}" x2="346" y2="${y(threshold)}"
+          stroke="#D09242" stroke-dasharray="4 4"/>
+          <text x="344" y="${y(threshold) - 5}" text-anchor="end" fill="#946326" font-size="8">threshold</text>`;
+
+        markup += results.map((row, index) =>
+          `<circle cx="${x(index)}" cy="${y(row.score)}"
+            r="${row.id === selectedId ? 5 : 3.5}"
+            fill="${row.score > threshold ? "#D09242" : "#A9C5C8"}"
+            stroke="${row.id === selectedId ? "#294753" : "#FFFFFF"}" stroke-width="1.5">
+            <title>${row.id}: error ${row.score.toFixed(3)}</title>
+          </circle>`
+        ).join("");
+      }
+
+      svg.innerHTML = markup;
+      svg.setAttribute("aria-label", results.length
+        ? `Reconstruction errors for 48 transactions. Review threshold ${threshold.toFixed(2)}. Select a transaction in the ranked list to inspect it.`
+        : "Run analysis to reveal reconstruction errors.");
+    }
+
+    function renderQueue() {
+      const threshold = Number($("#threshold").value);
+      const ranked = [...results].sort((a, b) => b.score - a.score);
+      const flagged = results.filter(row => row.score > threshold).length;
+
+      $("#flagged").textContent = flagged;
+      $("#flagged-percent").textContent = `${(flagged / results.length * 100).toFixed(1)}% of batch`;
+      $("#queue-count").textContent = `${flagged} flagged · all ${results.length} ranked`;
+
+      $("#queue").innerHTML = ranked.map(row => `
+        <button class="transaction ${row.id === selectedId ? "selected" : ""}"
+          data-transaction="${row.id}" aria-pressed="${row.id === selectedId}">
+          <span><strong>${row.id}</strong><small>${row.vendor} · ${row.score > threshold ? "Review suggested" : "Below threshold"}</small></span>
+          <span class="score">${row.score.toFixed(3)}</span>
+          ${icon("arrow")}
+        </button>
+      `).join("");
+
+      document.querySelectorAll("[data-transaction]").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedId = button.dataset.transaction;
+          document.querySelectorAll("[data-transaction]").forEach(item => {
+            const selected = item.dataset.transaction === selectedId;
+            item.classList.toggle("selected", selected);
+            item.setAttribute("aria-pressed", String(selected));
+          });
+          renderInspection();
+          drawChart();
+          showPanel("inspect");
+          $("#inspection-scroll").scrollTop = 0;
+          $("#announcement").textContent = `${selectedId} selected. Reconstruction details are ready.`;
+        });
+      });
+    }
+
+    function renderInspection() {
+      const row = results.find(result => result.id === selectedId);
+      if (!row) return;
+
+      const threshold = Number($("#threshold").value);
+      const flagged = row.score > threshold;
+      const totalError = row.errors.reduce((sum, value) => sum + value, 0);
+      const contributions = row.errors.map((value, j) => ({
+        label: features[j],
+        share: totalError ? value / totalError * 100 : 0
+      })).sort((a, b) => b.share - a.share);
+
+      $("#inspection").innerHTML = `
+        <article class="detail-card">
+          <div class="detail-head">
+            <div class="detail-top">
+              <h3>${row.id}</h3>
+              <span class="status-tag">${flagged ? "Review suggested" : "Below threshold"}</span>
+            </div>
+            <p class="detail-meta">${row.vendor} · Company ${row.company} · Synthetic record</p>
+          </div>
+          <div class="detail-body">
+            <div class="score-banner">
+              <div><span>Reconstruction error</span><strong>${row.score.toFixed(3)}</strong></div>
+              <div><small>Review threshold</small><small><b>${threshold.toFixed(2)}</b> standardized MSE</small></div>
+            </div>
+
+            <p class="section-label">Where reconstruction diverges</p>
+            ${contributions.slice(0, 4).map(item => `
+              <div class="residual-row">
+                <div class="residual-top"><span>${item.label}</span><strong>${item.share.toFixed(1)}%</strong></div>
+                <div class="residual-track"><div class="residual-fill" style="width:${item.share}%"></div></div>
+              </div>
+            `).join("")}
+            <p class="detail-note">Top four features by share of squared reconstruction error. These describe model mismatch,not proof of wrongdoing or causal explanations.</p>
+
+            <div class="review-note">
+              <strong>${flagged ? "Investigate the context, not just the score." : "A low score is not a guarantee."}</strong><br>
+              ${flagged
+                ? "Check source documents, vendor history, posting context, and legitimate exceptions before drawing conclusions."
+                : "Transactions below the threshold may still warrant review based on other controls and business context."}
+            </div>
+
+            <details>
+              <summary>Inspect input vs. reconstruction</summary>
+              <table class="feature-table">
+                <thead><tr><th>Feature</th><th>Input z</th><th>Rebuilt z</th></tr></thead>
+                <tbody>${features.map((feature, j) => `
+                  <tr><td>${feature}</td><td>${row.input[j].toFixed(2)}</td><td>${row.reconstructed[j].toFixed(2)}</td></tr>
+                `).join("")}</tbody>
+              </table>
+              <p style="margin-top:8px">Values are standardized synthetic features, not actual currency amounts or SAP field values. Score = Σ(input − reconstruction)² ÷ 6.</p>
+            </details>
+          </div>
+        </article>`;
+    }
+
+    async function stage(index, message, action) {
+      const element = $(`[data-step="${index}"]`);
+      element.classList.add("active");
+      element.querySelector(".state").textContent = "Running";
+      $("#trace").textContent = message;
+      $("#announcement").textContent = message;
+      await wait(650);
+      if (action) action();
+      await wait(200);
+      element.classList.remove("active");
+      element.classList.add("done");
+      element.querySelector(".state").textContent = "Done";
+      $("#progress").style.width = `${(index + 1) * 25}%`;
+      $("#progress-label").textContent = `${index + 1}/4 complete`;
+    }
+
+    function reset() {
+      if (running) return;
+      results = [];
+      model = null;
+      selectedId = null;
+      $("#threshold").value = ".5";
+      $("#threshold").disabled = true;
+      $("#threshold-value").textContent = "0.50";
+      $("#flagged").textContent = "-";
+      $("#median-error").textContent = "-";
+      $("#flagged-percent").textContent = "awaiting analysis";
+      $("#queue-count").textContent = "Highest errors first";
+      $("#queue").innerHTML = `<p class="queue-empty">Analyze the batch to rank transactions.<br>Thresholds guide review,not fraud verdicts.</p>`;
+      $("#inspection").innerHTML = `<div class="empty">
+        <div class="empty-icon">${icon("search")}</div>
+        <strong>Every signal deserves context.</strong>
+        <p>Select a transaction after analysis to inspect its reconstruction error and feature-level differences.</p>
+      </div>`;
+      $("#model-state").textContent = "Standby";
+      $("#trace").textContent = "Ready to analyze 48 synthetic transactions.";
+      $("#run span").textContent = "Analyze batch";
+      $("#progress").style.width = "0%";
+      $("#progress-label").textContent = "Ready";
+
+      document.querySelectorAll(".stage").forEach(element => {
+        element.classList.remove("active", "done");
+        element.querySelector(".state").textContent = "Queued";
+      });
+      drawChart();
+    }
+
+    async function analyze() {
+      if (running) return;
+      reset();
+      running = true;
+      $("#run").disabled = true;
+      $("#reset").disabled = true;
+      $("#run span").textContent = "Analyzing…";
+      $("#model-state").textContent = "Processing";
+      $("#model-card").classList.add("running");
+      showPanel("model");
+
+      try {
+        let prepared;
+        await stage(0, "STANDARDIZE → fit scaling on 180 synthetic baseline records.", () => {
+          prepared = standardizeBaseline();
+        });
+        await stage(1, "FIT → derive a two-dimensional linear bottleneck from the baseline.", () => {
+          model = fitLinearAutoencoder(prepared);
+        });
+        await stage(2, "SCORE → reconstruct 48 held-out records; compute standardized MSE.", () => {
+          results = scoreBatch();
+        });
+        await stage(3, "RANK → apply an illustrative threshold and prepare the review queue.", () => {
+          const sorted = [...results].sort((a, b) => a.score - b.score);
+          $("#median-error").textContent = ((sorted[23].score + sorted[24].score) / 2).toFixed(3);
+          selectedId = sorted[sorted.length - 1].id;
+          renderQueue();
+          drawChart();
+          renderInspection();
+        });
+
+        $("#threshold").disabled = false;
+        $("#model-state").textContent = "Complete";
+        $("#run span").textContent = "Run again";
+        $("#trace").textContent = "COMPLETE → adjust the threshold or select a record. No fraud labels or production accuracy claims.";
+        showPanel("monitor");
+        $("#announcement").textContent =
+          `Analysis complete. ${$("#flagged").textContent} transactions flagged for review. These are anomalies, not confirmed fraud.`;
+      } catch (error) {
+        $("#model-state").textContent = "Please retry";
+        $("#trace").textContent = "The demo could not finish. Reset and try again.";
+        $("#run span").textContent = "Try again";
+        $("#announcement").textContent = "Analysis interrupted. Please reset and try again.";
+        console.error(error);
+      } finally {
+        running = false;
+        $("#run").disabled = false;
+        $("#reset").disabled = false;
+        $("#model-card").classList.remove("running");
+        document.querySelectorAll(".stage").forEach(element => element.classList.remove("active"));
+      }
+    }
+
+    $("#threshold").addEventListener("input", () => {
+      $("#threshold-value").textContent = Number($("#threshold").value).toFixed(2);
+      if (!results.length) return;
+      renderQueue();
+      drawChart();
+      renderInspection();
+    });
+    $("#threshold").addEventListener("change", () => {
+      $("#announcement").textContent = `Threshold ${Number($("#threshold").value).toFixed(2)}. ${$("#flagged").textContent} transactions flagged for review.`;
+    });
+    $("#run").addEventListener("click", analyze);
+    $("#reset").addEventListener("click", () => {
+      reset();
+      $("#announcement").textContent = "Demonstration reset.";
+    });
+
+    drawNetwork();
+    reset();
+  </script>
+</body>
+</html>
