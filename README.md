@@ -93,3 +93,6 @@ For the personal `github.io` root, keep `base_path` empty. For a project site su
 ## Contact contrast fix
 
 The old `.section:nth-child(even)` rule overrode the contact background but retained pale contact text. The new footer uses a dedicated `.site-footer` component with explicit background `#294753`, heading `#F3F6F5`, and body `#D5E2E3`, independent of page section order.
+
+
+### The source code of this site is licensed under the MIT License, but all personal content, images, blog posts, and branding remain Copyright © Muhammad Saad Uddin, All Rights Reserved.
