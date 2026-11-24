@@ -362,9 +362,9 @@
       "issuer": "Microsoft",
       "status": "Verify",
       "url": "https://www.credly.com/users/saad-muhammad/badges",
-      "image": "images/creds/azureai.png",
+      "image": "images/creds/azureai.PNG",
       "image_label": "Microsoft Azure AI Engineer certificate",
-      "full_image": "images/creds/azureai.png"
+      "full_image": "images/creds/azureai.PNG"
     },
     {
       "title": "IBM Advanced Data Science",
@@ -380,9 +380,9 @@
       "issuer": "IBM",
       "status": "Verify",
       "url": "https://www.credly.com/users/saad-muhammad/badges",
-      "image": "images/creds/ibmds.PNG",
+      "image": "images/creds/ibmds.png",
       "image_label": "IBM Data Science Professional certificate",
-      "full_image": "images/creds/ibmds.PNG"
+      "full_image": "images/creds/ibmds.png"
     },
     {
       "title": "IBM Applied AI",
